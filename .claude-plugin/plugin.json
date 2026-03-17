@@ -1,0 +1,20 @@
+{
+  "name": "productupgrade",
+  "description": "54-agent recursive product improvement pipeline with LLM-as-Judge evaluation, CEO/Engineering/UX parallel review loops, competitor analysis, GUI audit, techstack research, and dynamic planning orchestration",
+  "version": "1.0.0",
+  "author": {
+    "name": "Shaheer Khawaja",
+    "email": "shaheer@entropyandco.com"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/ShaheerKhawaja/productupgrade",
+  "keywords": [
+    "product-upgrade",
+    "code-review",
+    "llm-judge",
+    "recursive-improvement",
+    "competitor-analysis",
+    "ux-audit",
+    "qa-testing"
+  ]
+}
