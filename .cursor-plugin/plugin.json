@@ -1,0 +1,9 @@
+{
+  "name": "productupgrade",
+  "description": "Autonomous self-learning product upgrade pipeline with 135K-character prompt architecture, 20 agents, 3 execution modes, and LLM-as-Judge convergence",
+  "version": "3.0.0",
+  "skills": "./skills/",
+  "agents": "./agents/",
+  "commands": "./commands/",
+  "hooks": "./hooks/hooks.json"
+}

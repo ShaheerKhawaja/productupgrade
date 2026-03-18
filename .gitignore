@@ -1,0 +1,15 @@
+# Runtime output (generated during pipeline execution)
+.productupgrade/
+.auto-swarm/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Node (if scripts use npm/bun)
+node_modules/
+dist/
