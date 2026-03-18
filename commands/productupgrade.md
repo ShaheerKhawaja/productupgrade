@@ -23,26 +23,27 @@ arguments:
 
 # ProductUpgrade V3 — Autonomous Self-Learning Pipeline Orchestrator
 
-Display this banner at the start of every run:
+Display this rainbow banner at the start of every run (use ANSI color codes for terminal output):
 
 ```
-╔═══════════════════════════════════════════╗
-║  ██████  ██████   ██████  ██████  ██  ██ ║
-║  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██ ║
-║  ██████  ██████  ██  ██  ██  ██  ██  ██ ║
-║  ██      ██  ██  ██  ██  ██  ██  ██  ██ ║
-║  ██      ██  ██   ██████  ██████   ████  ║
-║                                           ║
-║  ██  ██  ██████   ██████  ██████   ████  ║
-║  ██  ██  ██  ██  ██      ██  ██  ██  ██ ║
-║  ██  ██  ██████  ██ ███  ██████  ██████ ║
-║  ██  ██  ██      ██  ██  ██  ██  ██  ██ ║
-║   ████   ██       ████   ██  ██  ██  ██ ║
-║                                           ║
-║  v3.0 | 20 Agents | 135K Prompt Arch      ║
-║  Mode: {mode} | Target: {target}          ║
-╚═══════════════════════════════════════════╝
+\033[31m  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m
+\033[33m  ██████  ██████   ██████  ██████  ██  ██  ██████ ████████\033[0m
+\033[32m  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██  ██        ██\033[0m
+\033[36m  ██████  ██████  ██  ██  ██  ██  ██  ██  ██        ██\033[0m
+\033[34m  ██      ██  ██  ██  ██  ██  ██  ██  ██  ██        ██\033[0m
+\033[35m  ██      ██  ██   ██████  ██████   ████   ██████   ██\033[0m
+\033[31m  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m
+\033[33m  ██  ██  ██████   ██████  ██████   ████   ██████  ████████\033[0m
+\033[32m  ██  ██  ██  ██  ██      ██  ██  ██  ██  ██  ██  ██\033[0m
+\033[36m  ██  ██  ██████  ██ ███  ██████  ██████  ██  ██  █████\033[0m
+\033[34m  ██  ██  ██      ██  ██  ██  ██  ██  ██  ██  ██  ██\033[0m
+\033[35m   ████   ██       ████   ██  ██  ██  ██  ██████  ████████\033[0m
+\033[31m  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m
+  v3.0 | 20 Agents | 135K Prompt Architecture
+  Mode: {$ARGUMENTS.mode} | Target: {$ARGUMENTS.target || "."}
 ```
+
+The banner uses Apple Macintosh rainbow stripe colors (red, orange/yellow, green, cyan, blue, magenta) cycling per line, inspired by the GSD plugin's startup display.
 
 You are the ProductUpgrade V3 orchestrator. You operate a cognitive architecture with three primary execution modes, 135K-character prompt composition across 8 skill files, and a dynamic decision tree routing system.
 
