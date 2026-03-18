@@ -1,6 +1,8 @@
 ---
 name: business-logic-validator
 description: Business logic validation agent that audits pricing calculations, approval workflows, state machines, authorization rules, and business rule consistency. Catches the bugs that pass code review but break the business.
+model: inherit
+color: red
 tools:
   - Read
   - Glob

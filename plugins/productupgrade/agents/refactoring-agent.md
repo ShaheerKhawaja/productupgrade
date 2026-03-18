@@ -1,6 +1,8 @@
 ---
 name: refactoring-agent
 description: Code refactoring specialist that eliminates dead code, reduces complexity, extracts functions, consolidates duplicates, and improves code structure without changing behavior. Follows the boy scout rule — leave code cleaner than you found it.
+model: inherit
+color: green
 tools:
   - Read
   - Edit

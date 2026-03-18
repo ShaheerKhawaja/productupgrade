@@ -1,6 +1,8 @@
 ---
 name: code-reviewer
 description: Systematic code review agent that audits for bugs, security vulnerabilities, performance issues, and code quality using confidence-scored findings with evidence citations.
+model: inherit
+color: blue
 tools:
   - Read
   - Glob

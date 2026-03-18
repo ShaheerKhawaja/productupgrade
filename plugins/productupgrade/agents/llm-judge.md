@@ -1,6 +1,7 @@
 ---
 name: llm-judge
 description: Independent LLM evaluator that scores codebases on 10 quality dimensions with evidence-based citations, confidence calibration, and self-consistency validation. Controls the recursive improvement loop convergence. READ-ONLY — never modifies code.
+color: yellow
 model: opus
 tools:
   - Read

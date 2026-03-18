@@ -1,6 +1,8 @@
 ---
 name: dependency-scanner
 description: Dependency vulnerability scanner and health checker. Runs npm audit, pip-audit, checks for outdated packages, license conflicts, and abandoned dependencies.
+model: inherit
+color: red
 tools:
   - Read
   - Glob

@@ -1,6 +1,7 @@
 ---
 name: deep-researcher
 description: Deep research agent that investigates techstacks, libraries, competitor patterns, market niches, and best practices using Chain-of-Thought reasoning and multi-source synthesis. Use before any implementation to gather authoritative context for product decisions.
+color: cyan
 model: opus
 tools:
   - Read

@@ -1,6 +1,8 @@
 ---
 name: ux-auditor
 description: UX/UI audit agent that evaluates design consistency, accessibility, responsive behavior, interaction patterns, and identifies improvement opportunities through competitor comparison.
+model: inherit
+color: magenta
 tools:
   - Read
   - Glob

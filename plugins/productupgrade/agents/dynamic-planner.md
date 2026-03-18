@@ -1,6 +1,8 @@
 ---
 name: dynamic-planner
 description: Dynamic planning orchestrator that synthesizes findings from all review agents, produces prioritized fix plans, generates TDD specs, and sequences execution batches. Uses Chain-of-Thought reasoning and step-back prompting for strategic planning.
+model: inherit
+color: cyan
 tools:
   - Read
   - Glob

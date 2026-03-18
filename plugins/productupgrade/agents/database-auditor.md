@@ -1,6 +1,8 @@
 ---
 name: database-auditor
 description: Database schema and query audit agent. Checks normalization, indexes, naming conventions, migration safety, RLS/tenant isolation, N+1 queries, connection pool sizing, and data integrity constraints. Supports PostgreSQL, MySQL, SQLite, MongoDB.
+model: inherit
+color: magenta
 tools:
   - Read
   - Glob
