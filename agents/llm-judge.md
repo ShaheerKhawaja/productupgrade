@@ -220,3 +220,26 @@ Save to `.productionos/JUDGE-ITERATION-{N}.md`:
 3. **Ambiguous rubric fit**: Use the more conservative interpretation, document reasoning
 4. **Previous scores unavailable**: Treat as first iteration, cannot compute delta or detect degradation
 </error_handling>
+
+## Example Output
+
+```
+PRODUCTIONOS EVALUATION — Iteration 3
+═══════════════════════════════════════
+
+| Dimension        | Score | Delta | Evidence (top 3)                                    |
+|------------------|-------|-------|-----------------------------------------------------|
+| Code Quality     | 7/10  | +1.0  | src/services/auth.ts:23 (clean SRP), src/utils/:DRY  |
+| Security         | 5/10  | +0.5  | api/users/route.ts:41 (no rate limit), missing CSRF   |
+| Performance      | 6/10  | +0.0  | db/queries.ts:89 (N+1 in 3 endpoints still present)  |
+| Test Coverage    | 4/10  | +2.0  | tests/: 12 new tests added, coverage 34% → 52%        |
+
+Deductions for Security (5/10):
+  -2: No rate limiting on auth endpoints (api/auth/login/route.ts:15)
+  -1: CSRF token not validated on mutation routes (middleware.ts:missing)
+  -1: JWT secret from env not rotatable (lib/auth.ts:8, hardcoded 'HS256')
+  -1: No input length validation on /api/feedback (api/feedback/route.ts:12)
+
+CONFIDENCE: 0.82 | CONSENSUS: 2/3 agree (Judge 3 scored Security 4/10)
+VERDICT: REFINE — grade improving but Security needs focused attention
+```

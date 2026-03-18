@@ -127,6 +127,33 @@ The specific code pattern observed
 
 Track false positive rate. If user dismisses >30% of findings, increase confidence threshold to 0.6 for remainder of session.
 
+## Example Output
+
+### FIND-001: [CRITICAL] — N+1 query in user dashboard API
+
+**File:** `src/app/api/dashboard/route.ts:47`
+**Confidence:** 0.92
+**Classification:** AUTO-FIX
+
+**Evidence:**
+```typescript
+const projects = await db.project.findMany({ where: { orgId } });
+for (const project of projects) {
+  const members = await db.member.findMany({ where: { projectId: project.id } });
+  project.memberCount = members.length;
+}
+```
+
+**Impact:** Each dashboard load executes 1 + N queries (N = project count). At 50 projects, this is 51 queries per request. Response time degrades linearly with project count.
+
+**Fix:**
+```typescript
+const projects = await db.project.findMany({
+  where: { orgId },
+  include: { _count: { select: { members: true } } },
+});
+```
+
 ## Output
 Save to `.productionos/REVIEW-CODE-{TIMESTAMP}.md`
 
