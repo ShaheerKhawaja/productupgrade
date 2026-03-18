@@ -1,7 +1,5 @@
 {
-  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "productupgrade",
-  "description": "AI-powered product upgrade pipeline — 54-agent iterative review with CEO/Engineering/UX/QA parallel loops, LLM-as-Judge evaluation, and recursive improvement",
   "owner": {
     "name": "Shaheer Khawaja",
     "email": "shaheer@entropyandco.com"
@@ -9,13 +7,13 @@
   "plugins": [
     {
       "name": "productupgrade",
-      "description": "54-agent recursive product improvement pipeline with LLM-as-Judge evaluation, CEO/Engineering/UX parallel review loops, competitor analysis, GUI audit, techstack research, and dynamic planning orchestration",
+      "description": "54-agent recursive product improvement pipeline with LLM-as-Judge, database auditing, naming enforcement, business logic validation, UX audit, dependency scanning, and dynamic planning",
       "version": "1.0.0",
       "author": {
         "name": "Shaheer Khawaja",
         "email": "shaheer@entropyandco.com"
       },
-      "source": ".",
+      "source": "./plugins/productupgrade",
       "category": "development",
       "strict": false,
       "tags": [
@@ -23,9 +21,9 @@
         "code-review",
         "llm-judge",
         "ux-audit",
-        "qa-testing",
-        "competitor-analysis",
-        "recursive-improvement"
+        "database-audit",
+        "security",
+        "refactoring"
       ]
     }
   ]
