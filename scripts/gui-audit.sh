@@ -28,53 +28,8 @@ const VIEWPORTS = [
   { name: 'desktop', width: 1440, height: 900 },
 ];
 
-// Discover routes dynamically, fall back to common patterns
-const fs = require('fs');
-const path = require('path');
-
-function discoverRoutes(projectRoot) {
-  const routes = ['/'];
-
-  // Next.js App Router: find all page.tsx/page.jsx files
-  try {
-    const appDir = path.join(projectRoot, 'app');
-    if (fs.existsSync(appDir)) {
-      const findPages = (dir, prefix) => {
-        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-          if (entry.isDirectory() && !entry.name.startsWith('_') && !entry.name.startsWith('(')) {
-            findPages(path.join(dir, entry.name), prefix + '/' + entry.name);
-          }
-          if (entry.isFile() && (entry.name === 'page.tsx' || entry.name === 'page.jsx')) {
-            if (prefix !== '') routes.push(prefix);
-          }
-        }
-      };
-      findPages(appDir, '');
-    }
-  } catch (e) {}
-
-  // Next.js Pages Router: find all .tsx/.jsx in pages/
-  try {
-    const pagesDir = path.join(projectRoot, 'pages');
-    if (fs.existsSync(pagesDir)) {
-      for (const f of fs.readdirSync(pagesDir)) {
-        if (f.endsWith('.tsx') || f.endsWith('.jsx')) {
-          const route = '/' + f.replace(/\.(tsx|jsx)$/, '').replace('index', '');
-          if (!routes.includes(route)) routes.push(route);
-        }
-      }
-    }
-  } catch (e) {}
-
-  // If no routes discovered, use safe defaults
-  if (routes.length <= 1) {
-    routes.push('/login', '/dashboard', '/settings');
-  }
-
-  return routes.slice(0, 10); // Cap at 10 routes to avoid excessive screenshotting
-}
-
-const ROUTES = discoverRoutes(process.cwd());
+// Common routes to check
+const ROUTES = ['/', '/generate', '/dashboard', '/studio', '/settings', '/settings/billing'];
 
 (async () => {
   const browser = await chromium.launch({ headless: true });

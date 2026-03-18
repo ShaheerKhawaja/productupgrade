@@ -1,0 +1,33 @@
+{
+  "name": "productionos",
+  "version": "5.1.0",
+  "description": "ProductionOS — 35-agent agentic development OS with 10 commands, tri-tiered evaluation, 7-layer prompt composition, recursive convergence, and cross-run learning.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "bun run gen:skill-docs",
+    "gen:skill-docs": "bun run scripts/gen-skill-docs.ts",
+    "skill:check": "bun run scripts/skill-check.ts",
+    "test": "bun test tests/",
+    "validate": "bun run scripts/validate-agents.ts",
+    "audit:context": "bun run scripts/context-audit.ts",
+    "dashboard": "bun run scripts/review-dashboard.ts show",
+    "dashboard:log": "bun run scripts/review-dashboard.ts log",
+    "dashboard:clear": "bun run scripts/review-dashboard.ts clear"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "keywords": [
+    "productionos",
+    "agentic-dev",
+    "llm-judge",
+    "auto-swarm",
+    "recursive-improvement",
+    "multi-agent",
+    "claude-code-plugin"
+  ],
+  "devDependencies": {
+    "bun-types": "latest"
+  }
+}

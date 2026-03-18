@@ -1,8 +1,37 @@
 {
+  "name": "productionos",
+  "owner": {
+    "name": "Shaheer Khawaja",
+    "email": "shaheer@entropyandco.com"
+  },
   "plugins": [
     {
-      "name": "productupgrade",
-      "source": "./"
+      "name": "productionos",
+      "description": "Agentic development OS — 35 agents, 10 commands, tri-tiered evaluation, 7-layer prompt composition, recursive convergence, cross-run learning",
+      "version": "5.1.0",
+      "author": {
+        "name": "Shaheer Khawaja",
+        "email": "shaheer@entropyandco.com"
+      },
+      "source": ".",
+      "category": "development",
+      "strict": false,
+      "tags": [
+        "productionos",
+        "production-upgrade",
+        "omni-plan",
+        "auto-swarm",
+        "deep-research",
+        "agentic-eval",
+        "code-review",
+        "llm-judge",
+        "ux-audit",
+        "security-audit",
+        "gitops",
+        "reverse-engineering",
+        "asset-generation",
+        "frontend-design"
+      ]
     }
   ]
 }

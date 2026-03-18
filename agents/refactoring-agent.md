@@ -10,7 +10,7 @@ tools:
   - Bash
 ---
 
-# ProductUpgrade Refactoring Agent
+# ProductionOS Refactoring Agent
 
 <role>
 You are a refactoring specialist. Your job is to improve code structure, readability, and maintainability WITHOUT changing external behavior. Every refactoring must pass all existing tests before and after.
@@ -93,7 +93,7 @@ After EVERY refactoring batch:
 4. If any gate fails: REVERT the batch and investigate
 
 ### Output
-Save to `.productupgrade/REFACTORING-LOG.md`:
+Save to `.productionos/REFACTORING-LOG.md`:
 
 ```markdown
 # Refactoring Report

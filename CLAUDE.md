@@ -1,131 +1,98 @@
-# ProductUpgrade V2.1 — Autonomous Self-Learning Pipeline + Swarm Intelligence
+# ProductionOS 5.1 — Agentic Development Operating System
 
-AI-powered product upgrade pipeline: 20 agents, 2 commands, 4 execution modes, distributed swarm orchestration, adaptive research depth (10-10,000 sources), and absolute guardrails with human-in-the-loop safety. Takes any codebase — or any IDEA — from current state to production-ready.
+35-agent development OS with 12 commands, 7-layer prompt composition, tri-tiered evaluation, and recursive nth-iteration convergence targeting 10/10.
 
 ## Commands
 
+### Orchestrative (recursive, nth-iteration)
 ```
-/productupgrade              # Auto mode: smart agent selection, parallel
-/productupgrade standard     # Proven 6-phase pipeline, target 8.0
-/productupgrade deep         # Autonomous self-learning, 7 loops, target 10.0
-/productupgrade audit        # Discovery + evaluation only
-/productupgrade fix          # Execute fixes from previous audit
-/productupgrade validate     # Validate recent changes
-/productupgrade judge        # LLM-as-Judge evaluation only
-
-/auto-swarm                  # Distributed agent swarm for any task
-/auto-swarm "task" --depth ultra --swarm_size 7 --iterations 11
+/omni-plan-nth [target]        Recursive orchestration — chains ALL skills, loops until 10/10
+/auto-swarm-nth "task"         Recursive swarm — 100% coverage, 10/10 quality per item
 ```
 
-## Plugin Structure
-
+### Pipeline (structured, single-pass with convergence)
 ```
-productupgrade/
-├── .claude-plugin/
-│   ├── plugin.json              # Plugin manifest (v2.1.0)
-│   └── marketplace.json         # Marketplace listing
-├── .claude/
-│   ├── skills/
-│   │   └── productupgrade/
-│   │       └── SKILL.md          # Core skill definition
-│   └── commands/
-│       ├── productupgrade.md     # /productupgrade (3-mode + sub-modes)
-│       └── auto-swarm.md         # /auto-swarm (distributed swarm orchestrator)
-├── agents/                       # 20 agent definitions
-│   ├── llm-judge.md             # Independent quality evaluator (Opus, read-only)
-│   ├── deep-researcher.md       # Techstack/competitor/library researcher (Opus)
-│   ├── code-reviewer.md         # Systematic code review with confidence scoring
-│   ├── ux-auditor.md            # UX/UI audit with a11y and competitor comparison
-│   ├── dynamic-planner.md       # Finding synthesis + prioritized batch planning
-│   ├── business-logic-validator.md  # Business rule validation
-│   ├── dependency-scanner.md    # CVE/license/abandonment scanning
-│   ├── api-contract-validator.md # Frontend↔Backend contract validation
-│   ├── naming-enforcer.md       # Cross-layer naming convention audit
-│   ├── refactoring-agent.md     # Dead code, complexity, duplication
-│   ├── database-auditor.md      # Schema, query, migration audit
-│   ├── adversarial-reviewer.md  # V2: Red-team agent (hostile, read-only)
-│   ├── thought-graph-builder.md # V2: Graph of Thought aggregation
-│   ├── persona-orchestrator.md  # V2: 3-persona evaluation (Tech/Human/Meta)
-│   ├── density-summarizer.md    # V2: Chain of Density inter-iteration summaries
-│   ├── context-retriever.md     # V2: RAG-in-pipeline context management
-│   ├── frontend-scraper.md      # V2: Playwright screenshot + Lighthouse capture
-│   ├── vulnerability-explorer.md # V2: OWASP Top 10 + attack surface mapping
-│   ├── swarm-orchestrator.md    # V2.1: Distributed swarm coordination
-│   └── guardrails-controller.md # V2.1: Safety + human-in-the-loop enforcement
-├── skills-bundle/               # 22 bundled reference skills
-├── scripts/
-│   ├── scrape-competitor.sh     # Playwright competitor UX scraper
-│   ├── pull-source.sh           # Git clone + repo analysis
-│   └── gui-audit.sh             # Screenshots + Lighthouse + a11y
-├── templates/
-│   ├── RUBRIC.md                # 10-dimension evaluation rubric
-│   └── PROMPT-COMPOSITION.md    # 7-layer composed prompt template
-├── .productupgrade/
-│   └── DESIGN-SPEC-V2.md       # V2 architecture specification
-├── CLAUDE.md                    # This file
-└── README.md
+/omni-plan [target]            13-step pipeline with tri-tiered judging
+/auto-swarm "task" [--depth]   Distributed agent swarm (shallow|medium|deep|ultra)
+/production-upgrade [mode]     Recursive product audit (full|audit|ux|fix|validate|judge)
 ```
 
-## Idea-to-Production Pipeline
+### Specialized
+```
+/deep-research [topic]         8-phase autonomous research pipeline
+/agentic-eval [target]         CLEAR v2.0 framework evaluation
+/security-audit [target]       7-domain OWASP/MITRE/NIST security audit
+/context-engineer [target]     Token-optimized context packaging
+/logic-mode [idea]             Business idea validation pipeline
+/learn-mode [topic]            Interactive code tutor
+/productionos-update           Self-update from GitHub
+```
 
-The combination of `/productupgrade deep` + `/auto-swarm` creates an end-to-end pipeline:
+## Orchestration Hierarchy
 
 ```
-IDEA → Research (auto-swarm, 10K sources) → Architecture (plan-ceo + plan-eng)
-     → Implementation Plan (dynamic-planner) → Code (execution swarms)
-     → Review (adversarial + persona evaluation) → QA (frontend scraping + tests)
-     → Polish (iterative convergence → 10/10) → Production Ready
+/omni-plan-nth (TOP LEVEL — invokes anything, loops until 10/10)
+    │
+    ├── /omni-plan (13-step pipeline within each iteration)
+    │   ├── /deep-research (Step 1)
+    │   ├── /plan-ceo-review (Step 3, external)
+    │   ├── /plan-eng-review (Step 4, external)
+    │   ├── /agentic-eval (Step 6)
+    │   ├── /auto-swarm-nth (Step 9 — execution engine)
+    │   │   └── 7 agents per wave, each can invoke skills
+    │   └── /ship (Step 13, external)
+    │
+    ├── /auto-swarm-nth (parallel execution with recursive quality gates)
+    │   └── Each agent can invoke: /deep-research, /security-audit, /qa, etc.
+    │
+    ├── /production-upgrade (structured single-pass audit)
+    ├── /deep-research (research on any topic)
+    ├── /security-audit (security-focused audit)
+    ├── /agentic-eval (quality evaluation)
+    └── Any available external skill (/qa, /browse, /review, etc.)
 ```
 
-## Guardrails (Non-Negotiable)
+## Mode Comparison
 
-### Human-in-the-Loop Checkpoints
-- Pre-launch approval for autonomous operations
-- Pre-commit diff review (unless --auto-commit)
-- Pre-push ALWAYS requires approval
-- Security-critical changes ALWAYS flagged
-- Iteration 3 and 5 checkpoints in deep mode
-- Cost threshold ($5 / 500K tokens) triggers pause
+| Feature | /production-upgrade | /auto-swarm | /omni-plan | /omni-plan-nth |
+|---------|---------------------|-------------|------------|----------------|
+| Purpose | Code audit | Task orchestration | Full pipeline | Recursive perfection |
+| Target | 10/10 | 100% coverage | 10/10 | 10/10 ALL dimensions |
+| Iterations | 7 max | 11 waves max | 7 loops | 20 (configurable) |
+| Can invoke other commands | No | No | Yes (fixed steps) | Yes (ANY command) |
+| Convergence | Grade comparison | Coverage delta | PIVOT/REFINE/PROCEED | Strict per-dimension |
+| Agent limit | 49 | 77 | 147 | 420 (21/iter x 20) |
 
-### Safety Boundaries
-- Protected files: .env, keys, certs, production configs
-- Max 15 files per batch, 200 lines per file
-- Automatic rollback on test failure or score regression
-- Scope enforcement: agents cannot modify outside their focus area
-- Emergency stop halts all agents when limits exceeded
+## Agent Loading
 
-### Cost Budgets
-- Session: 2M tokens, 100 agents, 500 web fetches
-- Per iteration: 400K tokens, 14 agents
-- Per swarm agent: 100K tokens, 50 web fetches
+Agent definitions live in `agents/` (35 files). Commands load agents on-demand — do NOT preload all agent files. Only read the specific agent file when a command references it during execution.
 
 ## Prompting Architecture
 
-Every agent in deep/swarm mode receives 7-layer composed prompts:
-1. **Emotion Prompting** — Sets stakes (+8-15% accuracy, Li et al. 2023)
-2. **Meta-Prompting** — Forces reflection before action
-3. **Context Retrieval** — RAG from memory + context7 + artifacts
-4. **Chain of Thought** — Step-by-step reasoning chains
+Agents in deep/ultra mode receive 7-layer composed prompts (see `templates/PROMPT-COMPOSITION.md`):
+1. **Emotion Prompting** — Stakes calibrated to severity
+2. **Meta-Prompting** — Self-reflection before action
+3. **Context Retrieval** — RAG from memory + context7
+4. **Chain of Thought** — Step-by-step reasoning
 5. **Tree of Thought** — 3-branch exploration with scoring
 6. **Graph of Thought** — Finding network with edge detection
-7. **Chain of Density** — 3-pass compression for inter-iteration handoff
+7. **Chain of Density** — Compression for inter-iteration handoff
 
-## Research Depth Scaling
+## Guardrails (Non-Negotiable)
 
-```
-shallow:  10 sources/query, 30 total  — local codebase only
-medium:   50 sources/query, 250 total — + library docs + memory
-deep:     500 sources/query, 5K total — + web + competitors + papers
-ultra:    2000 sources/query, 10K total — + sub-swarms for sub-topics
-```
+- Pre-commit diff review required (unless --auto-commit)
+- Pre-push ALWAYS requires approval
+- Protected files: .env, keys, certs, production configs
+- Max 15 files/batch, 200 lines/file
+- Automatic rollback on test failure or score regression
+- Scope enforcement: agents cannot modify outside their focus area
+- Regression protection: any dimension drop > 0.5 triggers rollback + investigation
+
+## Output Directory
+
+All pipeline outputs go to `.productionos/` in the target project. Artifacts are tracked via manifest for cross-command consumption.
 
 ## Attribution
 
-Bundles and extends:
-- [superpowers](https://github.com/anthropics/claude-code) — Anthropic's core skills
-- [gstack](https://github.com/garry-tan/gstack) — Garry Tan's skill suite
-- [everything-claude-code](https://github.com/anthropics/everything-claude-code) — 146+ skills
-- [agents](https://github.com/wshobson/agents) — 72 plugins, 112 agents
-- [Fabric](https://github.com/danielmiessler/fabric) — 252 AI patterns
-- [Prompt Engineering Guide](https://github.com/dair-ai/Prompt-Engineering-Guide) — DAIR.AI
-- Research: Self-Refine (Madaan 2023), Reflexion (Shinn 2023), GoT (Besta 2024), EmotionPrompt (Li 2023), CoD (Adams 2023), Constitutional AI (Bai 2022)
+Built on: [superpowers](https://github.com/anthropics/claude-code), [gstack](https://github.com/garry-tan/gstack), [everything-claude-code](https://github.com/shobrook/everything-claude-code), [agents](https://github.com/wshobson/agents), [get-shit-done](https://github.com/gsd-framework), [Fabric](https://github.com/danielmiessler/fabric), [Prompt Engineering Guide](https://github.com/dair-ai/Prompt-Engineering-Guide).
+Research: Self-Refine, Reflexion, GoT, EmotionPrompt, CoD, Constitutional AI, LLM-as-Judge.

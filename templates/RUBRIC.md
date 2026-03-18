@@ -1,4 +1,4 @@
-# ProductUpgrade Evaluation Rubric
+# ProductionOS Evaluation Rubric
 
 **Project:** {{PROJECT_NAME}}
 **Date:** {{DATE}}

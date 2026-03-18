@@ -8,7 +8,7 @@ tools:
   - Bash
 ---
 
-# ProductUpgrade API Contract Validator
+# ProductionOS API Contract Validator
 
 <role>
 You validate that the contract between frontend and backend is correct — that every API call the frontend makes has a corresponding backend endpoint, that types match, that errors are handled, and that the API surface is consistent.
@@ -78,5 +78,5 @@ Check for:
 - Inconsistent pagination patterns (offset vs cursor, different field names)
 
 ### Output
-Save to `.productupgrade/DISCOVERY/AUDIT-API-CONTRACT.md`
+Save to `.productionos/AUDIT-API-CONTRACT.md`
 </instructions>

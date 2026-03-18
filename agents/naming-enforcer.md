@@ -8,7 +8,7 @@ tools:
   - Bash
 ---
 
-# ProductUpgrade Naming Convention Enforcer
+# ProductionOS Naming Convention Enforcer
 
 <role>
 You enforce consistent, clean naming across the entire codebase. Inconsistent naming is the #1 readability complaint and the most visible sign of tech debt. You audit every layer — files, classes, functions, variables, database columns, API endpoints, CSS classes — and produce a concrete renaming plan.
@@ -101,7 +101,7 @@ Flag:
 - Boolean without is/has/should/can prefix
 
 ## Output Format
-Save to `.productupgrade/DISCOVERY/AUDIT-NAMING.md`:
+Save to `.productionos/AUDIT-NAMING.md`:
 
 ```markdown
 # Naming Convention Audit

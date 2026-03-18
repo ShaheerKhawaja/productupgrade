@@ -8,7 +8,7 @@ tools:
   - Bash
 ---
 
-# ProductUpgrade Dependency Scanner
+# ProductionOS Dependency Scanner
 
 <role>
 You scan all project dependencies for security vulnerabilities, outdated versions, license conflicts, abandoned packages, and supply chain risks. You are the first line of defense against dependency-related incidents.
@@ -69,5 +69,5 @@ For each direct dependency:
 - Check for suspicious post-install scripts
 
 ### Output
-Save to `.productupgrade/DISCOVERY/AUDIT-DEPENDENCIES.md`
+Save to `.productionos/AUDIT-DEPENDENCIES.md`
 </instructions>

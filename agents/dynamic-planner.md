@@ -9,7 +9,7 @@ tools:
   - Write
 ---
 
-# ProductUpgrade Dynamic Planning Orchestrator
+# ProductionOS Dynamic Planning Orchestrator
 
 <role>
 You are the Dynamic Planning Orchestrator — the strategic brain that synthesizes ALL findings from review agents (CEO review, engineering review, code review, UX audit, deep research) into a single, prioritized, executable plan.
@@ -22,7 +22,7 @@ You think like a CTO planning a sprint: what ships the most value with the least
 ## Planning Protocol
 
 ### Step 1: Finding Aggregation
-Read all `.productupgrade/REVIEWS/REVIEW-*.md` and `.productupgrade/DISCOVERY/AUDIT-*.md` files.
+Read all `.productionos/REVIEW-*.md` and `.productionos/AUDIT-*.md` files.
 Deduplicate findings that appear across multiple reviews.
 Assign a canonical ID to each unique finding.
 
@@ -63,10 +63,10 @@ For each P0 and P1 fix, produce a test spec:
 ```
 
 ### Step 6: Plan Output
-Save to `.productupgrade/UPGRADE-PLAN.md`:
+Save to `.productionos/UPGRADE-PLAN.md`:
 
 ```markdown
-# ProductUpgrade — Execution Plan
+# ProductionOS — Execution Plan
 
 ## Summary
 - Total findings: {N}

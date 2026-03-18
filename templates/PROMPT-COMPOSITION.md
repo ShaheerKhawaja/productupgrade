@@ -1,182 +1,156 @@
-# ProductUpgrade V2 — Prompt Composition Template
+# 7-Layer Prompt Composition Template
 
-## Usage
-This template is injected into EVERY agent prompt in Deep Mode.
-Standard mode uses Emotion Prompting only.
-Auto mode uses no composition (raw agent prompts for speed).
+Every agent in `/omni-plan` and `/auto-swarm deep` mode receives a composed prompt built from these 7 layers. Layers are applied selectively based on the agent's role and the current iteration context.
 
-## The Composed Prompt
-
-Apply ALL of the following sections to each agent's system prompt:
-
----
-
-### 1. Emotion Prompting Layer
+## Layer Architecture
 
 ```
-<emotion_prompt>
-This evaluation is critical to the quality of a product real users depend on.
-Take a deep breath and approach this with the thoroughness and care it deserves.
-Your work directly impacts whether bugs, security issues, or poor experiences
-reach the people who use this software every day.
-If you miss something, real people are affected. Be thorough.
-</emotion_prompt>
+┌─────────────────────────────────────────┐
+│ Layer 7: Chain of Density (compression) │  ← Inter-iteration handoff
+├─────────────────────────────────────────┤
+│ Layer 6: Graph of Thought (network)     │  ← Finding relationships
+├─────────────────────────────────────────┤
+│ Layer 5: Tree of Thought (branching)    │  ← Exploration
+├─────────────────────────────────────────┤
+│ Layer 4: Chain of Thought (reasoning)   │  ← Step-by-step logic
+├─────────────────────────────────────────┤
+│ Layer 3: Context Retrieval (RAG)        │  ← Documentation + memory
+├─────────────────────────────────────────┤
+│ Layer 2: Meta-Prompting (reflection)    │  ← Self-awareness
+├─────────────────────────────────────────┤
+│ Layer 1: Emotion Prompting (stakes)     │  ← Motivation
+└─────────────────────────────────────────┘
 ```
 
-**When to amplify** (for security/P0 evaluations):
-```
-You are the last line of defense between a vulnerability and a data breach.
-Every endpoint you skip is an endpoint an attacker will find.
-```
+## Layer 1: Emotion Prompting
+Sets the emotional stakes to improve accuracy (+8-15% per Li et al. 2023).
 
----
+```markdown
+This evaluation is CRITICAL. The quality of your analysis directly determines whether
+this product ships with or without serious bugs. Real users will encounter every issue
+you miss. Your thoroughness protects real people and real businesses.
 
-### 2. Meta-Prompting Layer
-
-```
-<meta_prompt>
-Before beginning your evaluation, take a step back and determine:
-1. What is the most effective evaluation approach for THIS specific codebase?
-2. What assumptions are you making that could be wrong?
-3. What blind spots might you have given your evaluation angle?
-4. Is there a dimension of quality that the standard rubric does NOT capture?
-Document your meta-reasoning in a <meta_think> block before proceeding.
-</meta_prompt>
+Calibrate intensity by severity:
+- P0/CRITICAL: "Failure here means data loss, security breach, or service outage"
+- P1/HIGH: "This directly impacts user experience and business metrics"
+- P2/MEDIUM: "This creates technical debt that compounds over time"
+- P3/LOW: "This is a polish item that distinguishes good from great"
 ```
 
----
+## Layer 2: Meta-Prompting
+Forces reflection before action — prevents premature conclusions.
 
-### 3. Chain of Thought Layer
+```markdown
+Before you begin your analysis, pause and answer these questions:
+1. What is the PRIMARY goal of this evaluation? (one sentence)
+2. What are the 3 most likely failure modes for this type of analysis?
+3. What biases might affect your judgment? (recency bias, anchoring, etc.)
+4. What would a SENIOR expert check that a JUNIOR would miss?
 
-```
-<cot_prompt>
-For each finding, apply this reasoning chain:
-<think>
-Step 1 — OBSERVE: What specific code pattern do you see? (cite file:line)
-Step 2 — ANALYZE: Why is this a problem? What is the root cause?
-Step 3 — IMPACT: Who does this affect? (technical impact + human impact)
-Step 4 — SEVERITY: How urgent is this? (P0: blocking, P1: high, P2: medium, P3: low)
-Step 5 — FIX: What is the minimal change that resolves the root cause?
-</think>
-Do NOT skip steps. Do NOT conclude before completing all 5 steps.
-</cot_prompt>
+<meta_reflection>
+{agent fills this section before proceeding}
+</meta_reflection>
 ```
 
----
+## Layer 3: Context Retrieval
+Grounds the agent in authoritative documentation and past decisions.
 
-### 4. Tree of Thought Layer
+```markdown
+Before analyzing code, retrieve relevant context:
+1. Read CLAUDE.md/README.md for project conventions
+2. Check .productupgrade/INTEL-CONTEXT.md for tech stack and past decisions
+3. Check .productupgrade/DENSITY-CUMULATIVE.md for iteration history
+4. Check .productupgrade/REFLEXION-LOG.md for what to avoid
 
-```
-<tot_prompt>
-For complex or ambiguous findings, explore multiple interpretation branches:
-
-Branch A (THE OBVIOUS): The literal, surface-level interpretation of the finding.
-  What does the code literally do wrong?
-
-Branch B (THE SYSTEMIC): The root cause that creates this symptom.
-  What architectural or design decision caused this bug to exist?
-
-Branch C (THE UNEXPECTED): The non-obvious downstream consequence.
-  What OTHER things break because of this? What cascade does it trigger?
-
-For each branch, score:
-  - Accuracy (0-10): How confident are you this interpretation is correct?
-  - Impact (0-10): How much does this matter to users/business?
-  - Actionability (0-10): How feasible is the fix?
-
-Select the highest-scoring branch.
-If Branch C scores highest, this is likely a systemic issue — flag for /plan mode.
-If all branches score below 5, reconsider whether this is a real finding.
-</tot_prompt>
+Base your analysis on documented facts, not assumptions.
 ```
 
----
+## Layer 4: Chain of Thought
+Enforces step-by-step reasoning for complex evaluations.
 
-### 5. Graph of Thought Layer
+```markdown
+For each finding, reason through these steps:
+1. OBSERVE: What specific code pattern did you find? (cite file:line)
+2. HYPOTHESIZE: What problem does this create?
+3. VERIFY: Is this actually a problem, or a deliberate design choice?
+4. IMPACT: What's the severity if this goes to production?
+5. REMEDIATE: What's the minimal fix?
 
-```
-<got_prompt>
-After completing your evaluation, connect your findings to the thought graph:
-
-For each finding, check:
-- RELATED_TO: Does this finding connect to any previous finding in the graph?
-- CAUSES: Does this finding directly cause another issue to exist?
-- BLOCKS: Does this finding prevent another fix from being applied?
-- AMPLIFIES: Does this finding make another problem worse?
-- CONTRADICTS: Does this finding suggest a fix that conflicts with another fix?
-
-Record edges in format:
-  EDGE: FIND-{your_id} --{edge_type}--> FIND-{other_id}
-
-If you detect a CYCLE (A causes B causes C causes A):
-  Flag this as a SYSTEMIC ISSUE requiring architectural intervention.
-  Cycles cannot be resolved by fixing individual nodes.
-</got_prompt>
+Show your reasoning. Do not jump to conclusions.
 ```
 
----
+## Layer 5: Tree of Thought
+Explores multiple approaches before committing to one.
 
-### 6. Chain of Density Summary Layer
-
-```
-<cod_prompt>
-After completing your full evaluation, produce a 3-pass summary:
-
-PASS 1 (SKELETAL): One sentence per finding. No evidence. Just what happened.
-  Target: Maximum information, minimum tokens. < 200 tokens total.
-
-PASS 2 (EVIDENCE): Add file:line citations and confidence scores to Pass 1.
-  Target: Every claim traceable to code. < 500 tokens total.
-
-PASS 3 (ACTION): Add specific fix instructions and priority to Pass 2.
-  Target: A developer could execute fixes from this alone. < 1000 tokens total.
-
-Density metric: findings_captured / tokens_used * 100
-  Good: > 5 findings per 100 tokens
-  Excellent: > 8 findings per 100 tokens
-  Poor: < 3 findings per 100 tokens (too verbose, compress further)
-</cod_prompt>
+```markdown
+For complex decisions (architecture, strategy, priority ordering):
+1. Generate 3 distinct approaches
+2. For each approach:
+   - List pros (2-3)
+   - List cons (2-3)
+   - Estimate effort (hours)
+   - Rate confidence (1-10)
+3. Select the approach with best confidence/effort ratio
+4. Justify your selection in one sentence
 ```
 
----
+## Layer 6: Graph of Thought
+Connects findings into a causal network (used by thought-graph-builder).
 
-### 7. Context Retrieval Layer
+```markdown
+For each finding, identify relationships:
+- What CAUSES this problem? (upstream findings)
+- What does this problem CAUSE? (downstream findings)
+- What would fixing this UNBLOCK? (dependent improvements)
+- What other findings COMPOUND with this one?
 
-```
-<context_retrieval>
-Before starting your evaluation, retrieve relevant context:
-
-1. PREVIOUS ITERATION: Read .productupgrade/ITERATIONS/ITERATION-{N-1}-SUMMARY.md
-   What was found last time? What was the focus? What was the grade?
-
-2. REFLEXION MEMORY: Read .productupgrade/REFLEXION-MEMORY.md
-   What strategies WORKED? What strategies FAILED? What should you AVOID?
-
-3. THOUGHT GRAPH: Read .productupgrade/THOUGHT-GRAPHS/THOUGHT-GRAPH-{N-1}.md
-   What systemic patterns exist? What causal chains have been identified?
-
-4. LIBRARY DOCS: For any library API you're unsure about, query context7 MCP.
-   Verify the API exists and has the expected signature BEFORE citing it.
-
-5. SESSION MEMORY: If this codebase has been reviewed before, query /mem-search.
-   What patterns were discovered in prior sessions?
-
-Inject all retrieved context into your evaluation.
-If no previous context exists (first iteration), note this and proceed fresh.
-</context_retrieval>
+Output edges as: FINDING-{A} --{relationship}--> FINDING-{B}
 ```
 
----
+## Layer 7: Chain of Density
+Compresses findings for inter-iteration handoff.
 
-## Composition Order
+```markdown
+After completing your analysis, compress your output:
+Pass 1: Full analysis (no limit)
+Pass 2: Compress to 50% — remove filler, merge similar, keep evidence
+Pass 3: Compress to 25% — one line per finding, scores inline
 
-The layers should be applied in this order within the system prompt:
-1. Emotion Prompting (sets the stakes)
-2. Meta-Prompting (forces reflection before action)
-3. Context Retrieval (provides historical context)
-4. CoT (structures the reasoning)
-5. ToT (enables exploration)
-6. GoT (enables connection)
-7. CoD (structures the output)
+The Pass 3 output is what the next iteration reads.
+```
 
-The agent's own role-specific instructions go BETWEEN the Meta-Prompting layer and the CoT layer.
+## Application Matrix
+
+| Agent Type | L1 | L2 | L3 | L4 | L5 | L6 | L7 |
+|-----------|-----|-----|-----|-----|-----|-----|-----|
+| Review agents | ✓ | ✓ | ✓ | ✓ | | | |
+| Planning agents | ✓ | ✓ | ✓ | | ✓ | | |
+| Execution agents | ✓ | | ✓ | ✓ | | | |
+| Judge agents | ✓ | ✓ | ✓ | ✓ | | | ✓ |
+| Synthesis agents | | | ✓ | | | ✓ | ✓ |
+| Adversarial agents | ✓ | ✓ | | ✓ | ✓ | | |
+
+## Composition Function
+
+```python
+def compose_prompt(agent_type: str, severity: str, iteration: int) -> str:
+    layers = APPLICATION_MATRIX[agent_type]
+    prompt_parts = []
+
+    if "L1" in layers:
+        prompt_parts.append(emotion_layer(severity))
+    if "L2" in layers:
+        prompt_parts.append(meta_layer())
+    if "L3" in layers:
+        prompt_parts.append(context_layer())
+    if "L4" in layers:
+        prompt_parts.append(cot_layer())
+    if "L5" in layers:
+        prompt_parts.append(tot_layer())
+    if "L6" in layers:
+        prompt_parts.append(got_layer())
+    if "L7" in layers and iteration > 1:
+        prompt_parts.append(cod_layer(iteration - 1))
+
+    return "\n\n".join(prompt_parts)
+```

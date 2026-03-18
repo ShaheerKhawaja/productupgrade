@@ -1,16 +1,13 @@
 {
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "startup|resume|clear|compact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "printf '\\n  ____               _            _   _   _                           _\\n |  _ \\\\ _ __ ___   __| |_   _  ___| |_| | | |_ __   __ _ _ __ __ _  __| | ___\\n | |_) |  __/ _ \\\\ / _` | | | |/ __| __| | | |  _ \\\\ / _` |  __/ _` |/ _` |/ _ \\\\\\n |  __/| | | (_) | (_| | |_| | (__| |_| |_| | |_) | (_| | | | (_| | (_| |  __/\\n |_|   |_|  \\\\___/ \\\\__,_|\\\\__,_|\\\\___|\\\\__|\\\\___/| .__/ \\\\__, |_|  \\\\__,_|\\\\__,_|\\\\___|\\n                                               |_|    |___/\\n v3.0 | 20 Agents | 135K Prompts | /productupgrade\\n\\n'",
-            "async": false
-          }
-        ]
-      }
-    ]
-  }
+  "SessionStart": [
+    {
+      "matcher": "startup|resume",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "echo 'ProductionOS 5.0 — 32 agents | 10 commands | tri-tiered evaluation\n\nCommands:\n  /production-upgrade    Recursive product audit (gstack + superpowers)\n  /omni-plan             13-step orchestrative pipeline\n  /auto-swarm \"task\"     Distributed agent swarm\n  /deep-research         8-phase research pipeline\n  /agentic-eval          CLEAR v2.0 evaluation\n  /security-audit        7-domain security audit\n  /context-engineer      Token-optimized context\n  /logic-mode            Business idea validation\n  /learn-mode            Interactive code tutor\n  /productionos-update   Self-update from GitHub'"
+        }
+      ]
+    }
+  ]
 }

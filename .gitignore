@@ -1,15 +1,29 @@
-# Runtime output (generated during pipeline execution)
-.productupgrade/
-.auto-swarm/
+# Handoff files contain internal paths and session state — never push to public repo
+HANDOFF-*.md
+HANDOVER-*.md
 
-# OS files
+# Session and learned data
+.productionos/
+.productupgrade/
+~/.productionos/
+
+# Node/Bun
+node_modules/
+dist/
+*.tsbuildinfo
+
+# OS
 .DS_Store
 Thumbs.db
+
+# Environment
+.env
+.env.*
+*.local
 
 # IDE
 .vscode/
 .idea/
 
-# Node (if scripts use npm/bun)
-node_modules/
-dist/
+# Local settings (contains project-specific plugin suppression)
+.claude/settings.local.json

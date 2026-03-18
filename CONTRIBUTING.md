@@ -1,46 +1,83 @@
-# Contributing to ProductUpgrade
+# Contributing to ProductionOS
 
-## Structure
+## Quick Setup
+
+```bash
+git clone https://github.com/ShaheerKhawaja/productupgrade.git
+cd productupgrade
+bun install
+bun run skill:check    # Must pass 10/10
+bun run validate       # Must show 35/35 valid
+bun test               # Must pass all tests
+```
+
+## Project Structure
 
 ```
 productupgrade/
-├── .claude-plugin/plugin.json  # Plugin manifest
-├── commands/                   # Slash commands (/productupgrade, /auto-swarm)
-├── skills/                     # Skill definitions (SKILL.md files)
-├── agents/                     # Agent definitions (20 agents)
-├── hooks/hooks.json            # Hook configuration
-├── scripts/                    # Utility scripts
-├── templates/                  # Prompt and rubric templates
-├── docs/                       # Design documentation
+├── .claude-plugin/           # Plugin manifest + marketplace listing
+├── .claude/commands/         # 10 command definitions (.md)
+├── .claude/skills/           # Skill definition (SKILL.md)
+├── agents/                   # 35 agent definitions (.md)
+├── templates/                # Shared templates (preamble, rubric, convergence)
+├── prompts/                  # Prompt engineering technique files
+├── scripts/                  # TypeScript infrastructure (Bun)
+├── tests/                    # Automated test suite
+├── hooks/                    # Claude Code hooks
+├── CLAUDE.md                 # Auto-loaded instructions
+├── ARCHITECTURE.md           # Design decisions
+├── CHANGELOG.md              # Release history
+├── TODOS.md                  # Prioritized backlog
+├── VERSION                   # Semver source of truth
+└── package.json              # Bun build system
 ```
+
+## Development Workflow
+
+1. Create feature branch: `git checkout -b feat/your-feature`
+2. Make changes
+3. Validate: `bun run skill:check && bun run validate && bun test`
+4. Commit: `feat: add new capability` (conventional commits)
+5. Push and create PR
 
 ## Adding a New Agent
 
-1. Create `agents/{name}.md` with YAML frontmatter:
-   ```yaml
-   ---
-   name: agent-name
-   description: What this agent does and when to use it
-   model: opus  # optional, for agents needing strongest model
-   tools:
-     - Read
-     - Glob
-     - Grep
-   ---
-   ```
-2. Add the agent to the roster in `skills/productupgrade/SKILL.md`
-3. Reference it in `commands/productupgrade.md` in the appropriate phase
+Create `agents/your-agent.md`:
+```yaml
+---
+name: your-agent
+description: "What the agent does"
+color: blue
+tools:
+  - Read
+  - Glob
+  - Grep
+---
+```
 
-## Adding a Prompt Skill
+Add `<role>` and `<instructions>` XML tags. Requirements:
+- Use `.productionos/` for output paths
+- Use "ProductionOS" branding
+- Minimum 50 lines of instructions
+- Include sub-agent coordination section
+- Run `bun run validate` to verify
 
-1. Create `skills/prompts/{NN}-{name}.md` with frontmatter
-2. Follow the composition interface pattern from existing prompt skills
-3. Register it in `skills/prompts/00-decision-tree.md`
+## Adding a New Command
 
-## Conventions
+Create `.claude/commands/your-command.md` with YAML frontmatter. Include:
+- Step 0 preamble (read target, check memory, resolve agents)
+- Convergence criteria
+- Output files in `.productionos/`
+- Guardrails (token budget, agent limits, rollback)
 
-- YAML frontmatter for all .md component files
-- `$CLAUDE_PLUGIN_ROOT` for paths in hooks/scripts
-- kebab-case for file names
-- Convergence threshold: 0.15 for 2 consecutive iterations
-- Target grade: 10.0 (deep), 8.0 (standard), adaptive (auto)
+## Code Standards
+
+- Output paths: `.productionos/` (not `.productupgrade/`)
+- Branding: "ProductionOS" (not "ProductUpgrade")
+- No hardcoded user paths
+- TypeScript: strict mode, use `execFileSync` (not shell interpolation)
+- Agent files: YAML frontmatter + XML tags
+
+## Versioning
+
+VERSION file is source of truth. Update VERSION, plugin.json, and marketplace.json together.

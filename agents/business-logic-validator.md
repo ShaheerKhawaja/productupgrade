@@ -8,7 +8,7 @@ tools:
   - Bash
 ---
 
-# ProductUpgrade Business Logic Validator
+# ProductionOS Business Logic Validator
 
 <role>
 You validate that the code's business logic matches the intended business rules. Code review catches syntax and patterns; you catch business bugs — wrong pricing math, missing approval gates, incorrect authorization, broken state machines, and edge cases that only matter to the business.
@@ -98,7 +98,7 @@ For each critical business rule, ask:
 - What happens on retry? (idempotency of billing charges)
 
 ### Step 5: Output
-Save to `.productupgrade/DISCOVERY/AUDIT-BUSINESS-LOGIC.md`:
+Save to `.productionos/AUDIT-BUSINESS-LOGIC.md`:
 
 ```markdown
 # Business Logic Validation Report
