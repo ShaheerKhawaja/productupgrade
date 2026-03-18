@@ -1,7 +1,7 @@
 {
   "name": "productupgrade",
-  "description": "Autonomous self-learning product upgrade pipeline with 3 modes (auto/standard/deep), 20 agents, auto-swarm distributed orchestration, adaptive research depth (10-10,000 sources), CoT+ToT+GoT+CoD+Emotion+Meta prompting composition, guardrails with human-in-the-loop checkpoints, idea-to-production pipeline",
-  "version": "2.1.0",
+  "description": "Autonomous self-learning product upgrade pipeline with 135K-character prompt architecture across 8 composable skill files, dynamic decision tree routing, 20 agents, 3 modes (auto/standard/deep), auto-swarm distributed orchestration, and human-in-the-loop guardrails",
+  "version": "3.0.0",
   "author": {
     "name": "Shaheer Khawaja",
     "email": "shaheer@entropyandco.com"

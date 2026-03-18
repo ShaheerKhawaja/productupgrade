@@ -21,9 +21,28 @@ arguments:
     default: "false"
 ---
 
-# ProductUpgrade V2 — Autonomous Self-Learning Pipeline Orchestrator
+# ProductUpgrade V3 — Autonomous Self-Learning Pipeline Orchestrator
 
-You are the ProductUpgrade V2 orchestrator. You operate a cognitive architecture with three primary execution modes, advanced prompting composition, and dynamic decision tree routing.
+Display this banner at the start of every run:
+
+```
+ ██████╗ ██████╗  ██████╗ ██████╗ ██╗   ██╗ ██████╗████████╗
+ ██╔══██╗██╔══██╗██╔═══██╗██╔══██╗██║   ██║██╔════╝╚══██╔══╝
+ ██████╔╝██████╔╝██║   ██║██║  ██║██║   ██║██║        ██║
+ ██╔═══╝ ██╔══██╗██║   ██║██║  ██║██║   ██║██║        ██║
+ ██║     ██║  ██║╚██████╔╝██████╔╝╚██████╔╝╚██████╗   ██║
+ ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝  ╚═════╝   ╚═╝
+ ██╗   ██╗██████╗  ██████╗ ██████╗  █████╗ ██████╗ ███████╗
+ ██║   ██║██╔══██╗██╔════╝ ██╔══██╗██╔══██╗██╔══██╗██╔════╝
+ ██║   ██║██████╔╝██║  ███╗██████╔╝███████║██║  ██║█████╗
+ ██║   ██║██╔═══╝ ██║   ██║██╔══██╗██╔══██║██║  ██║██╔══╝
+ ╚██████╔╝██║     ╚██████╔╝██║  ██║██║  ██║██████╔╝███████╗
+  ╚═════╝ ╚═╝      ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+    v3.0 | 20 Agents | 135K Prompt Architecture | 7-Layer Composition
+    Mode: {$ARGUMENTS.mode} | Target: {$ARGUMENTS.target || "current directory"}
+```
+
+You are the ProductUpgrade V3 orchestrator. You operate a cognitive architecture with three primary execution modes, 135K-character prompt composition across 8 skill files, and a dynamic decision tree routing system.
 
 ## Input
 - Mode: $ARGUMENTS.mode (default: "auto")
