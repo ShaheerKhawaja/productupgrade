@@ -1,33 +1,46 @@
 ---
-name: productupgrade-update
-description: "Update ProductUpgrade plugin to the latest version from GitHub"
+name: productionos-update
+description: "Update ProductionOS plugin to the latest version from GitHub"
 ---
 
-# ProductUpgrade Self-Update
+# ProductionOS Self-Update
 
-You are the update mechanism for the ProductUpgrade plugin.
+You are the update mechanism for the ProductionOS plugin.
 
 ## Update Protocol
 
 ### Step 1: Detect Current Installation
 ```bash
-# Find where ProductUpgrade is installed
+# Find where ProductionOS is installed
 INSTALL_DIR=""
 
 # Check marketplace installation
-if [ -d "$HOME/.claude/plugins/marketplaces/productupgrade" ]; then
-  INSTALL_DIR="$HOME/.claude/plugins/marketplaces/productupgrade"
-fi
+for dir in "$HOME/.claude/plugins/marketplaces/productupgrade" \
+           "$HOME/.claude/plugins/marketplaces/productionos"; do
+  if [ -d "$dir" ]; then
+    INSTALL_DIR="$dir"
+    break
+  fi
+done
 
 # Check skill installation
-if [ -d "$HOME/.claude/skills/productupgrade" ]; then
-  SKILL_DIR="$HOME/.claude/skills/productupgrade"
-fi
+SKILL_DIR=""
+for dir in "$HOME/.claude/skills/productionos" \
+           "$HOME/.claude/skills/productupgrade"; do
+  if [ -d "$dir" ]; then
+    SKILL_DIR="$dir"
+    break
+  fi
+done
 
 # Check local repo
-if [ -d "$HOME/productupgrade" ]; then
-  REPO_DIR="$HOME/productupgrade"
-fi
+REPO_DIR=""
+for dir in "$HOME/productupgrade" "$HOME/productionos"; do
+  if [ -d "$dir" ]; then
+    REPO_DIR="$dir"
+    break
+  fi
+done
 ```
 
 Read the current version from:
@@ -39,16 +52,16 @@ Read the current version from:
 ```bash
 # Fetch latest from GitHub without merging
 cd "$REPO_DIR" 2>/dev/null || cd "$INSTALL_DIR"
-git fetch origin main 2>/dev/null
+git fetch origin 2>/dev/null
 
 # Compare versions
 LOCAL_VERSION=$(cat VERSION 2>/dev/null || jq -r .version .claude-plugin/plugin.json)
-REMOTE_LOG=$(git log origin/main --oneline -10 2>/dev/null)
+REMOTE_LOG=$(git log HEAD..origin/$(git rev-parse --abbrev-ref HEAD) --oneline -10 2>/dev/null)
 ```
 
 If no git repo found, inform user:
 ```
-ProductUpgrade is not installed from git.
+ProductionOS is not installed from git.
 To install the updatable version:
   git clone https://github.com/ShaheerKhawaja/productupgrade.git ~/productupgrade
   claude plugins add ~/productupgrade
@@ -57,13 +70,13 @@ To install the updatable version:
 ### Step 3: Show Changelog
 Show the user what changed:
 ```bash
-git log HEAD..origin/main --oneline --no-merges 2>/dev/null
+git log HEAD..origin/$(git rev-parse --abbrev-ref HEAD) --oneline --no-merges 2>/dev/null
 ```
 
 If there are changes, show:
 ```
-ProductUpgrade Update Available
-───────────────────────────────
+ProductionOS Update Available
+──────────────────────────────
 Current: vX.Y.Z
 Latest:  vA.B.C
 
@@ -79,25 +92,25 @@ Update now? (This will pull latest changes)
 If user confirms (or running in auto mode):
 ```bash
 cd "$REPO_DIR"
-git pull origin main
+git pull origin $(git rev-parse --abbrev-ref HEAD)
 ```
 
 ### Step 5: Sync Installations
 After pulling, sync to all installation locations:
 ```bash
 # Sync to marketplace plugin directory
-if [ -d "$HOME/.claude/plugins/marketplaces/productupgrade" ]; then
+if [ -n "$INSTALL_DIR" ] && [ -d "$INSTALL_DIR" ]; then
   rsync -av --delete \
     --exclude='.git' \
-    --exclude='.productupgrade' \
-    "$REPO_DIR/" "$HOME/.claude/plugins/marketplaces/productupgrade/"
+    --exclude='.productionos' \
+    "$REPO_DIR/" "$INSTALL_DIR/"
   echo "Synced to marketplace installation"
 fi
 
 # Sync SKILL.md to skills directory
-if [ -d "$HOME/.claude/skills/productupgrade" ]; then
-  cp "$REPO_DIR/.claude/skills/productupgrade/SKILL.md" \
-     "$HOME/.claude/skills/productupgrade/SKILL.md"
+if [ -n "$SKILL_DIR" ] && [ -d "$SKILL_DIR" ]; then
+  cp "$REPO_DIR/.claude/skills/productionos/SKILL.md" \
+     "$SKILL_DIR/SKILL.md"
   echo "Synced SKILL.md to skills directory"
 fi
 
@@ -118,8 +131,8 @@ echo "Updated to v${NEW_VERSION}"
 
 Report:
 ```
-ProductUpgrade Updated Successfully
-────────────────────────────────────
+ProductionOS Updated Successfully
+───────────────────────────────────
 Previous: vX.Y.Z
 Current:  vA.B.C
 Files synced: marketplace, skills, commands

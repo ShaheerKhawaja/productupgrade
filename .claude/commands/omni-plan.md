@@ -19,6 +19,10 @@ You are the Omni-Plan orchestrator — ProductionOS's flagship mode. You chain e
 
 **Goal:** 99.9% production-ready output through systematic multi-agent orchestration with self-review, recursive improvement, and business logic alignment.
 
+## Context Loading Protocol
+
+**Load context per-phase, not all upfront.** Each step below specifies what to read/invoke. Do NOT pre-load all templates, docs, or skills at the start — load them at the moment they're needed. This prevents context overflow when running alongside other plugins.
+
 ## Input
 - Target: $ARGUMENTS.target (default: current working directory)
 - Focus: $ARGUMENTS.focus (default: full)
@@ -168,7 +172,7 @@ Invoke the `dynamic-planner` agent:
 For each batch (up to 12 batches × 7 agents):
 1. Select 7 independent fixes
 2. Launch 7 parallel fix agents
-3. Each agent applies the 7-layer prompt composition
+3. Each agent applies the 7-layer prompt composition (read from `templates/PROMPT-COMPOSITION.md` at this point)
 4. Wait for all agents to complete
 
 ### Step 10: Self-Healing Validation Gate
@@ -185,7 +189,7 @@ Re-invoke the 3-judge panel on the MODIFIED codebase:
 - Same protocol as Step 7
 - Compare scores to pre-execution baseline
 - Identify any regressions
-- Score all 10 dimensions
+- Score all 10 dimensions (read from `templates/RUBRIC.md` at this point)
 
 ### Step 12: Decision Loop
 Invoke the `decision-loop` agent:

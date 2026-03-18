@@ -1,25 +1,28 @@
 {
-  "SessionStart": [
-    {
-      "matcher": "startup|resume",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "echo '╔══════════════════════════════════════════════════════════════╗\n║  ██████╗ ██████╗  ██████╗ ██████╗ ██╗   ██╗ ██████╗████████╗║\n║  ██╔══██╗██╔══██╗██╔═══██╗██╔══██╗██║   ██║██╔════╝╚══██╔══╝║\n║  ██████╔╝██████╔╝██║   ██║██║  ██║██║   ██║██║        ██║   ║\n║  ██╔═══╝ ██╔══██╗██║   ██║██║  ██║██║   ██║██║        ██║   ║\n║  ██║     ██║  ██║╚██████╔╝██████╔╝╚██████╔╝╚██████╗   ██║   ║\n║  ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝  ╚═════╝   ╚═╝   ║\n║   V4.0 — 25 Agents | 16 Prompt Layers | Self-Learning        ║\n╚══════════════════════════════════════════════════════════════╝\n\nCommands:\n  /productupgrade        Basic recursive audit (gstack + superpowers)\n  /auto-swarm \"task\"     Distributed agent swarm for any task\n  /ultra-upgrade         THE ULTIMATE — tribunal + all 16 layers\n  /productupgrade-update Self-update from GitHub'"
-        }
-      ]
-    }
-  ],
-  "PostToolUse": [
-    {
-      "matcher": "Edit|Write|Bash|Agent",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/self-learn.sh\"",
-          "timeout": 5000
-        }
-      ]
-    }
-  ]
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/context-orchestrator.sh\"",
+            "timeout": 3000
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|Bash|Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/self-learn.sh\"",
+            "timeout": 5000
+          }
+        ]
+      }
+    ]
+  }
 }

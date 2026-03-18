@@ -1,0 +1,23 @@
+{
+  "name": "productionos",
+  "version": "5.1.0",
+  "description": "Agentic development operating system — 32 agents, 10 commands, tri-tiered evaluation",
+  "type": "module",
+  "scripts": {
+    "build": "bun run gen:skill-docs && bun run skill:check",
+    "gen:skill-docs": "bun run scripts/gen-skill-docs.ts",
+    "skill:check": "bun run scripts/skill-check.ts",
+    "test": "bun test",
+    "test:validate": "bun test tests/skill-validation.test.ts",
+    "typecheck": "bun run tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/bun": "latest"
+  },
+  "author": {
+    "name": "Shaheer Khawaja",
+    "email": "shaheer@entropyandco.com"
+  },
+  "license": "MIT"
+}

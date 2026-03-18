@@ -1,0 +1,33 @@
+{
+  "env": {
+    "VERCEL_PLUGIN_LEXICAL_PROMPT": "0",
+    "VERCEL_PLUGIN_PROMPT_INJECTION_BUDGET": "0",
+    "VERCEL_PLUGIN_INJECTION_BUDGET": "0"
+  },
+  "enabledPlugins": {
+    "vercel@claude-plugins-official": false,
+    "firebase@claude-plugins-official": false,
+    "chrome-devtools-mcp@claude-plugins-official": false,
+    "n8n-mcp-skills@n8n-mcp-skills": false,
+    "huggingface-skills@claude-plugins-official": false,
+    "sourcegraph@claude-plugins-official": false,
+    "pinecone@claude-plugins-official": false,
+    "posthog@claude-plugins-official": false,
+    "stripe@claude-plugins-official": false,
+    "figma@claude-plugins-official": false,
+    "sentry@claude-plugins-official": false,
+    "coderabbit@claude-plugins-official": false,
+    "semgrep@claude-plugins-official": false,
+    "qodo-skills@claude-plugins-official": false,
+    "sonatype-guide@claude-plugins-official": false,
+    "gopls-lsp@claude-plugins-official": false,
+    "rust-analyzer-lsp@claude-plugins-official": false,
+    "swift-lsp@claude-plugins-official": false,
+    "ruby-lsp@claude-plugins-official": false,
+    "typescript-lsp@claude-plugins-official": false,
+    "pyright-lsp@claude-plugins-official": false,
+    "headless@paddo-tools": false,
+    "gemini-tools@paddo-tools": false,
+    "codex@paddo-tools": false
+  }
+}

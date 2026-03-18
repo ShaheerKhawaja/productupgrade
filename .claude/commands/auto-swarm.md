@@ -175,7 +175,7 @@ Compile all wave outputs into a single deliverable:
 - For fix: changelog with before/after
 - For explore: architecture map with dependency graph
 
-Output: `.productupgrade/SWARM-REPORT.md`
+Output: `.productionos/SWARM-REPORT.md`
 
 ## Sub-Swarm Protocol (ultra depth only)
 
@@ -200,7 +200,7 @@ Maximum nesting depth: 2 (swarm → sub-swarm, no sub-sub-swarms)
 ## Output Files
 
 ```
-.productupgrade/
+.productionos/
 ├── SWARM-REPORT.md              # Final compiled deliverable
 ├── SWARM-WAVE-{N}.md            # Per-wave agent outputs
 ├── SWARM-COVERAGE.md            # Coverage map progression

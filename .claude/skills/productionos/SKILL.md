@@ -1,126 +1,97 @@
 ---
-name: productupgrade
-description: "Ultimate product upgrade pipeline V4.0 — 25 agents, 4 commands (/productupgrade, /auto-swarm, /ultra-upgrade, /productupgrade-update), 7-layer prompt composition, multi-model judge tribunal, adversarial red-teaming, Reflexion memory, Graph of Thought synthesis, and recursive convergence engine."
+name: productionos
+description: "Agentic development OS V5.1 — 29 agents, 10 commands (/omni-plan, /auto-swarm, /production-upgrade, /deep-research, /agentic-eval, /security-audit, /context-engineer, /logic-mode, /learn-mode, /productionos-update), tri-tiered evaluation, 16 prompt layers, recursive convergence, and cross-run learning."
 ---
 
-# ProductUpgrade V4.0 — Ultimate Product Improvement Engine
+# ProductionOS V5.1 — Agentic Development Operating System
 
-25-agent recursive product improvement pipeline with 4 commands, 7-layer prompt composition, multi-model judge tribunal, adversarial red-teaming, and convergence-driven self-improvement.
+29-agent recursive development OS with 10 commands, tri-tiered judge tribunal, 16 prompt engineering layers, and convergence-driven self-improvement.
 
 ## Commands
 
-| Command | Purpose | Agents | Max Iter | Target |
-|---------|---------|--------|----------|--------|
-| `/productupgrade` | Basic recursive audit using gstack + superpowers skills | 7/phase | 7 | 8.0/10 |
-| `/auto-swarm "task"` | Distributed agent swarm for any task | 7/wave | 11 | 85% coverage |
-| `/ultra-upgrade` | THE ULTIMATE — every technique combined | 14/phase | 12 | 9.5/10 |
-| `/productupgrade-update` | Self-update from GitHub | 1 | 1 | latest |
+| Command | Purpose | Agents | Target |
+|---------|---------|--------|--------|
+| `/omni-plan` | 13-step orchestrative pipeline (flagship) | 21 max | 9.5/10 |
+| `/auto-swarm "task"` | Distributed agent swarm for any task | 7/wave | 85% coverage |
+| `/production-upgrade` | Recursive product audit | 32 max | 8.0/10 |
+| `/deep-research` | 8-phase autonomous research pipeline | 3-7 | 80%+ confidence |
+| `/agentic-eval` | CLEAR v2.0 framework evaluator | 1 | scored report |
+| `/security-audit` | 7-domain hardening (OWASP/MITRE/NIST) | 1-3 | scored report |
+| `/context-engineer` | Token-efficient context construction | 1 | context package |
+| `/logic-mode` | Business idea to production plan | 3-7 | execution plan |
+| `/learn-mode` | Interactive code tutor | 1 | conversation |
+| `/productionos-update` | Self-update from GitHub | 1 | latest version |
 
-### /productupgrade [mode]
-Basic 6-phase recursive audit. Uses gstack and superpowers skills in an orchestrative loop.
-Modes: `full` (default) | `audit` | `ux` | `fix` | `validate` | `judge`
+### /omni-plan [target] [--focus] [--depth]
+13-step orchestrative pipeline: Research → CEO Review → Eng Review → Design Review → CLEAR Eval → Tri-Tiered Judges → Dynamic Plan → Parallel Execution → Self-Healing → Re-Evaluation → Decision Loop → Delivery
 
 ### /auto-swarm "task" [--depth] [--swarm_size] [--iterations]
-Distributed agent swarm for any task. Spawns parallel subagent clusters.
+Distributed agent swarm. Spawns 7 parallel agents per wave with convergence tracking.
 Modes: `research` | `build` | `audit` | `fix` | `explore` (auto-detected)
-Depths: `shallow` (10 sources) | `medium` (50) | `deep` (500) | `ultra` (2000)
 
-### /ultra-upgrade [--target] [--focus]
-Maximum reasoning + maximum planning. Combines ALL techniques:
-- 16 prompt engineering layers applied to every agent
-- Multi-model judge tribunal (Opus + Sonnet + Haiku)
-- Adversarial red-teaming at every iteration
-- Reflexion memory across iterations
-- Graph of Thought for finding synthesis
-- Persona tribunal (Tech + Human + Meta perspectives)
-- Constitutional AI safety checks every 3rd iteration
-- Self-healing validation gates
-- Convergence monitoring with strategy adjustment
+### /production-upgrade [mode]
+Recursive product audit with validation gates between batches.
+Modes: `full` | `audit` | `ux` | `fix` | `validate` | `judge`
 
-### /productupgrade-update
-Self-update from GitHub. Syncs to all installation locations.
+### /deep-research "topic" [--depth] [--sources]
+8-phase research with 4-layer citation verification.
+Depths: `quick` (10) | `standard` (50) | `deep` (500) | `exhaustive` (2000)
 
-## Agent Roster (25 agents)
+### /logic-mode "idea"
+Business idea → production plan. Challenges assumptions, researches competitors, identifies flaws, generates phased execution plan.
 
-### Core Review Agents (11)
-| Agent | Role | Model | Access |
-|-------|------|-------|--------|
-| `llm-judge` | Independent quality evaluator | Opus | Read-only |
-| `deep-researcher` | Multi-source research | Opus | Read + Web |
-| `code-reviewer` | Systematic code review | — | Read-only |
-| `ux-auditor` | UX/UI + accessibility audit | — | Read-only |
-| `dynamic-planner` | Planning orchestrator | — | Read + Write |
-| `business-logic-validator` | Business rule validation | — | Read-only |
-| `dependency-scanner` | CVE + license scanning | — | Read + Bash |
-| `api-contract-validator` | Frontend-backend contract | — | Read-only |
-| `naming-enforcer` | Naming convention audit | — | Read-only |
-| `refactoring-agent` | Dead code + complexity | — | Read + Edit |
-| `database-auditor` | Schema + query audit | — | Read-only |
+### /learn-mode [topic]
+Interactive code tutor. Auto-detects user level, explains the WHY behind code.
 
-### Advanced Analysis Agents (9 — V2/V4)
-| Agent | Role | Model | Access |
-|-------|------|-------|--------|
-| `adversarial-reviewer` | Red-team attack surface | Opus | Read-only |
-| `thought-graph-builder` | Causal network synthesis | Opus | Read + Write |
-| `persona-orchestrator` | 3-persona evaluation | Opus | Read-only |
-| `density-summarizer` | Inter-iteration compression | — | Read + Write |
-| `context-retriever` | RAG context gathering | — | Read + Write |
-| `frontend-scraper` | Playwright + Lighthouse | — | Read + Bash |
-| `vulnerability-explorer` | OWASP Top 10 mapping | — | Read + Bash |
-| `swarm-orchestrator` | Distributed coordination | — | Read + Write |
-| `guardrails-controller` | Safety + human-in-the-loop | — | Read + Bash |
+## Agent Roster (29 agents)
 
-### New V4 Agents (5)
-| Agent | Role | Model | Access |
-|-------|------|-------|--------|
-| `test-architect` | TDD spec + coverage design | — | Read + Write |
-| `performance-profiler` | Benchmarking + bottlenecks | — | Read + Bash |
-| `migration-planner` | Safe migration planning | — | Read + Write |
-| `self-healer` | Auto-fix lint/type/test errors | — | Full |
-| `convergence-monitor` | Convergence strategy | — | Read + Write |
+### Core Review (11)
+`llm-judge` (Opus, read-only) | `deep-researcher` (Opus, read+web) | `code-reviewer` | `ux-auditor` | `dynamic-planner` | `business-logic-validator` | `dependency-scanner` | `api-contract-validator` | `naming-enforcer` | `refactoring-agent` | `database-auditor`
 
-## 7-Layer Prompt Composition
+### Advanced Analysis (9)
+`adversarial-reviewer` (Opus, read-only) | `thought-graph-builder` (Opus) | `persona-orchestrator` (Opus) | `density-summarizer` | `context-retriever` | `frontend-scraper` | `vulnerability-explorer` | `swarm-orchestrator` | `guardrails-controller`
 
-Every agent in ultra/deep mode receives composed prompts:
-1. **Emotion Prompting** — Stakes calibrated to severity (+8-15% accuracy)
-2. **Meta-Prompting** — Self-reflection before action
-3. **Context Retrieval** — RAG from docs + memory + context7
-4. **Chain of Thought** — Step-by-step reasoning
-5. **Tree of Thought** — 3-branch exploration with scoring
-6. **Graph of Thought** — Finding network with edge detection
-7. **Chain of Density** — 3-pass compression for handoff
+### Execution (5)
+`test-architect` | `performance-profiler` | `migration-planner` | `self-healer` (full access) | `convergence-monitor`
 
-## Convergence Engine
+### Intelligence (4 — V4.1+)
+`research-pipeline` | `security-hardener` | `decision-loop` | `metaclaw-learner`
 
-```
-/productupgrade:
-  SUCCESS:    grade >= 8.0
-  CONVERGED:  delta < 0.2 for 2 iterations
-  MAX:        iteration >= 7
+### Evaluation (3 — V5.0+)
+`agentic-evaluator` | `context-engineer` | `logic-validator`
 
-/ultra-upgrade:
-  SUCCESS:    grade >= 9.5
-  CONVERGED:  delta < 0.15 for 2 iterations
-  MAX:        iteration >= 12
-  DEGRADED:   dimension dropped > 0.5 → HALT
+## Tri-Tiered Evaluation
 
-/auto-swarm:
-  SUCCESS:    coverage >= 85% AND confidence >= 0.7
-  CONVERGED:  delta < 5% for 2 waves
-  MAX:        wave >= 11
-```
+Runs at TWO points (pre-execution AND post-execution):
+- **Judge 1 (Opus):** Correctness + depth — "Is it right?"
+- **Judge 2 (Sonnet):** Practicality + cost — "Can it be built?"
+- **Judge 3 (Adversarial):** Attack surface — "How would I break it?"
 
-## Integrated Skills
-- `/plan-ceo-review` — 3 modes: expansion/hold/reduction
-- `/plan-eng-review` — Architecture + robustness review
-- `/code-review` — Systematic code review
-- `/frontend-design` — Component design audit
-- `/backend-patterns` — Backend architecture patterns
-- `/gstack qa` — Automated QA testing
-- `/browse` — Headless browser for testing
-- `/ux-browse` + `/ux-analyze` — UX capture and analysis
-- `/test-driven-development` — TDD specs
-- `/systematic-debugging` — Root cause analysis
-- `/dispatching-parallel-agents` — Parallel dispatch
-- `/brainstorming` — Pre-creative-work exploration
-- `/writing-plans` — Implementation planning
+Consensus: agree (within 1pt) → median | 2-agree → majority | all-disagree → DEBATE round
+
+## 16 Prompt Engineering Layers
+
+1. Emotion Prompting (+8-15% accuracy)
+2. Meta-Prompting (self-reflection)
+3. Context Retrieval (RAG)
+4. Chain of Thought
+5. Tree of Thought (3-branch)
+6. Graph of Thought (causal network)
+7. Chain of Density (compression)
+8. Step-Back Prompting (abstraction)
+9. Contrastive CoT (correct + incorrect)
+10. ReAct (reasoning + acting)
+11. Cumulative Reasoning (proposer-verifier-reporter)
+12. Self-Debugging (iterative repair)
+13. LATS (Monte Carlo Tree Search)
+14. Self-Consistency (majority voting)
+15. Mixture of Agents (ensemble)
+16. Constitutional AI (safety checks)
+
+## Context Loading Protocol
+
+ProductionOS uses lazy context loading to prevent context explosion:
+- **SessionStart hook** sets workspace-aware env vars
+- **Vercel/ECC lexical injection suppressed** via `VERCEL_PLUGIN_LEXICAL_PROMPT=0`
+- **Commands load context per-phase**, not all upfront
+- **Self-learning hook** captures patterns to `~/.productionos/learned/`

@@ -1,29 +1,31 @@
 {
-  "name": "productupgrade",
+  "name": "productionos",
   "owner": {
     "name": "Shaheer Khawaja",
     "email": "shaheer@entropyandco.com"
   },
   "plugins": [
     {
-      "name": "productupgrade",
-      "description": "54-agent recursive product improvement pipeline with LLM-as-Judge, database auditing, naming enforcement, business logic validation, UX audit, dependency scanning, and dynamic planning",
-      "version": "1.0.0",
+      "name": "productionos",
+      "description": "Agentic development operating system — 29 agents, 10 commands, tri-tiered evaluation, 16 prompt layers, recursive convergence, cross-run learning",
+      "version": "5.1.0",
       "author": {
         "name": "Shaheer Khawaja",
         "email": "shaheer@entropyandco.com"
       },
-      "source": "./plugins/productupgrade",
+      "source": ".",
       "category": "development",
       "strict": false,
       "tags": [
+        "agentic-os",
         "product-upgrade",
         "code-review",
         "llm-judge",
-        "ux-audit",
-        "database-audit",
-        "security",
-        "refactoring"
+        "multi-model-tribunal",
+        "auto-swarm",
+        "deep-research",
+        "security-audit",
+        "convergence-engine"
       ]
     }
   ]
