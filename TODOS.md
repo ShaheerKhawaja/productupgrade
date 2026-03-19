@@ -19,9 +19,8 @@ Items marked ~~strikethrough~~ are DONE.
 #### ~~Rollback mechanism~~ DONE (L-08)
 **Status:** `git stash` rollback added to production-upgrade Step 4 and omni-plan Step 9
 
-#### Cost ceiling on recursive commands (L-14)
-**What:** /omni-plan-nth and /auto-swarm-nth have no hard cost limit. User can walk away and burn entire API budget.
-**Fix:** Add `--max-cost $X` flag. Preamble checks accumulated cost before each iteration and halts if exceeded.
+#### ~~Cost ceiling on recursive commands (L-14)~~ DONE
+**Status:** Preamble Step 0D-2.5 enforces cost ceiling: reads TOKEN-BUDGET.md, halts at ceiling, warns at 80%, defaults to $50.
 **Effort:** S
 
 #### Schema validation on agent output (L-15)
@@ -34,9 +33,8 @@ Items marked ~~strikethrough~~ are DONE.
 **Fix:** Track token accumulation per iteration. When approaching 80% of context limit, trigger density-summarizer to compress.
 **Effort:** M
 
-#### Wire 10 orphaned agents to commands (L-21)
-**What:** 10 of 55 agents are never invoked by any command. Dead code: density-summarizer, thought-graph-builder, persona-orchestrator, frontend-scraper, convergence-monitor, metaclaw-learner, comms-assistant, asset-generator, ecosystem-scanner (in some commands), performance-profiler.
-**Fix:** Add agent dispatch to relevant command phases. E.g., density-summarizer in omni-plan Step 12, persona-orchestrator in agentic-eval.
+#### ~~Wire orphaned agents to commands (L-21)~~ DONE
+**Status:** Original 10 orphans already wired in prior sessions. Remaining 5 (aiml-engineer, guardrails-controller, infra-setup, plan-checker, recursive-orchestrator) wired to production-upgrade Step 1.5.
 **Effort:** M
 
 ### P1 — High (core value)
@@ -165,5 +163,5 @@ Items marked ~~strikethrough~~ are DONE.
 
 ## Score
 
-**Done:** 21 items (3 P0 agents, rollback, scratchpad, generated knowledge, convergence wired, cost wired, security hook, distractor prompting, ES-CoT, DOWN gate, confidence calibration, cross-session learning, doc-release, convergence loop, discuss-phase enforcement, claim analysis, Nyquist filler, pause/resume, model profile, per-agent cost tracking, DRY export)
-**Remaining:** 4 P0 (cost ceiling L-14, schema validation L-15, context overflow L-16, wire orphaned agents L-21), 0 P1, 2 P2 (batch limit L-09, pre-commit diff L-10), 6 P3, 7 P4 = 19 items
+**Done:** 23 items (3 P0 agents, rollback, cost ceiling L-14, wire orphans L-21, scratchpad, generated knowledge, convergence wired, cost wired, security hook, distractor prompting, ES-CoT, DOWN gate, confidence calibration, cross-session learning, doc-release, convergence loop, discuss-phase enforcement, claim analysis, Nyquist filler, pause/resume, model profile, per-agent cost tracking, DRY export)
+**Remaining:** 2 P0 (schema validation L-15, context overflow L-16), 0 P1, 2 P2 (batch limit L-09, pre-commit diff L-10), 6 P3, 7 P4 = 17 items

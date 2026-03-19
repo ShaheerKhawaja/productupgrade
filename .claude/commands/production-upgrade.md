@@ -1,6 +1,6 @@
 ---
 name: production-upgrade
-description: "Run the full product upgrade pipeline — 49-agent iterative review with CEO/Engineering/UX/QA parallel loops"
+description: "Run the full product upgrade pipeline — 55-agent iterative review with CEO/Engineering/UX/QA parallel loops"
 arguments:
   - name: mode
     description: "Pipeline mode: full | audit | ux | fix | validate"
@@ -108,6 +108,25 @@ Wait for all 7 agents to complete. Compile findings into:
 - `.productionos/UPGRADE-REVIEW-DESIGN.md`
 
 **Note:** These use the `UPGRADE-` prefix to avoid collision with `/omni-plan`'s `REVIEW-CEO.md` and `REVIEW-ENGINEERING.md`.
+
+### Step 1.5: Specialized Review Agents (optional, deep mode)
+
+When mode=full and profile=quality, launch these additional agents:
+
+**Agent 8 — Plan Checker** (agents/plan-checker.md)
+Validate the generated UPGRADE-PLAN.md for completeness, circular dependencies, and goal alignment before execution begins.
+
+**Agent 9 — Guardrails Controller** (agents/guardrails-controller.md)
+Verify all guardrails are active: batch size limits, protected file guard, pre-commit diff, cost ceiling. Report any unenforced guardrails.
+
+**Agent 10 — AI/ML Engineer** (agents/aiml-engineer.md)
+If the target codebase contains AI/ML components (LLM calls, embeddings, fine-tuning), audit the pipeline design, model selection, and cost optimization.
+
+**Agent 11 — Infra Setup** (agents/infra-setup.md)
+If the target uses Docker, K8s, or cloud infrastructure, audit the deployment configuration, secrets management, and scaling.
+
+**Agent 12 — Recursive Orchestrator** (agents/recursive-orchestrator.md)
+When --converge is active, manage the convergence loop orchestration: focus narrowing, iteration planning, and plateau detection.
 
 ### Step 2: Evaluation Rubric (Score BEFORE)
 Score the codebase on the 10-dimension rubric (1-10 each):

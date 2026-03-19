@@ -72,6 +72,20 @@ bun run scripts/cost-estimator.ts {command-name} {agent-count} {depth}
 ```
 If estimated cost > $5, warn the user and ask for confirmation.
 
+### Step 0D-2.5: Cost Ceiling Enforcement
+
+If `--max-cost $X` is passed (or a default ceiling is set):
+
+1. **Before each iteration/batch:** Read `.productionos/TOKEN-BUDGET.md` for accumulated cost.
+2. **Check:** If `accumulated_cost >= max_cost`:
+   - Log: `[ProductionOS] COST CEILING HIT: $${accumulated} >= $${max_cost}. Halting pipeline.`
+   - Write current state to `.productionos/CHECKPOINT.json` for resume.
+   - HALT the pipeline immediately. Do NOT dispatch more agents.
+3. **Warning at 80%:** If `accumulated_cost >= 0.8 * max_cost`:
+   - Log: `[ProductionOS] COST WARNING: $${accumulated} is 80%+ of $${max_cost} ceiling.`
+   - Switch to budget profile for remaining work (enables ES-CoT, reduces agent depth).
+4. **Default ceiling:** If no --max-cost specified, use $50 as a safety default. Log: `[ProductionOS] Default cost ceiling: $50. Override with --max-cost.`
+
 ### Step 0D-3: Profile Detection
 
 If `--profile budget` is passed (or cost-optimized mode is active):
