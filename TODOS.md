@@ -23,14 +23,12 @@ Items marked ~~strikethrough~~ are DONE.
 **Status:** Preamble Step 0D-2.5 enforces cost ceiling: reads TOKEN-BUDGET.md, halts at ceiling, warns at 80%, defaults to $50.
 **Effort:** S
 
-#### Schema validation on agent output (L-15)
-**What:** No validation that agent output matches expected format. Malformed output silently passes to downstream agents.
-**Fix:** Add MANIFEST block validation (producer, timestamp, status fields) in consuming commands before reading artifacts.
+#### ~~Schema validation on agent output (L-15)~~ DONE
+**Status:** Preamble Step 0B now mandates Method 4 MANIFEST validation (from INVOCATION-PROTOCOL.md) on EVERY artifact read. Validation outcomes logged to ARTIFACT-VALIDATION.log. Invalid artifacts skip, pipeline continues degraded.
 **Effort:** M
 
-#### Context overflow detection (L-16)
-**What:** No auto-compaction trigger. Context fills mid-pipeline → Claude auto-compacts → loses iteration state.
-**Fix:** Track token accumulation per iteration. When approaching 80% of context limit, trigger density-summarizer to compress.
+#### ~~Context overflow detection (L-16)~~ DONE
+**Status:** Preamble Step 0E-2 now has concrete Bash command for token estimation, decision logic at 600K/750K thresholds, density-summarizer invocation, and HALT with STATE-CHECKPOINT.json.
 **Effort:** M
 
 #### ~~Wire orphaned agents to commands (L-21)~~ DONE
@@ -163,5 +161,5 @@ Items marked ~~strikethrough~~ are DONE.
 
 ## Score
 
-**Done:** 23 items (3 P0 agents, rollback, cost ceiling L-14, wire orphans L-21, scratchpad, generated knowledge, convergence wired, cost wired, security hook, distractor prompting, ES-CoT, DOWN gate, confidence calibration, cross-session learning, doc-release, convergence loop, discuss-phase enforcement, claim analysis, Nyquist filler, pause/resume, model profile, per-agent cost tracking, DRY export)
-**Remaining:** 2 P0 (schema validation L-15, context overflow L-16), 0 P1, 2 P2 (batch limit L-09, pre-commit diff L-10), 6 P3, 7 P4 = 17 items
+**Done:** 25 items (ALL P0 closed: 3 agents, rollback, cost ceiling L-14, wire orphans L-21, schema validation L-15, context overflow L-16 + scratchpad, generated knowledge, convergence wired, cost wired, security hook, distractor prompting, ES-CoT, DOWN gate, confidence calibration, cross-session learning, doc-release, convergence loop, discuss-phase enforcement, claim analysis, Nyquist filler, pause/resume, model profile, per-agent cost tracking, DRY export)
+**Remaining:** 0 P0, 0 P1, 2 P2 (batch limit L-09, pre-commit diff L-10), 6 P3, 7 P4 = 15 items

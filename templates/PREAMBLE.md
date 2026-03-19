@@ -36,12 +36,18 @@ else
 fi
 ```
 
-### Step 0B: Prior Work Check
+### Step 0B: Prior Work Check (with MANIFEST Validation)
 
 Before executing any pipeline, check for existing ProductionOS output:
 - Read `.productionos/` directory if it exists
-- Check for prior audit reports, convergence logs, judge iterations
-- If prior work exists, build on it rather than starting from scratch
+- **For EVERY artifact read:** Apply Method 4 validation from `templates/INVOCATION-PROTOCOL.md`:
+  1. Check file exists → if not: `MISSING: {file}`, continue degraded
+  2. Check `---` delimiters in first 5 lines → if not: `MALFORMED: {file}`, skip
+  3. Check `producer` and `status` fields → if not: `INVALID-MANIFEST: {file}`, skip
+  4. Check `status: complete` → if in-progress/failed: `INCOMPLETE: {file}`, skip
+- Log ALL validation outcomes to `.productionos/ARTIFACT-VALIDATION.log`
+- If prior work exists AND passes validation, build on it rather than starting from scratch
+- If prior work exists but fails validation, treat as if no prior work exists
 
 ### Step 0C: Agent Resolution
 
@@ -104,21 +110,32 @@ State what "done" looks like for this command invocation:
 
 ### Step 0E-2: Context Overflow Prevention
 
-During multi-iteration commands (/omni-plan, /omni-plan-nth, /auto-swarm-nth):
+During multi-iteration commands (/omni-plan, /omni-plan-nth, /auto-swarm-nth), run this check **after each iteration**:
 
-1. After each iteration, estimate accumulated context tokens:
-   - Count .productionos/*.md files and their sizes
-   - Add estimated conversation context (~4 bytes per token)
+```bash
+# Estimate artifact context size (run via Bash tool)
+ARTIFACT_BYTES=$(find .productionos/ -name "*.md" -exec wc -c {} + 2>/dev/null | tail -1 | awk '{print $1}')
+ARTIFACT_TOKENS=$((ARTIFACT_BYTES / 4))
+echo "Artifact tokens: ~${ARTIFACT_TOKENS} (${ARTIFACT_BYTES} bytes)"
+```
 
-2. If estimated context > 600K tokens (75% of typical 800K budget):
-   - Invoke density-summarizer agent on CONVERGENCE-LOG.md and REFLEXION-LOG.md
+**Decision logic (execute in order):**
+
+1. **If artifact tokens > 600K** (75% of 800K context budget):
+   - Invoke `density-summarizer` agent on CONVERGENCE-LOG.md and REFLEXION-LOG.md
    - Compress prior iteration details to summary + key decisions only
-   - Log: "[ProductionOS] Context compression triggered at ~{tokens}K tokens"
+   - Delete intermediate artifacts (JUDGE-ITERATION-{1..N-1}.md, keep only latest)
+   - Log: `[ProductionOS] Context compression triggered at ~{tokens}K tokens`
 
-3. If estimated context > 750K tokens (critical threshold):
-   - Write current state to .productionos/STATE-CHECKPOINT.json
-   - Recommend user run: `/productionos resume` to continue in fresh context
-   - Log: "[ProductionOS] CRITICAL: Context near limit. Checkpoint saved. Resume recommended."
+2. **If artifact tokens > 750K** (critical threshold, even after compression):
+   - Write current pipeline state to `.productionos/STATE-CHECKPOINT.json`:
+     ```json
+     {"command": "{name}", "iteration": N, "grade": X.X, "focus": ["dim1", "dim2"], "timestamp": "ISO"}
+     ```
+   - Log: `[ProductionOS] CRITICAL: Context near limit. Checkpoint saved. Run /productionos-resume to continue.`
+   - **HALT the pipeline.** Do NOT dispatch more agents.
+
+3. **If artifact tokens < 600K**: Continue normally. No action needed.
 
 ### Step 0F: Graceful Degradation for External Skills
 
