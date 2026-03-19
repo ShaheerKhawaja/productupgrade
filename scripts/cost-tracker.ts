@@ -11,6 +11,7 @@
 
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from "fs";
 import { join } from "path";
+import { homedir } from "os";
 
 // ─── Interfaces ────────────────────────────────────────────────
 
@@ -45,7 +46,7 @@ export interface RunRecord {
 // ─── Constants ─────────────────────────────────────────────────
 
 const RUNS_DIR = join(
-  process.env["HOME"] ?? process.env["USERPROFILE"] ?? require("os").homedir(),
+  process.env["HOME"] ?? process.env["USERPROFILE"] ?? homedir(),
   ".productionos",
   "runs"
 );

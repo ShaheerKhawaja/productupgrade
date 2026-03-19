@@ -15,7 +15,7 @@
 
 import { writeFileSync, mkdirSync, existsSync } from "fs";
 import { join } from "path";
-import { parseFrontmatter, readFileOrNull, walkFiles, listMdFiles, ROOT } from "./lib/shared";
+import { parseFrontmatter, readFileOrNull, walkFiles, listMdFiles, ROOT, BYTES_PER_TOKEN } from "./lib/shared";
 
 // ─── Types ───────────────────────────────────────────────────
 
@@ -79,7 +79,6 @@ const COMMANDS_DIR = join(ROOT, ".claude", "commands");
 const PROMPTS_DIR = join(ROOT, "prompts");
 const TEMPLATES_DIR = join(ROOT, "templates");
 const OUTPUT_DIR = join(ROOT, ".productionos");
-const BYTES_PER_TOKEN = 4;
 const KEBAB_CASE_RE = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 const VALID_TOOLS = new Set([
   "Read", "Write", "Edit", "Glob", "Grep", "Bash",

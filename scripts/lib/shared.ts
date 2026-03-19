@@ -9,6 +9,9 @@ import { join, extname } from "path";
 /** Root directory of the ProductionOS plugin */
 export const ROOT = new URL("../../", import.meta.url).pathname.replace(/\/$/, "");
 
+/** Approximate bytes-per-token ratio for LLM token estimation */
+export const BYTES_PER_TOKEN = 4;
+
 /** Read a file, returning null if it doesn't exist */
 export function readFileOrNull(filePath: string): string | null {
   try {

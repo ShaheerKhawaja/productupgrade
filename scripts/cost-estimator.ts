@@ -30,7 +30,7 @@ export const PRICING: Record<string, ModelPricing> = {
   haiku: { name: "Claude Haiku", inputPerMTok: 0.25, outputPerMTok: 1.25 },
 };
 
-const BYTES_PER_TOKEN = 4;
+import { BYTES_PER_TOKEN } from "./lib/shared";
 const OUTPUT_RATIO = 0.3; // output tokens estimated at 30% of input
 const COST_WARNING_THRESHOLD_USD = 5.0;
 

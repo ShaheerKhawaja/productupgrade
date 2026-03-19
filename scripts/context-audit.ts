@@ -15,14 +15,12 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-
-const ROOT = path.resolve(import.meta.dir, '..');
+import { ROOT, BYTES_PER_TOKEN } from './lib/shared';
 
 // ─── Configuration ──────────────────────────────────────────
 
 const HEAVY_FILE_THRESHOLD = 10 * 1024;    // 10KB — flag individual files
 const TOTAL_OVERLOAD_THRESHOLD = 50 * 1024; // 50KB — flag total context
-const BYTES_PER_TOKEN = 4;                  // Rough estimate: 1 token ~ 4 bytes
 
 // ─── Helpers ────────────────────────────────────────────────
 
