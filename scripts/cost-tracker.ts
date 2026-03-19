@@ -258,6 +258,41 @@ export function formatRunSummary(runs: RunRecord[]): string {
   return [separator, header, separator, ...rows, separator, footer, separator].join("\n");
 }
 
+/** Find the most recent run that has no endTime (still running). */
+export function findActiveRun(): RunRecord | null {
+  ensureRunsDir();
+  const files = readdirSync(RUNS_DIR).filter((f) => f.endsWith(".json")).sort().reverse();
+  for (const file of files) {
+    const run = readRun(join(RUNS_DIR, file));
+    if (run && run.endTime === null) return run;
+  }
+  return null;
+}
+
+/** Write TOKEN-BUDGET.md with accumulated cost for cost ceiling enforcement. */
+export function writeTokenBudget(run: RunRecord, targetDir: string): void {
+  const budgetPath = join(targetDir, ".productionos", "TOKEN-BUDGET.md");
+  const dir = join(targetDir, ".productionos");
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+  const content = [
+    "---",
+    `producer: cost-tracker`,
+    `timestamp: ${new Date().toISOString()}`,
+    `status: complete`,
+    "---",
+    "",
+    `# Token Budget`,
+    "",
+    `accumulated_cost: ${run.estimatedCostUSD.toFixed(2)}`,
+    `accumulated_tokens: ${run.estimatedTokens}`,
+    `agents_dispatched: ${run.agentsDispatched}`,
+    `run_id: ${run.id}`,
+    `command: ${run.command}`,
+    "",
+  ].join("\n");
+  writeFileSync(budgetPath, content, "utf-8");
+}
+
 // ─── CLI Entry Point ───────────────────────────────────────────
 
 if (import.meta.main) {
@@ -267,11 +302,21 @@ if (import.meta.main) {
   if (subcmd === "start" && args[1]) {
     const run = startRun(args[1]);
     process.stdout.write(`Run started: ${run.id}\n`);
+  } else if (subcmd === "end") {
+    const active = findActiveRun();
+    if (active) {
+      endRun(active, {});
+      // Write TOKEN-BUDGET.md to CWD's .productionos/ for cost ceiling enforcement
+      writeTokenBudget(active, process.cwd());
+      process.stdout.write(`Run ended: ${active.id} (${active.estimatedCostUSD.toFixed(2)} USD)\n`);
+    } else {
+      process.stdout.write("No active run found.\n");
+    }
   } else if (subcmd === "list") {
     const days = args[1] ? parseInt(args[1], 10) : undefined;
     const runs = getRunHistory(days);
     process.stdout.write(formatRunSummary(runs) + "\n");
   } else {
-    process.stdout.write("Usage: cost-tracker.ts <start COMMAND | list [DAYS]>\n");
+    process.stdout.write("Usage: cost-tracker.ts <start COMMAND | end | list [DAYS]>\n");
   }
 }

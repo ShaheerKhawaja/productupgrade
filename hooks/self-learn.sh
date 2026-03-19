@@ -35,23 +35,26 @@ TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 # Only capture meaningful events (not every read/grep)
 case "$TOOL_NAME" in
   Edit|Write)
-    # Capture file modifications for pattern learning
+    # Capture file modifications — use jq -n to prevent JSON injection from file paths
     FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // "unknown"' 2>/dev/null || echo "unknown")
-    echo "{\"ts\":\"${TIMESTAMP}\",\"event\":\"file_modified\",\"tool\":\"${TOOL_NAME}\",\"file\":\"${FILE_PATH}\"}" >> "$SESSION_FILE"
+    jq -n --arg ts "$TIMESTAMP" --arg tool "$TOOL_NAME" --arg file "$FILE_PATH" \
+      '{ts: $ts, event: "file_modified", tool: $tool, file: $file}' >> "$SESSION_FILE" 2>/dev/null || true
     ;;
   Bash)
-    # Capture command patterns (not output — too large)
+    # Capture command patterns — use jq -n for safe JSON construction
     COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // "unknown"' 2>/dev/null | head -c 200 || echo "unknown")
     # Only capture test/lint/build commands
     if echo "$COMMAND" | grep -qE "test|lint|build|pytest|tsc|ruff|eslint|vitest|jest"; then
       EXIT_CODE=$(echo "$INPUT" | jq -r '.tool_result.exit_code // 0' 2>/dev/null || echo "0")
-      echo "{\"ts\":\"${TIMESTAMP}\",\"event\":\"validation\",\"command\":\"${COMMAND}\",\"exit_code\":${EXIT_CODE}}" >> "$SESSION_FILE"
+      jq -n --arg ts "$TIMESTAMP" --arg cmd "$COMMAND" --argjson ec "${EXIT_CODE:-0}" \
+        '{ts: $ts, event: "validation", command: $cmd, exit_code: $ec}' >> "$SESSION_FILE" 2>/dev/null || true
     fi
     ;;
   Agent)
-    # Capture agent dispatch patterns
+    # Capture agent dispatch — use jq -n for safe JSON construction
     DESC=$(echo "$INPUT" | jq -r '.tool_input.description // "unknown"' 2>/dev/null | head -c 100 || echo "unknown")
-    echo "{\"ts\":\"${TIMESTAMP}\",\"event\":\"agent_dispatch\",\"description\":\"${DESC}\"}" >> "$SESSION_FILE"
+    jq -n --arg ts "$TIMESTAMP" --arg desc "$DESC" \
+      '{ts: $ts, event: "agent_dispatch", description: $desc}' >> "$SESSION_FILE" 2>/dev/null || true
     ;;
 esac
 

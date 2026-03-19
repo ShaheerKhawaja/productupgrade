@@ -94,7 +94,7 @@ dynamic-planner, swarm-orchestrator, recursive-orchestrator, guardrails-controll
 
 ## Tech Under The Hood
 
-- **9-layer prompt composition:** Emotion → Meta → Scratchpad → Context → CoT → ToT → GoT → CoD → Generated Knowledge
+- **10-layer prompt composition:** Emotion → Meta → Scratchpad → Context → CoT → ToT → GoT → CoD → Generated Knowledge → Distractor-Augmented
 - **Executable convergence engine:** TypeScript implementation of score-based + EMA velocity algorithms
 - **Cost tracking:** Per-run token estimation and USD cost tracking with terminal dashboard
 - **Security hooks:** PreToolUse guard blocks writes to .env, keys, certs, production configs
@@ -107,7 +107,7 @@ dynamic-planner, swarm-orchestrator, recursive-orchestrator, guardrails-controll
 ```bash
 cd ~/.claude/plugins/marketplaces/productupgrade
 bun run skill:check    # 10/10 health score
-bun run validate       # 43/49 agents valid
+bun run validate       # 49/49 agents valid
 bun test               # 118 tests passing
 ```
 
