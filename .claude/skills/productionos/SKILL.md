@@ -1,6 +1,6 @@
 ---
 name: productionos
-description: "ProductionOS 5.3 — Your AI engineering team. 49 agents that fill roles you can't hire fast enough: code reviewer, QA engineer, security auditor, solutions architect, CTO reviewer, release manager. Built by a solo founder shipping a complex SaaS at hackathon pace."
+description: "ProductionOS 5.3 — Your AI engineering team. 55 agents that fill roles you can't hire fast enough: code reviewer, QA engineer, security auditor, solutions architect, CTO reviewer, release manager. Built by a solo founder shipping a complex SaaS at hackathon pace."
 ---
 
 # ProductionOS 5.3 — Your AI Engineering Team
@@ -11,7 +11,7 @@ You're building a production SaaS — complex backend, frontend, infrastructure,
 
 ## The Solution
 
-ProductionOS turns Claude Code into a full engineering department. 49 agents fill the roles you can't hire fast enough:
+ProductionOS turns Claude Code into a full engineering department. 55 agents fill the roles you can't hire fast enough:
 
 | Role | What It Does | Key Agents |
 |------|-------------|------------|
@@ -75,22 +75,22 @@ Discovers your stack → deploys 7 review agents → scores 10 dimensions → ge
 
 **Stub detection.** The stub-detector agent (born from finding 11 fake-data paths in Entropy Studio) distinguishes "file exists" from "feature works" — catches placeholder components, mock data, `NotImplementedError`, hardcoded arrays, and decorative integrations.
 
-**Pre-pipeline user decisions.** The discuss-phase agent captures what you actually want BEFORE 49 agents start optimizing. Prevents the pipeline from running in the wrong direction.
+**Pre-pipeline user decisions.** The discuss-phase agent captures what you actually want BEFORE 55 agents start optimizing. Prevents the pipeline from running in the wrong direction.
 
 **Observable execution.** Cost estimation before every run. Terminal convergence dashboard showing real-time grade progression. Security hooks blocking writes to .env, keys, certs.
 
-## The 43 Agents
+## The 55 Agents
 
 Organized by the role they fill, not the version they were added in:
 
-**Your Engineering Team (22 agents that do the work):**
-code-reviewer, adversarial-reviewer, ux-auditor, database-auditor, api-contract-validator, dependency-scanner, naming-enforcer, business-logic-validator, security-hardener, vulnerability-explorer, test-architect, performance-profiler, stub-detector, refactoring-agent, self-healer, frontend-designer, asset-generator, gitops, deep-researcher, research-pipeline, reverse-engineer, comms-assistant
+**Your Engineering Team (28 agents that do the work):**
+code-reviewer, adversarial-reviewer, ux-auditor, database-auditor, api-contract-validator, dependency-scanner, naming-enforcer, business-logic-validator, security-hardener, vulnerability-explorer, test-architect, performance-profiler, stub-detector, refactoring-agent, self-healer, frontend-designer, asset-generator, gitops, deep-researcher, research-pipeline, reverse-engineer, comms-assistant, aiml-engineer, db-creator, e2e-architect, infra-setup, scaffold-generator, rag-expert
 
-**Your Quality Gates (10 agents that evaluate and decide):**
-llm-judge, debate-tribunal, discuss-phase, plan-checker, verification-gate, gap-analyzer, convergence-monitor, decision-loop, persona-orchestrator, comparative-analyzer
+**Your Quality Gates (12 agents that evaluate and decide):**
+llm-judge, debate-tribunal, discuss-phase, plan-checker, verification-gate, gap-analyzer, convergence-monitor, decision-loop, persona-orchestrator, comparative-analyzer, intake-interviewer, nyquist-filler
 
-**Your Infrastructure (11 agents that coordinate and optimize):**
-dynamic-planner, swarm-orchestrator, recursive-orchestrator, guardrails-controller, context-retriever, density-summarizer, thought-graph-builder, ecosystem-scanner, metaclaw-learner, migration-planner, frontend-scraper
+**Your Infrastructure (15 agents that coordinate and optimize):**
+dynamic-planner, swarm-orchestrator, recursive-orchestrator, guardrails-controller, context-retriever, density-summarizer, thought-graph-builder, ecosystem-scanner, metaclaw-learner, migration-planner, frontend-scraper, architecture-designer, prd-generator, requirements-tracer, version-control
 
 ## Tech Under The Hood
 
@@ -107,7 +107,7 @@ dynamic-planner, swarm-orchestrator, recursive-orchestrator, guardrails-controll
 ```bash
 cd ~/.claude/plugins/marketplaces/productupgrade
 bun run skill:check    # 10/10 health score
-bun run validate       # 49/49 agents valid
+bun run validate       # 55/55 agents valid
 bun test               # 118 tests passing
 ```
 

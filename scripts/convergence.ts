@@ -24,7 +24,7 @@ export interface IterationResult {
   timestamp: string;
 }
 
-export type ConvergenceDecision = "CONTINUE" | "CONVERGED" | "DEGRADED" | "MAX_REACHED";
+export type ConvergenceDecision = "CONTINUE" | "SUCCESS" | "CONVERGED" | "DEGRADED" | "MAX_REACHED";
 
 export interface ConvergenceResult {
   decision: ConvergenceDecision;
@@ -99,7 +99,7 @@ export function scoreConvergence(
 
   // --- SUCCESS CHECK (target reached) ---
   if (currentGrade >= TARGET_GRADE) {
-    return { decision: "CONVERGED", delta, velocity: delta, focusDimensions: [] };
+    return { decision: "SUCCESS", delta, velocity: delta, focusDimensions: [] };
   }
 
   // --- DEGRADATION CHECK (per-dimension) ---

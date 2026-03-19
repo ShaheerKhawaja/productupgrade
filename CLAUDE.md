@@ -22,6 +22,11 @@
 /max-research [topic]          500-1000 agents in ONE massive wave — exhaustive research
 ```
 
+### Lifecycle
+```
+/auto-mode [idea]              Idea-to-running-code pipeline (10-phase, 5 decision gates)
+```
+
 ### Specialized
 ```
 /deep-research [topic]         8-phase autonomous research pipeline

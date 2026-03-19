@@ -29,7 +29,8 @@ export function parseFrontmatter(content: string): Record<string, unknown> | nul
   const fm: Record<string, unknown> = {};
   const lines = match[1].split("\n");
 
-  for (const line of lines) {
+  for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
+    const line = lines[lineIdx];
     const colonIdx = line.indexOf(":");
     if (colonIdx === -1) continue;
 
@@ -41,16 +42,15 @@ export function parseFrontmatter(content: string): Record<string, unknown> | nul
       value = value.slice(1, -1);
     }
 
-    // Handle arrays (tools list)
+    // Handle arrays (tools list, arguments list)
     if (key === "tools" || key === "arguments") {
       const items: string[] = [];
-      const startIdx = lines.indexOf(line);
-      for (let i = startIdx + 1; i < lines.length; i++) {
+      for (let i = lineIdx + 1; i < lines.length; i++) {
         const item = lines[i].trim();
         if (item.startsWith("- ")) {
           items.push(item.slice(2).trim());
-        } else if (item.startsWith("-")) {
-          // Handle compact YAML list with nested keys
+        } else if (item === "" || (!item.startsWith("-") && item.includes(":"))) {
+          // End of array: blank line or new key:value pair
           break;
         } else {
           break;

@@ -100,7 +100,7 @@ Commands produce artifacts consumed by downstream commands — this is what make
 
 ## Agent Architecture
 
-### Why 49 agents instead of 1 big prompt
+### Why 55 agents instead of 1 big prompt
 
 A single prompt covering security, UX, performance, naming, accessibility, database design, API contracts, business logic, and deployment safety would be 50K+ tokens of instructions. The model would attend to all of them weakly instead of any of them strongly.
 
@@ -239,14 +239,14 @@ What happens when things fail:
 | Test suite fails after fix batch | Validation gate in Step 10 | self-healer (10 rounds), then rollback if unresolvable | Fix deferred to TODOS.md |
 | Git conflict during commit | gitops agent pre-check | Abort commit, report conflict, suggest resolution | Manual resolution required |
 
-### Graceful Degradation
+### Graceful Degradation — NOT YET IMPLEMENTED
 
-Commands reference external skills (/plan-ceo-review, /qa, /browse from gstack). If these aren't installed:
+**Status: PLANNED.** Commands reference external skills (/plan-ceo-review, /qa, /browse from gstack). The intended behavior:
 - The command logs "SKIP: /plan-ceo-review not available" and continues
 - The review depth is reduced but the pipeline doesn't crash
 - The final report notes which reviews were skipped
 
-This is not yet implemented — currently, missing skills cause a silent failure where the step produces no output and downstream consumers get no input.
+**Current behavior:** Missing skills cause a silent failure where the step produces no output and downstream consumers get no input. This is a known gap (see TODOS.md).
 
 ## Dependencies
 
@@ -274,7 +274,7 @@ cd ~/.claude/plugins/marketplaces/productupgrade && bun install
 
 # Verify installation
 bun run skill:check    # Should show 10/10
-bun run validate       # Should show 49/49 valid
+bun run validate       # Should show 55/55 valid
 ```
 
 Minimum requirements: Claude Code 2.0+, Bun 1.0+, macOS or Linux.
@@ -290,7 +290,7 @@ Minimum requirements: Claude Code 2.0+, Bun 1.0+, macOS or Linux.
 
 | Dimension | gstack | ProductionOS |
 |-----------|--------|-------------|
-| Architecture | 16 skills (sequential) | 49 agents (parallel swarm) |
+| Architecture | 16 skills (sequential) | 55 agents (parallel swarm) |
 | Multi-model | Eval-only | Tri-tiered tribunal with DOWN gate |
 | Prompt layers | Implicit (latent-space) | Explicit 10-layer composition |
 | Convergence | hyper-plan (10 dims) | Parameterized per command |

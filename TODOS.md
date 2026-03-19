@@ -35,7 +35,7 @@ Items marked ~~strikethrough~~ are DONE.
 **Effort:** M
 
 #### Wire 10 orphaned agents to commands (L-21)
-**What:** 10 of 48 agents are never invoked by any command. Dead code: density-summarizer, thought-graph-builder, persona-orchestrator, frontend-scraper, convergence-monitor, metaclaw-learner, comms-assistant, asset-generator, ecosystem-scanner (in some commands), performance-profiler.
+**What:** 10 of 55 agents are never invoked by any command. Dead code: density-summarizer, thought-graph-builder, persona-orchestrator, frontend-scraper, convergence-monitor, metaclaw-learner, comms-assistant, asset-generator, ecosystem-scanner (in some commands), performance-profiler.
 **Fix:** Add agent dispatch to relevant command phases. E.g., density-summarizer in omni-plan Step 12, persona-orchestrator in agentic-eval.
 **Effort:** M
 
@@ -165,5 +165,5 @@ Items marked ~~strikethrough~~ are DONE.
 
 ## Score
 
-**Done:** 25 items (4 P0 loopholes, 3 P0 agents, rollback, scratchpad, generated knowledge, convergence wired, cost wired, security hook, distractor prompting, ES-CoT, DOWN gate, confidence calibration, cross-session learning, doc-release, convergence loop, claim analysis, Nyquist filler, pause/resume, model profile, per-agent cost tracking)
-**Remaining:** 0 P0, 0 P1, 0 P2, 6 P3, 7 P4 = 13 items
+**Done:** 21 items (3 P0 agents, rollback, scratchpad, generated knowledge, convergence wired, cost wired, security hook, distractor prompting, ES-CoT, DOWN gate, confidence calibration, cross-session learning, doc-release, convergence loop, discuss-phase enforcement, claim analysis, Nyquist filler, pause/resume, model profile, per-agent cost tracking, DRY export)
+**Remaining:** 4 P0 (cost ceiling L-14, schema validation L-15, context overflow L-16, wire orphaned agents L-21), 0 P1, 2 P2 (batch limit L-09, pre-commit diff L-10), 6 P3, 7 P4 = 19 items

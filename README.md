@@ -112,7 +112,7 @@ Costs depend on codebase size, depth setting, and model. Use `--profile budget` 
 
 ```bash
 bun run skill:check        # Plugin health score (10/10)
-bun run validate           # Agent validation (49/49)
+bun run validate           # Agent validation (55/55)
 bun test                   # Full test suite (118 tests)
 ```
 

@@ -45,7 +45,7 @@ Before executing any pipeline, check for existing ProductionOS output:
 
 ### Step 0C: Agent Resolution
 
-Based on the detected stack and the command being run, identify which agents from `agents/` are relevant. Only load agent definitions that will actually be used — do NOT read all 48 agent files upfront.
+Based on the detected stack and the command being run, identify which agents from `agents/` are relevant. Only load agent definitions that will actually be used — do NOT read all 55 agent files upfront.
 
 ### Step 0D: Context Budget
 

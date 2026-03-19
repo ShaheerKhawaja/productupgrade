@@ -1,7 +1,7 @@
 {
   "name": "productionos",
   "version": "5.3.0",
-  "description": "ProductionOS — Your AI engineering team. 49 agents across 17 commands for solo founders and small teams.",
+  "description": "ProductionOS — Your AI engineering team. 55 agents across 17 commands for solo founders and small teams.",
   "license": "MIT",
   "type": "module",
   "bin": {

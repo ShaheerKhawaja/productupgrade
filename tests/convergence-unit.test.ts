@@ -90,23 +90,23 @@ describe("scoreConvergence", () => {
     expect(result.focusDimensions).toContain("security");
   });
 
-  test("returns CONVERGED (SUCCESS path) when grade >= 10.0", () => {
+  test("returns SUCCESS when grade >= 10.0", () => {
     const history = makeHistory([
       { a: 9.0, b: 9.0 },
-      { a: 10.0, b: 10.0 }, // grade = 10.0 -> SUCCESS mapped to CONVERGED
+      { a: 10.0, b: 10.0 },
     ]);
     const result = scoreConvergence(history);
-    expect(result.decision).toBe("CONVERGED");
-    expect(result.focusDimensions).toEqual([]); // SUCCESS has empty focus
+    expect(result.decision).toBe("SUCCESS");
+    expect(result.focusDimensions).toEqual([]);
   });
 
-  test("returns CONVERGED (SUCCESS) even if previous iteration also had high score", () => {
+  test("returns SUCCESS even if previous iteration also had high score", () => {
     const history = makeHistory([
       { a: 9.5, b: 9.8 },
       { a: 10.0, b: 10.0 },
     ]);
     const result = scoreConvergence(history);
-    expect(result.decision).toBe("CONVERGED");
+    expect(result.decision).toBe("SUCCESS");
   });
 
   // --- DEGRADED cases ---

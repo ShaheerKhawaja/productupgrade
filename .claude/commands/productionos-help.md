@@ -7,7 +7,7 @@ description: "Show how to use ProductionOS — explains commands, recommended wo
 
 ## Getting Started
 
-ProductionOS is your AI engineering team — 49 agents and 17 commands. Here's how to use it effectively.
+ProductionOS is your AI engineering team — 55 agents and 17 commands. Here's how to use it effectively.
 
 ## Step 0: Preamble
 
@@ -130,7 +130,7 @@ Commands produce artifacts in `.productionos/` that downstream commands consume:
 
 ```bash
 bun run skill:check      # 10-check health dashboard (should be 10/10)
-bun run validate          # Agent frontmatter validation (49/49)
+bun run validate          # Agent frontmatter validation (55/55)
 bun run audit:context     # Token budget tracking
 bun run dashboard         # Review readiness per branch
 bun test                  # Automated test suite (118 tests)
