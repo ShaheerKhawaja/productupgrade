@@ -65,7 +65,7 @@ git clone https://github.com/ShaheerKhawaja/ProductionOS.git ~/.claude/plugins/m
 /productionos-update         Self-update from GitHub
 ```
 
-## 43 Agents
+## 49 Agents
 
 These aren't chat personas -- they're specialized workflows with defined inputs, outputs, tool restrictions, and quality criteria. Read-only agents (judges, auditors) cannot modify code. Execution agents (fixers, healers) cannot evaluate their own work.
 
@@ -76,7 +76,19 @@ These aren't chat personas -- they're specialized workflows with defined inputs,
 | V4+ | 9 | test-architect, performance-profiler, migration-planner, self-healer, convergence-monitor, decision-loop, metaclaw-learner, research-pipeline, security-hardener |
 | V5.1 | 6 | gitops, frontend-designer, asset-generator, comms-assistant, comparative-analyzer, reverse-engineer |
 | V5.2 | 5 | debate-tribunal, ecosystem-scanner, gap-analyzer, recursive-orchestrator, verification-gate |
-| V5.3 | 3 | discuss-phase, stub-detector, plan-checker |
+| V5.3 | 9 | discuss-phase, stub-detector, plan-checker, architecture-designer, intake-interviewer, nyquist-filler, prd-generator, requirements-tracer, scaffold-generator |
+
+## Estimated Costs
+
+| Command | Agents | Estimated Cost |
+|---------|--------|---------------|
+| /production-upgrade | 7-49 | $1-5 per run |
+| /omni-plan | 14-147 | $3-15 per run |
+| /auto-swarm | 7-77 | $1-8 per run |
+| /max-research | 500-1000 | $15-75 per run |
+| /deep-research | 3-10 | $0.50-2 per run |
+
+Costs depend on codebase size, depth setting, and model. Use `--profile budget` for ~40% savings.
 
 ## What Makes This Different
 
@@ -99,7 +111,7 @@ These aren't chat personas -- they're specialized workflows with defined inputs,
 
 ```bash
 bun run skill:check        # Plugin health score (10/10)
-bun run validate           # Agent validation (43/43)
+bun run validate           # Agent validation (49/49)
 bun test                   # Full test suite (118 tests)
 ```
 

@@ -130,10 +130,10 @@ Commands produce artifacts in `.productionos/` that downstream commands consume:
 
 ```bash
 bun run skill:check      # 10-check health dashboard (should be 10/10)
-bun run validate          # Agent frontmatter validation (35/35)
+bun run validate          # Agent frontmatter validation (49/49)
 bun run audit:context     # Token budget tracking
 bun run dashboard         # Review readiness per branch
-bun test                  # Automated test suite (19 tests)
+bun test                  # Automated test suite (118 tests)
 ```
 
 ## Getting Help

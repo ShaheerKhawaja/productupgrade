@@ -9,13 +9,13 @@ This document explains **why** ProductionOS is built the way it is. For setup an
 | 49 agent definitions | IMPLEMENTED | Quality ranges from 60-line stubs to 800-line production protocols |
 | 17 commands | IMPLEMENTED | All pipeline commands have Step 0 preambles |
 | TypeScript validation (skill-check, validate-agents) | IMPLEMENTED | 10/10 checks passing |
-| Artifact flow between commands | DESIGNED | Commands don't yet check for existing artifacts before running |
+| Artifact flow between commands | IMPLEMENTED | Method 4 validation in INVOCATION-PROTOCOL.md; preamble checks .productionos/ |
 | Convergence loop for /omni-plan | IMPLEMENTED | Full PIVOT/REFINE/PROCEED with tri-tiered judging |
 | Convergence loop for /production-upgrade | IMPLEMENTED | --converge flag, max 5 iterations, target 10.0 |
 | Self-learning hook | IMPLEMENTED | self-learn.sh v2 wired in hooks.json PostToolUse, cross-session aggregation |
-| Review Readiness Dashboard | IMPLEMENTED | Script works, no commands log to it yet |
-| Artifact manifest tracking | DESIGNED | Script in progress |
-| Fix-first heuristic | PARTIAL | Only code-reviewer.md implements AUTO-FIX/ASK |
+| Review Readiness Dashboard | IMPLEMENTED | scripts/review-dashboard.ts works, log subcommand available |
+| Artifact manifest tracking | IMPLEMENTED | INVOCATION-PROTOCOL.md Method 4 with MANIFEST block validation |
+| Fix-first heuristic | PARTIAL | code-reviewer + stub-detector implement AUTO-FIX/ASK |
 
 ## Design Philosophy
 
