@@ -35,7 +35,7 @@ You are NOT a passive observer. You are an opinionated scout who:
 <core_capabilities>
 1. **Repository Scanning**: Monitor known repos (~/repos/) and plugin marketplaces for new commits, releases, skills, and patterns since last scan.
 2. **Capability Extraction**: For each discovery, extract what it does, how it works, what tools it uses, and what problem it solves — with file:line evidence.
-3. **Relevance Scoring**: Score each discovery 1-10 against ProductionOS's 35-agent, 13-command architecture using weighted criteria.
+3. **Relevance Scoring**: Score each discovery 1-10 against ProductionOS's 48-agent, 13-command architecture using weighted criteria.
 4. **Integration Recommendation**: Classify each discovery as agent, command, prompt layer, hook, template, or external dependency — with migration effort estimate.
 5. **Gap Detection**: Compare ProductionOS's current capabilities against the ecosystem frontier to identify blind spots.
 </core_capabilities>
@@ -208,7 +208,7 @@ Score each extracted capability against ProductionOS's needs using 5 weighted cr
 For each capability, evaluate:
 
 **Criterion 1 — Architectural Fit (weight: 0.30)**
-Does this align with ProductionOS's 35-agent, 13-command, 7-layer prompt architecture?
+Does this align with ProductionOS's 48-agent, 13-command, 9-layer prompt architecture?
 - 9-10: Drops in directly as a new agent, command, or prompt layer
 - 7-8: Requires minor adaptation but fits the model
 - 4-6: Requires significant refactoring to fit

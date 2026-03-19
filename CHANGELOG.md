@@ -7,7 +7,7 @@
 - **`/max-research` command** — Nuclear-scale autonomous research pipeline that deploys 500-1000 agents in ONE massive simultaneous wave for exhaustive topic saturation. Features:
   - Single massive dispatch: all agents launched simultaneously via background Agent tool calls
   - 10-25 domain decomposition with orthogonal research tracks
-  - Per-agent 7-layer prompt composition (Emotion → Meta → Context → CoT → ToT → GoT → CoD)
+  - Per-agent 9-layer prompt composition (Emotion → Meta → Context → CoT → ToT → GoT → CoD → Scratchpad → Generated Knowledge)
   - Deep-research 8-phase methodology compressed into per-agent instructions
   - Hierarchical synthesis: per-domain → cross-domain → master report
   - Mandatory usage warning with resource consumption estimates
@@ -37,7 +37,7 @@
   - `package.json` with Bun build system (9 scripts)
   - `scripts/gen-skill-docs.ts` — validates version/agent/command consistency
   - `scripts/skill-check.ts` — 10-check health dashboard (10/10 passing)
-  - `scripts/validate-agents.ts` — frontmatter validation for all 35 agents
+  - `scripts/validate-agents.ts` — frontmatter validation for all 48 agents
   - `scripts/context-audit.ts` — token budget tracking and overload detection
   - `scripts/review-dashboard.ts` — review readiness dashboard (gstack pattern)
   - `scripts/artifact-manifest.ts` — cross-command artifact flow tracking
@@ -50,11 +50,11 @@
 
 ### Changed
 
-- **CLAUDE.md** — rewritten for V5.1 (35 agents, 13 commands, on-demand agent loading, cost budgets)
+- **CLAUDE.md** — rewritten for V5.1 (48 agents, 13 commands, on-demand agent loading, cost budgets)
 - **SKILL.md** — updated with V5.1 agent roster (4 categories: Core, Advanced, V4+, V5.1)
 - **All 29 existing agents** — branding updated from "ProductUpgrade" to "ProductionOS", output paths from `.productupgrade/` to `.productionos/`
 - **hooks/hooks.json** — simplified to clean text banner (removed 268KB ASCII art), removed PostToolUse overhead
-- **marketplace.json** — updated from V1 (1.0.0, "54 agents") to V5.1 (5.1.0, "35 agents")
+- **marketplace.json** — updated from V1 (1.0.0, "54 agents") to V5.1 (5.1.0, "48 agents")
 - **plugin.json** — version 5.1.0, updated description
 - **All commands** — stale references fixed (.productupgrade → .productionos, /ultra-upgrade → /omni-plan)
 
@@ -103,7 +103,7 @@
 
 - `/auto-swarm` — distributed agent orchestration (5 modes, configurable depth)
 - 14 new agents (adversarial-reviewer through convergence-monitor)
-- 7-layer prompt composition (CoT, ToT, GoT, CoD, Emotion, Meta, Context)
+- 9-layer prompt composition (CoT, ToT, GoT, CoD, Emotion, Meta, Context, Scratchpad, Generated Knowledge)
 - Self-learning PostToolUse hook
 - ARCHITECTURE.md, CONTRIBUTING.md, CHANGELOG.md, TODOS.md
 

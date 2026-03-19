@@ -1,7 +1,7 @@
 {
   "name": "productionos",
-  "description": "Agentic development OS — 40 agents, 14 commands, tri-tiered evaluation, 7-layer prompt composition, recursive convergence, TypeScript infrastructure, cross-run learning, and GitOps orchestration",
-  "version": "5.2.0",
+  "description": "Your AI engineering team — 43 agents across 14 commands that turn Claude Code into a full engineering department. Built for solo founders and small teams who need 10-person team quality from 1 person + AI.",
+  "version": "5.3.0",
   "author": {
     "name": "Shaheer Khawaja",
     "email": "shaheer@entropyandco.com"

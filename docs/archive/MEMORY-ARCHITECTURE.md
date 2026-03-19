@@ -934,7 +934,7 @@ STAGE 3: RECENCY BOOST
 
 #### 6C: Injection Protocol
 
-Rules are injected into agent prompts at the start of each iteration, following Layer 3 (Context Retrieval) of the 7-layer prompt composition.
+Rules are injected into agent prompts at the start of each iteration, following Layer 3 (Context Retrieval) of the 9-layer prompt composition.
 
 ```markdown
 ## Learned Rules (from previous ProductionOS sessions)

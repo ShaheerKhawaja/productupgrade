@@ -6,7 +6,7 @@ This document explains **why** ProductionOS is built the way it is. For setup an
 
 | Capability | Status | Notes |
 |------------|--------|-------|
-| 35 agent definitions | IMPLEMENTED | Quality ranges from 60-line stubs to 800-line production protocols |
+| 48 agent definitions | IMPLEMENTED | Quality ranges from 60-line stubs to 800-line production protocols |
 | 13 commands | IMPLEMENTED | 3 fully orchestrated, 7 need Step 0 preambles |
 | TypeScript validation (skill-check, validate-agents) | IMPLEMENTED | 10/10 checks passing |
 | Artifact flow between commands | DESIGNED | Commands don't yet check for existing artifacts before running |
@@ -100,7 +100,7 @@ Commands produce artifacts consumed by downstream commands — this is what make
 
 ## Agent Architecture
 
-### Why 35 agents instead of 1 big prompt
+### Why 48 agents instead of 1 big prompt
 
 A single prompt covering security, UX, performance, naming, accessibility, database design, API contracts, business logic, and deployment safety would be 50K+ tokens of instructions. The model would attend to all of them weakly instead of any of them strongly.
 
@@ -286,9 +286,9 @@ Minimum requirements: Claude Code 2.0+, Bun 1.0+, macOS or Linux.
 
 | Dimension | gstack | ProductionOS |
 |-----------|--------|-------------|
-| Architecture | 16 skills (sequential) | 35 agents (parallel swarm) |
+| Architecture | 16 skills (sequential) | 48 agents (parallel swarm) |
 | Multi-model | Eval-only | Tri-tiered tribunal |
-| Prompt layers | Implicit (latent-space) | Explicit 7-layer composition |
+| Prompt layers | Implicit (latent-space) | Explicit 9-layer composition |
 | Convergence | hyper-plan (10 dims) | Parameterized per command |
 | Research | None | /deep-research (8-phase) |
 | Security | Section-level | OWASP/MITRE/NIST agents |

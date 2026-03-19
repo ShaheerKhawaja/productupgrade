@@ -1,138 +1,125 @@
-# ProductionOS -- Agentic Development Operating System
+# ProductionOS -- Your AI Engineering Team
 
-40-agent development OS with 14 commands for Claude Code. Nuclear-scale research, recursive orchestration, multi-agent swarms, and tri-tiered quality evaluation -- all targeting 10/10.
+[![CI](https://github.com/ShaheerKhawaja/ProductionOS/actions/workflows/ci.yml/badge.svg)](https://github.com/ShaheerKhawaja/ProductionOS/actions/workflows/ci.yml)
+
+**The problem:** You're building a production SaaS -- complex backend, frontend, infrastructure, security, billing -- and you need the output of a 10-person engineering team. You have one person.
+
+**The solution:** ProductionOS turns Claude Code into a full engineering department. 48 agents fill the roles you can't hire fast enough: code reviewer, QA engineer, security auditor, solutions architect, CTO-level strategic reviewer, and release manager. One command audits your entire codebase. Another deploys 500 agents to research any topic exhaustively. Another runs recursive improvement loops until every quality dimension hits 10/10.
+
+Built by a solo founder who needed to ship production-grade code at hackathon pace -- and couldn't afford to ship garbage.
+
+## What It Actually Does
+
+Run `/production-upgrade` on any codebase. It:
+1. Discovers your stack, architecture, test coverage, and technical debt
+2. Deploys 7 parallel review agents (CEO strategic, engineering architecture, code quality, security, UX, backend patterns, database audit)
+3. Scores your codebase across 10 quality dimensions with evidence-backed citations
+4. Generates a prioritized fix plan (P0 blockers → P3 polish)
+5. Executes fixes in parallel batches with validation gates between each
+6. Re-scores and shows your BEFORE → AFTER improvement
+
+Total time: 10-30 minutes. Total cost: ~$1-5.
 
 ## Installation
 
 ```bash
+# One command (coming soon)
+npx productionos@latest
+
 # Via Claude Code plugin marketplace
 claude plugin install productupgrade
 
-# Or manual clone
-git clone https://github.com/ShaheerKhawaja/productupgrade.git ~/.claude/plugins/marketplaces/productupgrade
-cd ~/.claude/plugins/marketplaces/productupgrade && bun install
+# Manual
+git clone https://github.com/ShaheerKhawaja/ProductionOS.git ~/.claude/plugins/marketplaces/productupgrade
 ```
 
-## Quick Start
+## Commands
 
+### Start Here
 ```
-/production-upgrade          Audit any codebase with recursive convergence
+/production-upgrade          Audit + fix any codebase (the entry point)
+/productionos-help           Usage guide and recommended workflows
+```
+
+### When You Need More
+```
 /omni-plan                   Full 13-step pipeline with tri-tiered judging
-/auto-swarm "task"           Distributed agent swarm for any task
+/auto-swarm "task"           Throw 7-77 parallel agents at any task
+/deep-research [topic]       8-phase research with citation verification
+/security-audit              7-domain OWASP/MITRE/NIST security sweep
 ```
 
-## Commands (14)
+### When You Need Everything
+```
+/omni-plan-nth               Recursive until 10/10 across ALL dimensions
+/auto-swarm-nth "task"       Recursive swarm until 100% coverage
+/max-research [topic]        500-1000 agents in ONE wave (nuclear option)
+```
 
-### Orchestrative -- recursive, nth-iteration
+### Specialized Tools
+```
+/agentic-eval                CLEAR v2.0 quality framework evaluation
+/context-engineer            Token-optimized context packaging
+/logic-mode [idea]           Business idea → production-ready validation
+/learn-mode [topic]          Interactive code tutor (explain any codebase)
+/productionos-update         Self-update from GitHub
+```
 
-| Command | Description | Agent Scale |
-|---------|-------------|-------------|
-| `/omni-plan-nth [target]` | Recursive orchestration -- chains ALL skills, loops until 10/10 | 21/iter, max 420 |
-| `/auto-swarm-nth "task"` | Recursive swarm -- 100% coverage, 10/10 quality per item | 7/wave, max 140 |
+## 43 Agents
 
-### Pipeline -- structured, single-pass with convergence
+These aren't chat personas -- they're specialized workflows with defined inputs, outputs, tool restrictions, and quality criteria. Read-only agents (judges, auditors) cannot modify code. Execution agents (fixers, healers) cannot evaluate their own work.
 
-| Command | Description | Agent Scale |
-|---------|-------------|-------------|
-| `/omni-plan [target]` | 13-step pipeline with tri-tiered judging | 14/phase |
-| `/auto-swarm "task" [--depth]` | Distributed agent swarm (shallow, medium, deep, ultra) | 7/wave, max 77 |
-| `/production-upgrade [mode]` | Recursive product audit (full, audit, ux, fix, validate, judge) | 7/phase, max 49 |
-
-### Nuclear Scale
-
-| Command | Description | Agent Scale |
-|---------|-------------|-------------|
-| `/max-research [topic]` | 500-1000 agents in ONE massive wave -- exhaustive research | 500-1000 (single wave) |
-
-### Specialized
-
-| Command | Description |
-|---------|-------------|
-| `/deep-research [topic]` | 8-phase autonomous research pipeline |
-| `/agentic-eval [target]` | CLEAR v2.0 framework evaluation |
-| `/security-audit [target]` | 7-domain OWASP/MITRE/NIST security audit |
-| `/context-engineer [target]` | Token-optimized context packaging |
-| `/logic-mode [idea]` | Business idea validation pipeline |
-| `/learn-mode [topic]` | Interactive code tutor |
-| `/productionos-update` | Self-update from GitHub |
-
-## Agents (40)
-
-| Category | Count | Agents |
-|----------|-------|--------|
+| Generation | Count | Agents |
+|------------|-------|--------|
 | Core | 11 | llm-judge, deep-researcher, code-reviewer, ux-auditor, dynamic-planner, business-logic-validator, dependency-scanner, api-contract-validator, naming-enforcer, refactoring-agent, database-auditor |
 | Advanced | 9 | adversarial-reviewer, thought-graph-builder, persona-orchestrator, density-summarizer, context-retriever, frontend-scraper, vulnerability-explorer, swarm-orchestrator, guardrails-controller |
 | V4+ | 9 | test-architect, performance-profiler, migration-planner, self-healer, convergence-monitor, decision-loop, metaclaw-learner, research-pipeline, security-hardener |
 | V5.1 | 6 | gitops, frontend-designer, asset-generator, comms-assistant, comparative-analyzer, reverse-engineer |
 | V5.2 | 5 | debate-tribunal, ecosystem-scanner, gap-analyzer, recursive-orchestrator, verification-gate |
+| V5.3 | 3 | discuss-phase, stub-detector, plan-checker |
 
-Agents are loaded on-demand from `agents/`. Commands only read agent files when referenced during execution -- no preloading.
+## What Makes This Different
 
-## Orchestration Hierarchy
+**Recursive convergence.** Other tools do one review pass. ProductionOS loops: review → plan → fix → validate → re-score. If quality drops, it rolls back. If progress stalls, it pivots strategy. It doesn't stop until the target is hit or it proves the target is unreachable.
 
-```
-/omni-plan-nth (TOP LEVEL -- invokes any command, loops until 10/10)
-    |
-    +-- /omni-plan (13-step pipeline per iteration)
-    |   +-- /deep-research (Step 1)
-    |   +-- /agentic-eval (Step 6)
-    |   +-- /auto-swarm-nth (Step 9 -- execution engine)
-    |   +-- /ship (Step 13, external)
-    |
-    +-- /auto-swarm-nth (parallel execution, recursive quality gates)
-    |
-    +-- /max-research (NUCLEAR -- 500-1000 agents, single massive wave)
-    |
-    +-- /production-upgrade (structured audit)
-    +-- /deep-research (topic research)
-    +-- /security-audit (security-focused audit)
-    +-- /agentic-eval (quality evaluation)
-```
+**Evaluators can't grade their own work.** The agents that fix code are different from the agents that judge it. The judge is read-only -- it cannot modify code, only score it. This prevents the self-grading inflation problem that plagues single-pass AI code review.
 
-## Features
+**Tri-tiered tribunal.** Three independent judges with different perspectives (correctness, practicality, adversarial) must reach consensus. If they disagree, they debate. This catches issues that any single reviewer would miss.
 
-**7-Layer Prompt Composition** -- agents in deep/ultra mode receive layered prompts:
+**Observable execution.** Cost estimation before every expensive run. Convergence dashboard showing real-time grade progression. Run history tracking across sessions. You see the machine working, not a black box.
 
-1. Emotion Prompting -- stakes calibrated to severity
-2. Meta-Prompting -- self-reflection before action
-3. Context Retrieval -- RAG from memory and context7
-4. Chain of Thought -- step-by-step reasoning
-5. Tree of Thought -- 3-branch exploration with scoring
-6. Graph of Thought -- finding network with edge detection
-7. Chain of Density -- compression for inter-iteration handoff
+## Built For
 
-**Tri-Tiered Evaluation** -- three independent judges score every output:
-
-- Judge 1 (correctness) -- factual accuracy, code validity
-- Judge 2 (practicality) -- real-world applicability, maintainability
-- Judge 3 (adversarial) -- attack surface, edge cases, failure modes
-
-**Recursive Convergence** -- commands loop with PIVOT/REFINE/PROCEED decisions until target scores are met. Regression protection rolls back any dimension drop greater than 0.5.
-
-**Guardrails** -- pre-commit diff review, pre-push approval, protected files (.env, keys, certs), max 15 files/batch, automatic rollback on test failure or score regression.
-
-## Output
-
-All pipeline artifacts go to `.productionos/` in the target project. Artifacts are tracked via manifest for cross-command consumption.
+- Solo founders and small teams building production SaaS
+- Semi-technical CTOs who think in architecture, not syntax
+- Anyone who needs 10-person engineering team quality from 1 person + AI
+- Hackathon-pace shipping with production-grade rigor
 
 ## Validation
 
 ```bash
-bun run skill:check        # 10-check health dashboard
-bun run validate           # Agent frontmatter validation (40/40)
-bun run audit:context      # Token budget tracking
-bun run dashboard          # Review readiness dashboard
-bun test                   # Automated test suite
+bun run skill:check        # Plugin health score (10/10)
+bun run validate           # Agent validation (43/43)
+bun test                   # Full test suite (118 tests)
 ```
 
-## Requirements
+## Tech
 
-- [Claude Code](https://claude.com/claude-code) CLI
-- [Bun](https://bun.sh) >= 1.0.0 (for TypeScript infrastructure scripts)
+- 43 agent definitions with research-grounded prompt composition
+- 9-layer prompt architecture (Emotion → Meta → Scratchpad → Context → CoT → ToT → GoT → CoD → Generated Knowledge)
+- Executable convergence engine (TypeScript, Algorithm 1 + Algorithm 6 from formal spec)
+- Cost tracking and estimation (per-agent, per-run)
+- Security hooks (PreToolUse protected file guard)
+- CI/CD pipeline (GitHub Actions: validate + lint + convergence check)
+- Zero runtime dependencies
 
 ## Version
 
-5.2.0
+5.3.0
+
+## Author
+
+[Shaheer Khawaja](https://github.com/ShaheerKhawaja) / [EntropyandCo](https://entropyandco.com)
 
 ## License
 

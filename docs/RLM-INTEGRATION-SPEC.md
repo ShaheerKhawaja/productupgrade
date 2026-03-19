@@ -142,8 +142,8 @@ Utility:
 
 ### 2.3 Agent Count Update
 
-Current: 35 agents + 2 stubs (37 files in agents/)
-After RLM: 35 existing + 3 new = 38 agents
+Current: 48 agents (43 existing + 5 auto-mode agents)
+After RLM: 48 existing + 3 new = 51 agents
 
 | Category | Count | New |
 |----------|-------|-----|
@@ -1590,4 +1590,4 @@ P2-34-35 (version + changelog) ─┘
 
 ---
 
-*This specification was synthesized from ProductionOS 5.1.0 (commit 6c522ef), including CLAUDE.md, ARCHITECTURE.md, all 13 command definitions, all 37 agent definitions, RECURSIVE-PATTERNS.md (Layers 16-21), convergence-detection.md (6 algorithms), PROMPT-COMPOSITION.md (7-layer stack + extended matrix), INVOCATION-PROTOCOL.md, PREAMBLE.md, and project memory files documenting the evolution from ProductionOS V2.1 through V4.0 to ProductionOS 5.1.0.*
+*This specification was synthesized from ProductionOS 5.1.0 (commit 6c522ef), including CLAUDE.md, ARCHITECTURE.md, all 13 command definitions, all 37 agent definitions, RECURSIVE-PATTERNS.md (Layers 16-21), convergence-detection.md (6 algorithms), PROMPT-COMPOSITION.md (9-layer stack + extended matrix), INVOCATION-PROTOCOL.md, PREAMBLE.md, and project memory files documenting the evolution from ProductionOS V2.1 through V4.0 to ProductionOS 5.1.0.*

@@ -1,6 +1,6 @@
-# ProductionOS 5.2 — Agentic Development Operating System
+# ProductionOS 5.3 — Your AI Engineering Team
 
-40-agent development OS with 14 commands, 7-layer prompt composition, tri-tiered evaluation, recursive nth-iteration convergence targeting 10/10, and nuclear-scale max-research.
+48-agent AI engineering team with 15 commands that turn Claude Code into a full engineering department. Built for solo founders and small teams who need 10-person team quality from 1 person + AI. Recursive convergence, tri-tiered evaluation, 9-layer prompt composition, executable convergence engine, cost tracking, and security enforcement.
 
 ## Commands
 
@@ -74,11 +74,11 @@
 
 ## Agent Loading
 
-Agent definitions live in `agents/` (40 files). Commands load agents on-demand — do NOT preload all agent files. Only read the specific agent file when a command references it during execution.
+Agent definitions live in `agents/` (48 files). Commands load agents on-demand — do NOT preload all agent files. Only read the specific agent file when a command references it during execution.
 
 ## Prompting Architecture
 
-Agents in deep/ultra mode receive 7-layer composed prompts (see `templates/PROMPT-COMPOSITION.md`):
+Agents in deep/ultra mode receive 9-layer composed prompts (see `templates/PROMPT-COMPOSITION.md`):
 1. **Emotion Prompting** — Stakes calibrated to severity
 2. **Meta-Prompting** — Self-reflection before action
 3. **Context Retrieval** — RAG from memory + context7
@@ -86,6 +86,8 @@ Agents in deep/ultra mode receive 7-layer composed prompts (see `templates/PROMP
 5. **Tree of Thought** — 3-branch exploration with scoring
 6. **Graph of Thought** — Finding network with edge detection
 7. **Chain of Density** — Compression for inter-iteration handoff
+8. **Scratchpad** — Working memory for intermediate reasoning
+9. **Generated Knowledge** — Pre-generate facts before answering
 
 ## Guardrails (Non-Negotiable)
 

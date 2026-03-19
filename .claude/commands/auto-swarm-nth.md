@@ -16,6 +16,10 @@ arguments:
     description: "Agents per wave (default: 7, max: 7)"
     required: false
     default: "7"
+  - name: max_cost
+    description: "Maximum accumulated cost in USD before halting (default: 20)"
+    required: false
+    default: "20"
 ---
 
 # Auto-Swarm Nth — Recursive Swarm Until Complete
@@ -104,6 +108,27 @@ WAVE N
 ├── PHASE 6: DECIDE — Continue, pivot, or deliver
 └── OUTPUT: .productionos/SWARM-WAVE-{N}.md
 ```
+
+### Phase 0: Cost Ceiling Check (MANDATORY — runs before every wave)
+
+Before any work in this wave, enforce the cost ceiling:
+
+```
+1. Read .productionos/TOKEN-BUDGET.md (if it exists) to get accumulated_cost
+2. If TOKEN-BUDGET.md does not exist, estimate accumulated_cost as:
+   wave_number × $0.75 (conservative per-wave average)
+3. max_cost = $ARGUMENTS.max_cost (default: $20)
+4. IF accumulated_cost >= max_cost:
+   → HALT IMMEDIATELY
+   → Print: "Cost ceiling reached ($X.XX of $max_cost). Use --max-cost to increase."
+   → Write final state to .productionos/SWARM-NTH-COST-HALT.md
+   → Do NOT proceed to Phase 1
+5. IF accumulated_cost >= max_cost × 0.8:
+   → Print WARNING: "Approaching cost ceiling ($X.XX of $max_cost). ${remaining} remaining."
+6. Log cost check to .productionos/SWARM-COVERAGE.md
+```
+
+**This check is non-negotiable. No wave may begin without passing the cost ceiling check.**
 
 ### Phase 1: Gap Analysis
 
@@ -263,6 +288,7 @@ The handoff protocol:
 
 ## Guardrails
 
+- **Cost ceiling: $ARGUMENTS.max_cost (default $20). Enforced via Phase 0 cost check before every wave. Hard halt when exceeded.**
 - Maximum waves: $ARGUMENTS.max_waves (default 20, hard cap 50)
 - Agents per wave: $ARGUMENTS.swarm_size (default 7, max 7)
 - Per-wave token budget: 400K

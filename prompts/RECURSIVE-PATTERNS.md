@@ -2,7 +2,7 @@
 
 **Research Foundation:** Recursive Language Models (Zhang et al. 2025), ReCAP (Li et al. 2025), Promptbreeder (Fernando et al. 2023), Self-Refine (Madaan et al. 2023), Chain-of-Verification (Dhuliawala et al. 2023), Chain of Density (Adams et al. 2023), Plan-and-Act (Wang et al. 2025)
 
-**Purpose:** Six recursive prompt patterns that extend ProductionOS's existing 16 layers (00-15) and 7-layer composition stack. Each pattern uses self-reference, depth-bounded recursion, and convergence criteria to produce outputs that single-pass prompting cannot achieve.
+**Purpose:** Six recursive prompt patterns that extend ProductionOS's existing 16 layers (00-15) and 9-layer composition stack. Each pattern uses self-reference, depth-bounded recursion, and convergence criteria to produce outputs that single-pass prompting cannot achieve.
 
 **Integration:** These become Layers 16-21 in the `prompts/` directory and extend the composition function in `templates/PROMPT-COMPOSITION.md`.
 
@@ -16,7 +16,7 @@
 4. [Pattern 4: Recursive Verification Stack (Layer 19)](#pattern-4-recursive-verification-stack)
 5. [Pattern 5: Recursive Plan-Execute-Evaluate-Replan (Layer 20)](#pattern-5-recursive-plan-execute-evaluate-replan)
 6. [Pattern 6: Recursive Prompt Evolution (Layer 21)](#pattern-6-recursive-prompt-evolution)
-7. [Integration with 7-Layer Composition](#integration-with-7-layer-composition)
+7. [Integration with 9-Layer Composition](#integration-with-9-layer-composition)
 8. [Updated Application Matrix](#updated-application-matrix)
 9. [Cost and Depth Budgets](#cost-and-depth-budgets)
 10. [Sources](#sources)
@@ -892,7 +892,7 @@ Every recursive template includes these non-negotiable guards:
 | `prompts/README.md` | Add layers 16-21 to the index table |
 | `templates/PROMPT-COMPOSITION.md` | Extend architecture diagram, composition function, application matrix |
 | `CLAUDE.md` | Update prompt layer count (16 → 22), update layer list |
-| `ARCHITECTURE.md` | Update 7-layer references to 13-layer |
+| `ARCHITECTURE.md` | Update 9-layer references to 13-layer |
 | `agents/verification-gate.md` | Reference Layer 19 for L2/L3 verification |
 | `agents/density-summarizer.md` | Reference Layer 18 for hierarchical mode |
 | `agents/dynamic-planner.md` | Reference Layer 20 for PEER protocol |

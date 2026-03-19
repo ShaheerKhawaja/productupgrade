@@ -1,25 +1,29 @@
-# 7-Layer Prompt Composition Template
+# 9-Layer Prompt Composition Template
 
-Every agent in `/omni-plan` and `/auto-swarm deep` mode receives a composed prompt built from these 7 layers. Layers are applied selectively based on the agent's role and the current iteration context.
+Every agent in `/omni-plan` and `/auto-swarm deep` mode receives a composed prompt built from these 9 layers. Layers are applied selectively based on the agent's role and the current iteration context.
 
 ## Layer Architecture
 
 ```
-┌─────────────────────────────────────────┐
-│ Layer 7: Chain of Density (compression) │  ← Inter-iteration handoff
-├─────────────────────────────────────────┤
-│ Layer 6: Graph of Thought (network)     │  ← Finding relationships
-├─────────────────────────────────────────┤
-│ Layer 5: Tree of Thought (branching)    │  ← Exploration
-├─────────────────────────────────────────┤
-│ Layer 4: Chain of Thought (reasoning)   │  ← Step-by-step logic
-├─────────────────────────────────────────┤
-│ Layer 3: Context Retrieval (RAG)        │  ← Documentation + memory
-├─────────────────────────────────────────┤
-│ Layer 2: Meta-Prompting (reflection)    │  ← Self-awareness
-├─────────────────────────────────────────┤
-│ Layer 1: Emotion Prompting (stakes)     │  ← Motivation
-└─────────────────────────────────────────┘
+┌───────────────────────────────────────────────────┐
+│ Layer 8: Generated Knowledge (domain practices)   │  ← Pre-evaluation standards
+├───────────────────────────────────────────────────┤
+│ Layer 7: Chain of Density (compression)           │  ← Inter-iteration handoff
+├───────────────────────────────────────────────────┤
+│ Layer 6: Graph of Thought (network)               │  ← Finding relationships
+├───────────────────────────────────────────────────┤
+│ Layer 5: Tree of Thought (branching)              │  ← Exploration
+├───────────────────────────────────────────────────┤
+│ Layer 4: Chain of Thought (reasoning)             │  ← Step-by-step logic
+├───────────────────────────────────────────────────┤
+│ Layer 3: Context Retrieval (RAG)                  │  ← Documentation + memory
+├───────────────────────────────────────────────────┤
+│ Layer 2.5: Scratchpad (inner monologue)           │  ← Private reasoning
+├───────────────────────────────────────────────────┤
+│ Layer 2: Meta-Prompting (reflection)              │  ← Self-awareness
+├───────────────────────────────────────────────────┤
+│ Layer 1: Emotion Prompting (stakes)               │  ← Motivation
+└───────────────────────────────────────────────────┘
 ```
 
 ## Layer 1: Emotion Prompting
@@ -50,6 +54,22 @@ Before you begin your analysis, pause and answer these questions:
 <meta_reflection>
 {agent fills this section before proceeding}
 </meta_reflection>
+```
+
+## Layer 2.5: Scratchpad (Inner Monologue)
+Forces agents to reason privately before producing findings.
+
+```markdown
+Before producing your analysis, reason through your approach in a <think> block:
+
+<think>
+1. What am I looking for specifically?
+2. What are the most likely issues in this type of code?
+3. What biases might I have from prior iterations?
+4. What would I miss if I rushed?
+</think>
+
+Your <think> block is private — only your final analysis is shared.
 ```
 
 ## Layer 3: Context Retrieval
@@ -119,16 +139,33 @@ Pass 3: Compress to 25% — one line per finding, scores inline
 The Pass 3 output is what the next iteration reads.
 ```
 
+## Layer 8: Generated Knowledge Prompting
+Before evaluating code, generate domain-specific best practices.
+
+```markdown
+Before analyzing the code, generate 5 established best practices for this domain:
+
+<generated_knowledge>
+1. [Best practice 1 with source]
+2. [Best practice 2 with source]
+3. [Best practice 3 with source]
+4. [Best practice 4 with source]
+5. [Best practice 5 with source]
+</generated_knowledge>
+
+Now evaluate the code against these generated standards.
+```
+
 ## Application Matrix
 
-| Agent Type | L1 | L2 | L3 | L4 | L5 | L6 | L7 |
-|-----------|-----|-----|-----|-----|-----|-----|-----|
-| Review agents | ✓ | ✓ | ✓ | ✓ | | | |
-| Planning agents | ✓ | ✓ | ✓ | | ✓ | | |
-| Execution agents | ✓ | | ✓ | ✓ | | | |
-| Judge agents | ✓ | ✓ | ✓ | ✓ | | | ✓ |
-| Synthesis agents | | | ✓ | | | ✓ | ✓ |
-| Adversarial agents | ✓ | ✓ | | ✓ | ✓ | | |
+| Agent Type | L1 | L2 | L2.5 | L3 | L4 | L5 | L6 | L7 | L8 |
+|-----------|-----|-----|------|-----|-----|-----|-----|-----|-----|
+| Review agents | ✓ | ✓ | ✓ | ✓ | ✓ | | | | ✓ |
+| Planning agents | ✓ | ✓ | ✓ | ✓ | | ✓ | | | |
+| Execution agents | ✓ | | ✓ | ✓ | ✓ | | | | |
+| Judge agents | ✓ | ✓ | ✓ | ✓ | ✓ | | | ✓ | ✓ |
+| Synthesis agents | | | ✓ | ✓ | | | ✓ | ✓ | |
+| Adversarial agents | ✓ | ✓ | ✓ | | ✓ | ✓ | | | |
 
 ## Composition Function
 
@@ -141,6 +178,8 @@ def compose_prompt(agent_type: str, severity: str, iteration: int) -> str:
         prompt_parts.append(emotion_layer(severity))
     if "L2" in layers:
         prompt_parts.append(meta_layer())
+    if "L2.5" in layers:
+        prompt_parts.append(scratchpad_layer())
     if "L3" in layers:
         prompt_parts.append(context_layer())
     if "L4" in layers:
@@ -151,6 +190,8 @@ def compose_prompt(agent_type: str, severity: str, iteration: int) -> str:
         prompt_parts.append(got_layer())
     if "L7" in layers and iteration > 1:
         prompt_parts.append(cod_layer(iteration - 1))
+    if "L8" in layers:
+        prompt_parts.append(generated_knowledge_layer())
 
     return "\n\n".join(prompt_parts)
 ```

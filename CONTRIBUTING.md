@@ -18,7 +18,7 @@ productupgrade/
 ├── .claude-plugin/           # Plugin manifest + marketplace listing
 ├── .claude/commands/         # 13 command definitions (.md)
 ├── .claude/skills/           # Skill definition (SKILL.md)
-├── agents/                   # 35 agent definitions (.md)
+├── agents/                   # 48 agent definitions (.md)
 ├── templates/                # Shared templates (preamble, rubric, convergence)
 ├── prompts/                  # Prompt engineering technique files
 ├── scripts/                  # TypeScript infrastructure (Bun)

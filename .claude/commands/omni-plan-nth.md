@@ -13,6 +13,10 @@ arguments:
     description: "Focus area: architecture | security | ux | performance | full (default: full)"
     required: false
     default: "full"
+  - name: max_cost
+    description: "Maximum accumulated cost in USD before halting (default: 20)"
+    required: false
+    default: "20"
 ---
 
 # Omni-Plan Nth — Recursive Orchestration Until Perfect
@@ -121,6 +125,27 @@ ITERATION N
 └── OUTPUT: .productionos/ITERATION-{N}.md
 ```
 
+### Phase 0: Cost Ceiling Check (MANDATORY — runs before every iteration)
+
+Before any work in this iteration, enforce the cost ceiling:
+
+```
+1. Read .productionos/TOKEN-BUDGET.md (if it exists) to get accumulated_cost
+2. If TOKEN-BUDGET.md does not exist, estimate accumulated_cost as:
+   iteration_number × $1.00 (conservative per-iteration average)
+3. max_cost = $ARGUMENTS.max_cost (default: $20)
+4. IF accumulated_cost >= max_cost:
+   → HALT IMMEDIATELY
+   → Print: "Cost ceiling reached ($X.XX of $max_cost). Use --max-cost to increase."
+   → Write final state to .productionos/OMNI-NTH-COST-HALT.md
+   → Do NOT proceed to Phase 1
+5. IF accumulated_cost >= max_cost × 0.8:
+   → Print WARNING: "Approaching cost ceiling ($X.XX of $max_cost). ${remaining} remaining."
+6. Log cost check to .productionos/CONVERGENCE-LOG.md
+```
+
+**This check is non-negotiable. No iteration may begin without passing the cost ceiling check.**
+
 ### Phase 1: Assess
 
 Read the latest score (from previous iteration or baseline). Identify:
@@ -138,7 +163,7 @@ Based on the weak dimensions, select which skills and commands to invoke THIS it
 | Code Quality | `/plan-eng-review`, code-reviewer, refactoring-agent, naming-enforcer | Read diff, apply fixes, re-lint |
 | Security | `/security-audit`, security-hardener, vulnerability-explorer, adversarial-reviewer | OWASP scan, dependency audit |
 | Performance | performance-profiler, database-auditor | N+1 detection, index analysis |
-| UX/UI | `/plan-design-review`, frontend-designer, ux-auditor, frontend-scraper | Design audit, component review |
+| UX/UI | `/plan-design-review` (external -- skip if unavailable), frontend-designer, ux-auditor, frontend-scraper | Design audit, component review |
 | Test Coverage | test-architect, `/qa` | Generate tests, run coverage |
 | Accessibility | ux-auditor, frontend-scraper | WCAG audit, contrast check |
 | Documentation | comms-assistant, `/plan-ceo-review` | README accuracy, API docs |
@@ -272,6 +297,7 @@ You can invoke `/auto-swarm-nth` as a sub-command for execution-heavy phases. Yo
 
 ## Guardrails
 
+- **Cost ceiling: $ARGUMENTS.max_cost (default $20). Enforced via Phase 0 cost check before every iteration. Hard halt when exceeded.**
 - Maximum iterations: $ARGUMENTS.max_iterations (default 20, hard cap 50)
 - Per-iteration agent limit: 21 agents
 - Per-iteration token budget: 800K

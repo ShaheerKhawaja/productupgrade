@@ -7,7 +7,7 @@ description: "Show how to use ProductionOS — explains commands, recommended wo
 
 ## Getting Started
 
-ProductionOS is an agentic development operating system with 35 agents and 13 commands. Here's how to use it effectively.
+ProductionOS is an agentic development operating system with 48 agents and 13 commands. Here's how to use it effectively.
 
 ## Step 0: Preamble
 

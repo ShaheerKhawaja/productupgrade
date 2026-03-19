@@ -5,7 +5,29 @@
       "hooks": [
         {
           "type": "command",
-          "command": "echo 'ProductionOS 5.2 — 40 agents | 14 commands | tri-tiered evaluation\n\nOrchestrative:\n  /omni-plan-nth           Recursive until 10/10 (chains all skills)\n  /auto-swarm-nth \"task\"   Recursive swarm (100% coverage)\n\nPipeline:\n  /omni-plan               13-step orchestrative pipeline\n  /auto-swarm \"task\"       Distributed agent swarm\n  /production-upgrade      Recursive product audit\n\nNuclear:\n  /max-research             500-1000 agent exhaustive research\n\nSpecialized:\n  /deep-research           8-phase research pipeline\n  /agentic-eval            CLEAR v2.0 evaluation\n  /security-audit          7-domain security audit\n  /context-engineer        Token-optimized context\n  /logic-mode              Business idea validation\n  /learn-mode              Interactive code tutor\n  /productionos-update     Self-update from GitHub\n  /productionos-help       Usage guide and workflows'"
+          "command": "echo 'ProductionOS 5.3 — Your AI Engineering Team\n43 agents | 14 commands | 118 tests passing\n\nStart here:\n  /production-upgrade      Audit + fix any codebase\n  /productionos-help       Usage guide\n\nScale up:\n  /omni-plan               13-step pipeline with tri-tiered judging\n  /auto-swarm \"task\"       Parallel agent swarm\n  /deep-research [topic]   8-phase research\n  /security-audit          7-domain security sweep\n\nMax power:\n  /omni-plan-nth           Recursive until 10/10\n  /auto-swarm-nth \"task\"   Recursive swarm (100% coverage)\n  /max-research [topic]    500-1000 agents (nuclear)\n\nTools:\n  /agentic-eval /context-engineer /logic-mode /learn-mode /productionos-update'; command -v bun >/dev/null 2>&1 || echo 'WARNING: bun not installed — validation scripts unavailable. Core commands still work.'"
+        }
+      ]
+    }
+  ],
+  "PreToolUse": [
+    {
+      "matcher": "Edit|Write",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash ~/.claude/plugins/marketplaces/productupgrade/hooks/protected-file-guard.sh"
+        }
+      ]
+    }
+  ],
+  "PostToolUse": [
+    {
+      "matcher": "Edit|Write",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash ~/.claude/plugins/marketplaces/productupgrade/hooks/self-learn.sh"
         }
       ]
     }

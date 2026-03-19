@@ -245,9 +245,9 @@ DISPATCH BLOCK (single message, {agents} tool calls):
 └── TOTAL: {agents} agents launched simultaneously
 ```
 
-### Per-Agent Prompt Composition (7-Layer)
+### Per-Agent Prompt Composition (9-Layer)
 
-Each agent prompt is composed using the ProductionOS 7-layer architecture (`templates/PROMPT-COMPOSITION.md`):
+Each agent prompt is composed using the ProductionOS 9-layer architecture (`templates/PROMPT-COMPOSITION.md`):
 
 **Layer 1 — Emotion Prompting:**
 "This research will directly inform a critical product decision. The quality of YOUR findings determines whether we build the right thing. Inaccurate research = wasted engineering months."

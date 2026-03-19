@@ -1,0 +1,187 @@
+#!/usr/bin/env bun
+/**
+ * cost-tracker.ts — Run lifecycle tracking for ProductionOS.
+ *
+ * Tracks every command invocation: timing, agents dispatched, files modified,
+ * tests run, convergence state, and estimated token/cost data.
+ * Append-only JSON storage in ~/.productionos/runs/.
+ *
+ * Zero external dependencies. TypeScript strict mode.
+ */
+
+import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from "fs";
+import { join } from "path";
+
+// ─── Interfaces ────────────────────────────────────────────────
+
+export interface RunRecord {
+  id: string;
+  command: string;
+  startTime: string;
+  endTime: string | null;
+  durationMs: number | null;
+  agentsDispatched: number;
+  filesModified: number;
+  testsRun: number;
+  testsPassed: number;
+  convergenceState?: string;
+  estimatedTokens: number;
+  estimatedCostUSD: number;
+}
+
+// ─── Constants ─────────────────────────────────────────────────
+
+const RUNS_DIR = join(
+  process.env["HOME"] ?? process.env["USERPROFILE"] ?? require("os").homedir(),
+  ".productionos",
+  "runs"
+);
+
+// ─── Helpers ───────────────────────────────────────────────────
+
+function ensureRunsDir(): void {
+  if (!existsSync(RUNS_DIR)) {
+    mkdirSync(RUNS_DIR, { recursive: true });
+  }
+}
+
+function runFilePath(id: string): string {
+  return join(RUNS_DIR, `${id}.json`);
+}
+
+function generateId(command: string): string {
+  const now = new Date();
+  const pad = (n: number, w: number = 2): string => String(n).padStart(w, "0");
+  const date = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
+  const time = `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+  return `${date}T${time}-${command}`;
+}
+
+function writeRun(run: RunRecord): void {
+  ensureRunsDir();
+  writeFileSync(runFilePath(run.id), JSON.stringify(run, null, 2), "utf-8");
+}
+
+function readRun(filePath: string): RunRecord | null {
+  try {
+    const raw = readFileSync(filePath, "utf-8");
+    return JSON.parse(raw) as RunRecord;
+  } catch {
+    return null;
+  }
+}
+
+// ─── Core Functions ────────────────────────────────────────────
+
+/** Start a new tracked run. Creates a JSON file immediately with null endTime. */
+export function startRun(command: string): RunRecord {
+  const run: RunRecord = {
+    id: generateId(command),
+    command,
+    startTime: new Date().toISOString(),
+    endTime: null,
+    durationMs: null,
+    agentsDispatched: 0,
+    filesModified: 0,
+    testsRun: 0,
+    testsPassed: 0,
+    estimatedTokens: 0,
+    estimatedCostUSD: 0,
+  };
+  writeRun(run);
+  return run;
+}
+
+/** End a run. Merges partial results, computes duration, writes final state. */
+export function endRun(run: RunRecord, results: Partial<RunRecord>): void {
+  const now = new Date();
+  const startMs = new Date(run.startTime).getTime();
+  const merged: RunRecord = {
+    ...run,
+    ...results,
+    id: run.id,
+    command: run.command,
+    startTime: run.startTime,
+    endTime: now.toISOString(),
+    durationMs: now.getTime() - startMs,
+  };
+  writeRun(merged);
+}
+
+/** Read all run files, optionally filtered to the last N days. */
+export function getRunHistory(days?: number): RunRecord[] {
+  ensureRunsDir();
+  const files = readdirSync(RUNS_DIR).filter((f) => f.endsWith(".json")).sort();
+  const runs: RunRecord[] = [];
+
+  const cutoff = days != null ? Date.now() - days * 86_400_000 : 0;
+
+  for (const file of files) {
+    const run = readRun(join(RUNS_DIR, file));
+    if (!run) continue;
+    if (cutoff > 0 && new Date(run.startTime).getTime() < cutoff) continue;
+    runs.push(run);
+  }
+
+  return runs;
+}
+
+/** Format an array of RunRecords as an ASCII table summary. */
+export function formatRunSummary(runs: RunRecord[]): string {
+  if (runs.length === 0) return "No runs recorded yet.";
+
+  const header = [
+    "ID".padEnd(32),
+    "Command".padEnd(20),
+    "Duration".padStart(10),
+    "Agents".padStart(7),
+    "Files".padStart(6),
+    "Tests".padStart(10),
+    "Tokens".padStart(10),
+    "Cost".padStart(8),
+  ].join(" | ");
+
+  const separator = "-".repeat(header.length);
+
+  const rows = runs.map((r) => {
+    const dur = r.durationMs != null ? `${(r.durationMs / 1000).toFixed(1)}s` : "running";
+    const tests = r.testsRun > 0 ? `${r.testsPassed}/${r.testsRun}` : "-";
+    const tokens = r.estimatedTokens > 0 ? r.estimatedTokens.toLocaleString() : "-";
+    const cost = r.estimatedCostUSD > 0 ? `$${r.estimatedCostUSD.toFixed(2)}` : "-";
+
+    return [
+      r.id.padEnd(32),
+      r.command.padEnd(20),
+      dur.padStart(10),
+      String(r.agentsDispatched).padStart(7),
+      String(r.filesModified).padStart(6),
+      tests.padStart(10),
+      tokens.padStart(10),
+      cost.padStart(8),
+    ].join(" | ");
+  });
+
+  const totalCost = runs.reduce((s, r) => s + r.estimatedCostUSD, 0);
+  const totalTokens = runs.reduce((s, r) => s + r.estimatedTokens, 0);
+  const footer = `Totals: ${runs.length} runs | ${totalTokens.toLocaleString()} tokens | $${totalCost.toFixed(2)}`;
+
+  return [separator, header, separator, ...rows, separator, footer, separator].join("\n");
+}
+
+// ─── CLI Entry Point ───────────────────────────────────────────
+
+if (import.meta.main) {
+  const args = process.argv.slice(2);
+  const subcmd = args[0];
+
+  if (subcmd === "start" && args[1]) {
+    const run = startRun(args[1]);
+    process.stdout.write(`Run started: ${run.id}\n`);
+  } else if (subcmd === "list") {
+    const days = args[1] ? parseInt(args[1], 10) : undefined;
+    const runs = getRunHistory(days);
+    process.stdout.write(formatRunSummary(runs) + "\n");
+  } else {
+    process.stdout.write("Usage: cost-tracker.ts <start COMMAND | list [DAYS]>\n");
+  }
+}

@@ -1,93 +1,126 @@
 ---
 name: productionos
-description: "ProductionOS 5.2 — 40-agent agentic development OS for Claude Code. 14 commands including nuclear-scale /max-research (500-1000 simultaneous agents), recursive /omni-plan-nth orchestration targeting 10/10, distributed /auto-swarm parallel execution, tri-tiered LLM judge evaluation, 7-layer prompt composition, and cross-run learning."
+description: "ProductionOS 5.3 — Your AI engineering team. 43 agents that fill roles you can't hire fast enough: code reviewer, QA engineer, security auditor, solutions architect, CTO reviewer, release manager. Built by a solo founder shipping a complex SaaS at hackathon pace."
 ---
 
-# ProductionOS 5.2 — Agentic Development Operating System
+# ProductionOS 5.3 — Your AI Engineering Team
 
-ProductionOS transforms Claude Code into a full development operating system. It deploys 40 specialized AI agents across 14 commands to research, build, audit, fix, and ship code at scale — targeting 10/10 quality across every dimension through recursive convergence loops.
+## The Problem
 
-## What It Does
+You're building a production SaaS — complex backend, frontend, infrastructure, security, billing — and you need the output of a 10-person engineering team. You have one person. You think in architecture and systems, not syntax. You need someone to review your code, find your security holes, validate your business logic, and ship without breaking things.
 
-ProductionOS is a Claude Code plugin that adds multi-agent orchestration to your development workflow. Instead of working with a single AI assistant, you deploy coordinated agent swarms that research topics exhaustively, audit codebases systematically, and fix issues in parallel — then evaluate results through a tri-tiered judge panel until quality converges at 10/10.
+## The Solution
 
-**Core capabilities:**
-- Deploy 500-1000 research agents simultaneously with `/max-research`
-- Run recursive quality loops until every dimension hits 10/10 with `/omni-plan-nth`
-- Distribute work across 7 parallel agents per wave with `/auto-swarm`
-- Evaluate code through 3 independent judge perspectives (correctness, completeness, adversarial)
-- Compose agent prompts using 7 proven reasoning layers (Emotion, Meta, CoT, ToT, GoT, CoD, Context)
+ProductionOS turns Claude Code into a full engineering department. 43 agents fill the roles you can't hire fast enough:
 
-## Commands (14)
+| Role | What It Does | Key Agents |
+|------|-------------|------------|
+| **Code Reviewer** | Finds bugs, patterns, tech debt across your codebase | code-reviewer, adversarial-reviewer, naming-enforcer |
+| **QA Engineer** | Validates features WORK (not just that files exist), detects stubs and mock data | stub-detector, verification-gate, test-architect |
+| **Security Auditor** | OWASP Top 10, MITRE ATT&CK, dependency vulns, secret exposure | security-hardener, vulnerability-explorer |
+| **Solutions Architect** | Reviews architecture, identifies SPOFs, scales your design | dynamic-planner, comparative-analyzer, migration-planner |
+| **CTO Reviewer** | Challenges your own decisions with adversarial thinking, strategic review | llm-judge, debate-tribunal, business-logic-validator |
+| **Release Manager** | Ships with guardrails — pre-commit review, test gates, rollback on regression | guardrails-controller, self-healer, gitops |
+| **Research Analyst** | Deep-dives any topic with citation verification before you build | deep-researcher, research-pipeline, ecosystem-scanner |
 
-### Orchestrative (recursive, nth-iteration)
-| Command | What It Does | Scale |
-|---------|-------------|-------|
-| `/omni-plan-nth` | Chains ALL skills and agents, loops until 10/10 on every dimension | Up to 420 agents |
-| `/auto-swarm-nth` | Recursive parallel swarm until 100% coverage AND 10/10 quality | Up to 140 agents |
+## Origin Story
 
-### Pipeline (structured, single-pass with convergence)
-| Command | What It Does | Scale |
-|---------|-------------|-------|
-| `/omni-plan` | 13-step pipeline with tri-tiered judging | 14 agents/phase |
-| `/auto-swarm "task"` | Distributed agent swarm for any task | 7-77 agents |
-| `/production-upgrade` | Recursive product audit across all dimensions | Up to 49 agents |
+Born from a CEO Strategic Review of Entropy Studio (an AI video production SaaS) that found:
+- "Extraordinary engine wrapped in ordinary interface"
+- 11 fake-data code paths masquerading as working features
+- 5 of 12 agents were YAML stubs
+- Silent failure mode where billing doesn't fire but API costs accrue
+- Verdict: DO NOT LAUNCH. Fix quality first.
 
-### Nuclear Scale
-| Command | What It Does | Scale |
-|---------|-------------|-------|
-| `/max-research` | ALL agents deployed in ONE massive simultaneous wave | 500-1000 agents |
+ProductionOS was built to systematically find and fix quality gaps at a scale one person can't do manually. The recursive convergence loop mirrors how the founder works — iterate, self-critique honestly, loop until 10/10 or prove it's unreachable.
 
-### Specialized
-| Command | What It Does |
-|---------|-------------|
-| `/deep-research` | 8-phase autonomous research with citation verification |
-| `/agentic-eval` | CLEAR v2.0 framework evaluation (6 domains, 8 dimensions) |
-| `/security-audit` | 7-domain audit: OWASP, MITRE ATT&CK, NIST CSF 2.0 |
-| `/context-engineer` | Token-optimized context packaging for downstream agents |
-| `/logic-mode` | Business idea to production-ready plan pipeline |
-| `/learn-mode` | Interactive code tutor for any codebase |
-| `/productionos-update` | Self-update from GitHub |
-| `/productionos-help` | Usage guide and recommended workflows |
+## How To Use It
 
-## Agent Roster (40 agents)
-
-**Core (11):** llm-judge, deep-researcher, code-reviewer, ux-auditor, dynamic-planner, business-logic-validator, dependency-scanner, api-contract-validator, naming-enforcer, refactoring-agent, database-auditor
-
-**Advanced (9):** adversarial-reviewer, thought-graph-builder, persona-orchestrator, density-summarizer, context-retriever, frontend-scraper, vulnerability-explorer, swarm-orchestrator, guardrails-controller
-
-**V4+ (9):** test-architect, performance-profiler, migration-planner, self-healer, convergence-monitor, decision-loop, metaclaw-learner, research-pipeline, security-hardener
-
-**V5.1 (6):** gitops, frontend-designer, asset-generator, comms-assistant, comparative-analyzer, reverse-engineer
-
-**V5.2 (5):** debate-tribunal, ecosystem-scanner, gap-analyzer, recursive-orchestrator, verification-gate
-
-## Integrated Skills (loaded from other plugins — NOT bundled)
-
-`/plan-ceo-review`, `/plan-eng-review`, `/code-review`, `/browse`, `/qa`, `/ship`, `/brainstorming`, `/writing-plans`, `/test-driven-development`, `/systematic-debugging`, `/dispatching-parallel-agents`
-
-## Output Directory
-
-All pipeline outputs go to `.productionos/` in the target project. Artifacts are tracked across commands for consumption by downstream pipelines.
-
-## Installation
-
-```bash
-git clone https://github.com/ShaheerKhawaja/ProductionOS.git \
-  ~/.claude/plugins/marketplaces/productupgrade
-mkdir -p ~/.claude/skills/productionos
-cp ~/.claude/plugins/marketplaces/productupgrade/.claude/skills/productionos/SKILL.md \
-  ~/.claude/skills/productionos/SKILL.md
-for cmd in ~/.claude/plugins/marketplaces/productupgrade/.claude/commands/*.md; do
-  cp "$cmd" ~/.claude/commands/$(basename "$cmd")
-done
+### Just starting? Run this:
 ```
+/production-upgrade
+```
+Discovers your stack → deploys 7 review agents → scores 10 dimensions → generates fix plan → executes fixes → shows BEFORE→AFTER. Takes 10-30 min, costs ~$1-5.
+
+### Need deeper analysis?
+```
+/omni-plan                   Full 13-step pipeline with CEO + Engineering + Design review
+/deep-research [topic]       Research anything with 8 phases and citation verification
+/security-audit              7-domain security sweep (OWASP/MITRE/NIST)
+```
+
+### Need maximum power?
+```
+/omni-plan-nth               Recursive until 10/10 across ALL dimensions
+/auto-swarm-nth "task"       Recursive parallel swarm — 100% coverage
+/max-research [topic]        500-1000 agents in ONE wave (extreme resource usage)
+```
+
+### Utility commands:
+```
+/auto-swarm "task"           7-77 parallel agents for any task
+/agentic-eval                CLEAR v2.0 quality evaluation
+/context-engineer            Optimize context for downstream agents
+/logic-mode [idea]           Validate a business idea end-to-end
+/learn-mode [topic]          Interactive tutor — explain any codebase
+/productionos-update         Self-update from GitHub
+/productionos-help           Full usage guide
+```
+
+## What Makes This Different
+
+**Recursive convergence.** Other tools do one review pass. ProductionOS loops: review → plan → fix → validate → re-score. If quality drops, it rolls back. If progress stalls, it pivots strategy. Executable TypeScript convergence engine with Algorithm 1 (score-based) + Algorithm 6 (EMA velocity).
+
+**Evaluators can't grade their own work.** Agents that fix code are different from agents that judge it. The judge is read-only — no Write or Edit tools. This prevents the self-grading inflation that plagues single-pass AI code review.
+
+**Stub detection.** The stub-detector agent (born from finding 11 fake-data paths in Entropy Studio) distinguishes "file exists" from "feature works" — catches placeholder components, mock data, `NotImplementedError`, hardcoded arrays, and decorative integrations.
+
+**Pre-pipeline user decisions.** The discuss-phase agent captures what you actually want BEFORE 43 agents start optimizing. Prevents the pipeline from running in the wrong direction.
+
+**Observable execution.** Cost estimation before every run. Terminal convergence dashboard showing real-time grade progression. Security hooks blocking writes to .env, keys, certs.
+
+## The 43 Agents
+
+Organized by the role they fill, not the version they were added in:
+
+**Your Engineering Team (22 agents that do the work):**
+code-reviewer, adversarial-reviewer, ux-auditor, database-auditor, api-contract-validator, dependency-scanner, naming-enforcer, business-logic-validator, security-hardener, vulnerability-explorer, test-architect, performance-profiler, stub-detector, refactoring-agent, self-healer, frontend-designer, asset-generator, gitops, deep-researcher, research-pipeline, reverse-engineer, comms-assistant
+
+**Your Quality Gates (10 agents that evaluate and decide):**
+llm-judge, debate-tribunal, discuss-phase, plan-checker, verification-gate, gap-analyzer, convergence-monitor, decision-loop, persona-orchestrator, comparative-analyzer
+
+**Your Infrastructure (11 agents that coordinate and optimize):**
+dynamic-planner, swarm-orchestrator, recursive-orchestrator, guardrails-controller, context-retriever, density-summarizer, thought-graph-builder, ecosystem-scanner, metaclaw-learner, migration-planner, frontend-scraper
+
+## Tech Under The Hood
+
+- **9-layer prompt composition:** Emotion → Meta → Scratchpad → Context → CoT → ToT → GoT → CoD → Generated Knowledge
+- **Executable convergence engine:** TypeScript implementation of score-based + EMA velocity algorithms
+- **Cost tracking:** Per-run token estimation and USD cost tracking with terminal dashboard
+- **Security hooks:** PreToolUse guard blocks writes to .env, keys, certs, production configs
+- **CI/CD:** GitHub Actions pipeline (validate + lint + convergence check)
+- **118 tests passing** across 5 test files
+- **Zero runtime dependencies**
 
 ## Validation
 
 ```bash
 cd ~/.claude/plugins/marketplaces/productupgrade
-bun run skill:check    # 10/10
-bun run validate       # 40/40 agents
-bun test               # 60 tests pass
+bun run skill:check    # 10/10 health score
+bun run validate       # 43/43 agents valid
+bun test               # 118 tests passing
+```
+
+## Installation
+
+```bash
+# One command (when published)
+npx productionos@latest
+
+# Plugin marketplace
+claude plugin install productupgrade
+
+# Manual
+git clone https://github.com/ShaheerKhawaja/ProductionOS.git \
+  ~/.claude/plugins/marketplaces/productupgrade
 ```

@@ -268,7 +268,7 @@ Build a comprehensive matrix comparing ProductionOS against the top 3 ecosystem 
 ### Prompt Engineering
 | Technique | ProductionOS | Prompt-Eng-Guide | Fabric | other | Gap? |
 |-----------|-------------|------------------|--------|-------|------|
-| 7-layer composition | Yes | Reference only | No | No | LEAD |
+| 9-layer composition | Yes | Reference only | No | No | LEAD |
 | {technique} | {status} | {status} | {status} | {status} | {GAP/LEAD/PARITY} |
 ```
 

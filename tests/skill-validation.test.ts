@@ -242,8 +242,8 @@ describe('Context budget', () => {
       }
     }
 
-    // 800KB — threshold for 40 agents + 14 commands (agents loaded on-demand, not all at once)
-    const threshold = 800 * 1024;
+    // 1200KB — threshold for 48 agents + 15 commands (agents loaded on-demand, not all at once)
+    const threshold = 1200 * 1024;
     expect(totalBytes).toBeLessThan(threshold);
   });
 

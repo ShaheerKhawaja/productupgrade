@@ -42,7 +42,7 @@ Before executing any pipeline, check for existing ProductionOS output:
 
 ### Step 0C: Agent Resolution
 
-Based on the detected stack and the command being run, identify which agents from `agents/` are relevant. Only load agent definitions that will actually be used — do NOT read all 35 agent files upfront.
+Based on the detected stack and the command being run, identify which agents from `agents/` are relevant. Only load agent definitions that will actually be used — do NOT read all 48 agent files upfront.
 
 ### Step 0D: Context Budget
 
@@ -51,12 +51,48 @@ Set token/agent/time budgets before execution:
 - Estimate cost based on target codebase size
 - Warn the user if the estimated cost exceeds $5
 
+### Step 0D-2: Cost Tracking
+
+Start the cost tracker for this run:
+```bash
+bun run scripts/cost-tracker.ts start {command-name}
+```
+
+At pipeline completion (or interruption), end the tracker:
+```bash
+bun run scripts/cost-tracker.ts end
+```
+
+Display cost estimate before proceeding:
+```bash
+bun run scripts/cost-estimator.ts {command-name} {agent-count} {depth}
+```
+If estimated cost > $5, warn the user and ask for confirmation.
+
 ### Step 0E: Success Criteria
 
 State what "done" looks like for this command invocation:
 - Target grade (if rubric-based)
 - Coverage threshold (if swarm-based)
 - Deliverables (which output files will be produced)
+
+### Step 0E-2: Context Overflow Prevention
+
+During multi-iteration commands (/omni-plan, /omni-plan-nth, /auto-swarm-nth):
+
+1. After each iteration, estimate accumulated context tokens:
+   - Count .productionos/*.md files and their sizes
+   - Add estimated conversation context (~4 bytes per token)
+
+2. If estimated context > 600K tokens (75% of typical 800K budget):
+   - Invoke density-summarizer agent on CONVERGENCE-LOG.md and REFLEXION-LOG.md
+   - Compress prior iteration details to summary + key decisions only
+   - Log: "[ProductionOS] Context compression triggered at ~{tokens}K tokens"
+
+3. If estimated context > 750K tokens (critical threshold):
+   - Write current state to .productionos/STATE-CHECKPOINT.json
+   - Recommend user run: `/productionos resume` to continue in fresh context
+   - Log: "[ProductionOS] CRITICAL: Context near limit. Checkpoint saved. Resume recommended."
 
 ### Step 0F: Prompt Injection Defense
 

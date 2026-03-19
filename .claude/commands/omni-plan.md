@@ -24,6 +24,20 @@ You are the Omni-Plan orchestrator — ProductionOS's flagship mode. You chain e
 - Focus: $ARGUMENTS.focus (default: full)
 - Depth: $ARGUMENTS.depth (default: deep)
 
+## Pre-Execution Checks
+
+1. **Artifact reuse:** Check `.productionos/` for existing INTEL-*.md, REVIEW-*.md, JUDGE-*.md artifacts. If found, report what prior work exists and build on it rather than redoing.
+2. **Cost estimate:** Display estimated token/cost before starting: "Estimated: ~{tokens}K tokens (~${cost}), {agents} agents, ~{minutes}min"
+3. **Graceful degradation:** If `/plan-ceo-review`, `/plan-eng-review`, or `/ship` are unavailable (gstack not installed), warn and skip those steps — do NOT halt the pipeline.
+4. **Discuss-phase:** If discuss-phase agent is available, invoke it FIRST to capture locked user decisions before any review runs.
+
+## Progress Reporting
+
+At each step transition, output:
+```
+[ProductionOS] Step {N}/13 — {step_name} ({elapsed}s) ██████░░░░ {percent}%
+```
+
 ## Step 0: Preamble
 
 Before executing, run the shared ProductionOS preamble (`templates/PREAMBLE.md`):
@@ -56,7 +70,7 @@ When dispatching agents, follow `templates/INVOCATION-PROTOCOL.md`:
 │  ┌─ PHASE B: STRATEGIC REVIEW ──────────────────────┐   │
 │  │  Step 3: /plan-ceo-review (3 modes)               │   │
 │  │  Step 4: /plan-eng-review (2 passes)              │   │
-│  │  Step 5: /plan-design-review (if frontend scope)  │   │
+│  │  Step 5: /plan-design-review (if frontend scope)  │   │  ← External dependency — skip if unavailable, log SKIP
 │  └───────────────────────────────────────────────────┘   │
 │                          ▼                                │
 │  ┌─ PHASE C: EVALUATION GATE ───────────────────────┐   │
@@ -81,7 +95,7 @@ When dispatching agents, follow `templates/INVOCATION-PROTOCOL.md`:
 │  └───────────────────────────────────────────────────┘   │
 │                          ▼                                │
 │  ┌─ PHASE F: DELIVERY ─────────────────────────────┐    │
-│  │  Step 13: /document-release + /ship               │   │
+│  │  Step 13: /document-release + /ship               │   │  ← External dependency — skip if unavailable, log SKIP
 │  └───────────────────────────────────────────────────┘   │
 └──────────────────────────────────────────────────────────┘
 ```
@@ -95,6 +109,8 @@ Invoke the `research-pipeline` agent with the configured depth:
 - Search arxiv for relevant techniques
 - 4-layer citation verification on all sources
 - Output: `.productionos/INTEL-RESEARCH.md`
+
+**Performance profiling:** If the target codebase has backend code (detected by presence of server files such as `manage.py`, `main.py`, `server.ts`, `app.ts`, `go.mod`, or `Cargo.toml`), invoke `performance-profiler` to identify N+1 queries, slow endpoints, and memory concerns. Append findings to `.productionos/INTEL-RESEARCH.md` under a `## Performance Baseline` section.
 
 **Confidence gate:** If research confidence < 80%, run additional search queries until satisfied. Do NOT proceed with unverified assumptions.
 
@@ -125,7 +141,7 @@ Output: `.productionos/REVIEW-ENGINEERING.md`
 
 ### Step 5: Design Review (if applicable)
 If the target has frontend code (detected by presence of .tsx/.jsx/.vue/.svelte files):
-Invoke `/plan-design-review`:
+Invoke `/plan-design-review` (**External dependency** -- skip if unavailable, log SKIP):
 - Rate each design dimension 0-10
 - Explain what a 10 looks like
 - Edit the plan to get there
@@ -141,21 +157,21 @@ Invoke the `agentic-evaluator` agent:
 
 ### Step 7: Tri-Tiered Judge Panel
 
-Launch 3 independent judges in parallel:
+Launch 3 independent judges in parallel. Each judge adopts a persona from `persona-orchestrator`: Judge 1 receives the **senior-engineer** persona (deep technical rigor, architecture awareness), Judge 2 receives the **pragmatic-PM** persona (cost-benefit focus, timeline realism, scope control), and Judge 3 receives the **hostile-user** persona (adversarial mindset, frustration triggers, edge-case exploitation).
 
-**Judge 1 — Correctness Judge (Opus)**
+**Judge 1 — Correctness Judge (Opus, senior-engineer persona)**
 - Does the plan actually solve the stated problem?
 - Are all technical claims verified?
 - Are there logical gaps in the reasoning?
 - Score: 1-10 with evidence citations
 
-**Judge 2 — Practicality Judge (Sonnet)**
+**Judge 2 — Practicality Judge (Sonnet, pragmatic-PM persona)**
 - Can this be implemented with available resources?
 - Is the cost/effort estimate realistic?
 - Are there simpler alternatives that achieve 90% of the value?
 - Score: 1-10 with evidence citations
 
-**Judge 3 — Adversarial Judge (Opus)**
+**Judge 3 — Adversarial Judge (Opus, hostile-user persona)**
 - What would a hostile critic say about this plan?
 - What assumptions are the weakest?
 - What's the most likely failure mode?
@@ -184,10 +200,18 @@ Invoke the `dynamic-planner` agent:
 
 ### Step 9: Parallel Agent Execution
 For each batch (up to 12 batches × 7 agents):
-1. Select 7 independent fixes
-2. Launch 7 parallel fix agents
-3. Each agent applies the 7-layer prompt composition
-4. Wait for all agents to complete
+
+**Before executing batch N:**
+1. Create rollback point: `git stash push -m "productionos-batch-N-pre"`
+2. Execute the batch:
+   a. Select 7 independent fixes
+   b. Launch 7 parallel fix agents
+   c. Each agent applies the 9-layer prompt composition
+   d. Wait for all agents to complete
+3. Run validation gate (lint + type + test)
+4. If gate PASSES: `git stash drop` (discard rollback point, keep changes)
+5. If gate FAILS: invoke self-healer, retry validation up to 3 rounds
+6. If self-healer cannot fix after 3 rounds: `git stash pop` (restore pre-batch state), log the failed batch, continue to next batch
 
 ### Step 10: Self-Healing Validation Gate
 After each batch:
@@ -206,7 +230,19 @@ Re-invoke the 3-judge panel on the MODIFIED codebase:
 - Score all 10 dimensions
 
 ### Step 12: Decision Loop
-Invoke the `decision-loop` agent:
+
+**Before making the PIVOT/REFINE/PROCEED decision, run the executable convergence engine:**
+1. Write current iteration scores to `.productionos/CONVERGENCE-DATA.json`
+2. Run: `bun run scripts/convergence.ts --file .productionos/CONVERGENCE-DATA.json`
+3. Read the output: `{ decision, delta, velocity, focusDimensions }`
+4. Use the ENGINE's decision as the primary signal (not LLM judgment of its own scores)
+5. Run: `bun run scripts/convergence-dashboard.ts --file .productionos/CONVERGENCE-DATA.json` to display progress
+
+**Density summarization:** Before the PIVOT/REFINE/PROCEED decision, invoke `density-summarizer` to compress prior iteration findings (from CONVERGENCE-LOG.md and REFLEXION-LOG.md) into a Chain of Density summary. This summary becomes the context handoff for the next iteration, preventing context bloat across loops.
+
+**Convergence analysis:** After running convergence.ts, invoke `convergence-monitor` to analyze the grade trajectory across all completed iterations. The monitor identifies stalling dimensions, detects oscillation patterns, and recommends specific focus dimensions for the next iteration. Feed its output into the decision-loop agent alongside the engine output.
+
+Invoke the `decision-loop` agent with the convergence engine output and convergence-monitor recommendations:
 - **PROCEED** if grade = 10/10 AND no regressions
 - **REFINE** if grade improving but < 9.5 (loop to Step 3 with focused scope)
 - **PIVOT** if grade flat or declining for 2 iterations (fundamental strategy change)
@@ -214,7 +250,7 @@ Invoke the `decision-loop` agent:
 
 ### Step 13: Delivery
 When converged:
-1. Invoke `/document-release` — sync all docs to match changes
+1. Invoke `/document-release` — sync all docs to match changes (**External dependency** -- skip if unavailable, log SKIP)
 2. Invoke `/ship` — test → version → commit → push → PR
 3. Generate final report: `.productionos/OMNI-REPORT.md`
 

@@ -37,6 +37,22 @@ When dispatching agents, follow `templates/INVOCATION-PROTOCOL.md`:
 - **File-Based Handoff**: Write structured output with MANIFEST block to `.productionos/`
 - **Nesting limit**: command → agent → sub-agent → skill (max depth 3)
 
+## Pre-Execution Checks
+
+Before running, perform these checks:
+
+1. **Artifact check:** If `.productionos/` exists, read `AUDIT-DISCOVERY.md` and `CONVERGENCE-LOG.md` to avoid re-doing prior work. Report: "Found prior audit from {date} — building on existing work."
+2. **Cost estimate:** Estimate ~200K-400K tokens for full mode, ~100K for audit-only. Display: "Estimated cost: ~$X.XX ({tokens}K tokens, {agents} agents, ~{minutes}min)"
+3. **Dependency check:** If `/plan-ceo-review` or `/plan-eng-review` are unavailable (gstack not installed), warn: "NOTICE: gstack not installed — CEO/Eng review steps will be skipped. Core audit continues." Do NOT halt.
+4. **Decision capture:** If `.productionos/DECISIONS-LOCKED.md` does not exist, invoke the `discuss-phase` agent first. This prevents the pipeline from optimizing in a direction the user never wanted.
+
+## Progress Reporting
+
+At each step transition, output a status line:
+```
+[ProductionOS] Step {N}/{total} — {step_name} ({elapsed}s)
+```
+
 ## Execution Protocol
 
 ### Step 0: Discovery
@@ -95,15 +111,22 @@ Save to `.productionos/UPGRADE-PLAN.md`.
 
 ### Step 4: Execution Batches (up to 7 batches × 7 agents)
 For each batch:
-1. Select next 7 independent fixes from the plan
-2. Launch 7 parallel agents, each fixing one item
+
+**Before executing batch N:**
+1. Create rollback point: `git stash push -m "productionos-batch-N-pre"`
+2. Execute the batch:
+   a. Select next 7 independent fixes from the plan
+   a-1. Verify batch contains <= 15 files total. If more, split into sub-batches.
+   b. Launch 7 parallel agents, each fixing one item
 3. After all agents complete, run validation gate:
    - TypeScript/Python lint
    - Type check
    - Test suite
-4. If gate passes: commit the batch
-5. If gate fails: self-heal (fix lint/type errors) and retry once
-6. Log results to `.productionos/UPGRADE-LOG.md`
+4. If gate PASSES: `git stash drop` (discard rollback point, keep changes), then commit the batch
+   4a. Before committing: display `git diff --stat` and confirm the diff matches expected changes. If unexpected files appear, investigate before committing.
+5. If gate FAILS: invoke self-healer (fix lint/type errors), retry validation up to 3 rounds
+6. If self-healer cannot fix after 3 rounds: `git stash pop` (restore pre-batch state), log the failed batch to `.productionos/UPGRADE-LOG.md`, continue to next batch
+7. Log results to `.productionos/UPGRADE-LOG.md`
 
 ### Step 5: Validation
 Launch 5 parallel validation agents:
@@ -112,6 +135,7 @@ Launch 5 parallel validation agents:
 3. Run full test suite
 4. Score AFTER rubric
 5. Compare BEFORE vs AFTER grades
+6. Display convergence dashboard: `bun run scripts/convergence-dashboard.ts --file .productionos/CONVERGENCE-DATA.json`
 
 Save to `.productionos/VALIDATION-REPORT.md` and `.productionos/RUBRIC-AFTER.md`.
 
