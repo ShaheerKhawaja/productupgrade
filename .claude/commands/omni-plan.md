@@ -157,32 +157,49 @@ Invoke the `agentic-evaluator` agent:
 
 ### Step 7: Tri-Tiered Judge Panel
 
+#### DOWN Gate — Confidence-Gated Debate (6x efficiency per Eo et al. 2025, arXiv 2504.05047)
+
+Before launching the full 3-judge panel, run a quick single-judge assessment:
+
+1. Launch **Judge 1 only** (Correctness Judge, Opus, senior-engineer persona)
+2. Judge 1 scores the plan AND reports self-confidence (1-10)
+3. **If Judge 1 confidence >= 8.5**: SKIP full panel, use Judge 1's score directly
+   - Log: `[DOWN] confidence=X.X, threshold=8.5, decision=SKIP_PANEL`
+   - Output Judge 1's assessment as `.productionos/JUDGE-PANEL-{N}.md` with note: "DOWN fast-path: single-judge (confidence >= 8.5)"
+4. **If Judge 1 confidence < 8.5**: proceed with full 3-judge panel below
+   - Log: `[DOWN] confidence=X.X, threshold=8.5, decision=FULL_PANEL`
+
+This saves ~66% of judge cost on clear-cut evaluations.
+
+#### Full Panel (when DOWN gate triggers FULL_PANEL)
+
 Launch 3 independent judges in parallel. Each judge adopts a persona from `persona-orchestrator`: Judge 1 receives the **senior-engineer** persona (deep technical rigor, architecture awareness), Judge 2 receives the **pragmatic-PM** persona (cost-benefit focus, timeline realism, scope control), and Judge 3 receives the **hostile-user** persona (adversarial mindset, frustration triggers, edge-case exploitation).
 
 **Judge 1 — Correctness Judge (Opus, senior-engineer persona)**
 - Does the plan actually solve the stated problem?
 - Are all technical claims verified?
 - Are there logical gaps in the reasoning?
-- Score: 1-10 with evidence citations
+- Score: X.X ± Y.Y (confidence interval) with evidence citations
+  - CI width: ±0.3 = high confidence, ±0.7 = moderate, ±1.0+ = significant uncertainty
 
 **Judge 2 — Practicality Judge (Sonnet, pragmatic-PM persona)**
 - Can this be implemented with available resources?
 - Is the cost/effort estimate realistic?
 - Are there simpler alternatives that achieve 90% of the value?
-- Score: 1-10 with evidence citations
+- Score: X.X ± Y.Y (confidence interval) with evidence citations
 
 **Judge 3 — Adversarial Judge (Opus, hostile-user persona)**
 - What would a hostile critic say about this plan?
 - What assumptions are the weakest?
 - What's the most likely failure mode?
 - Where will the user get frustrated?
-- Score: 1-10 with evidence citations
+- Score: X.X ± Y.Y (confidence interval) with evidence citations
 
-**Consensus Protocol:**
-- If all 3 agree (within 1 point): use median
-- If 2 agree, 1 disagrees: use majority, flag disagreement
-- If all 3 disagree: trigger DEBATE round
-  - Each judge sees the other two's reasoning
+**Consensus Protocol (confidence-calibrated per CoCoA, arXiv 2503.15850):**
+- If confidence intervals OVERLAP for all 3 judges: agreement (even if point estimates differ)
+- If 2 judges' CIs overlap but 1 does not: majority with flagged disagreement
+- If no pair overlaps: trigger DEBATE round
+  - Each judge sees the other two's reasoning + confidence intervals
   - Each judge re-evaluates with counter-arguments
   - If still no consensus: use weighted average (Opus 40%, Sonnet 30%, Adversarial 30%)
 
@@ -250,9 +267,21 @@ Invoke the `decision-loop` agent with the convergence engine output and converge
 
 ### Step 13: Delivery
 When converged:
-1. Invoke `/document-release` — sync all docs to match changes (**External dependency** -- skip if unavailable, log SKIP)
-2. Invoke `/ship` — test → version → commit → push → PR
-3. Generate final report: `.productionos/OMNI-REPORT.md`
+
+**Document Sync (auto-detect drift):**
+Before shipping, verify docs match code:
+1. Count agents in `agents/` directory, compare to CLAUDE.md and README.md agent count claims
+2. Count commands in `.claude/commands/`, compare to CLAUDE.md command list
+3. Check VERSION file matches package.json version
+4. Check CHANGELOG.md has an entry for the current version
+5. If ANY drift detected: auto-fix the counts/versions in docs
+6. Log: `[ProductionOS] Doc sync: {N} drifts detected, {M} auto-fixed`
+
+If `/document-release` skill is available (gstack), invoke it for comprehensive doc sync. Otherwise, run the 6-point check above. (**External dependency** -- skip if unavailable, log SKIP)
+
+**Ship:**
+1. Invoke `/ship` — test → version → commit → push → PR (**External dependency** -- skip if unavailable, log SKIP)
+2. Generate final report: `.productionos/OMNI-REPORT.md`
 
 ## Tri-Tiered Evaluation Architecture
 

@@ -56,45 +56,28 @@ Items marked ~~strikethrough~~ are DONE.
 #### ~~Security hook (fail-closed)~~ DONE
 **Status:** `hooks/protected-file-guard.sh` blocks .env/keys, fails closed without jq
 
-#### Distractor-Augmented Prompting (Layer 17)
-**What:** Inject plausible wrong answers to force reasoning against alternatives. +460% accuracy improvement.
-**Source:** Chhikara 2025 (arXiv 2502.11028)
-**Effort:** S
+#### ~~Distractor-Augmented Prompting~~ DONE
+**Status:** Added as Layer 9 in `templates/PROMPT-COMPOSITION.md`. Applied to Judge + Adversarial agents.
 
-#### ES-CoT for cost mode
-**What:** Detect answer convergence during reasoning and stop early. ~41% token reduction.
-**Source:** arXiv 2509.14004
-**Effort:** M
+#### ~~ES-CoT for cost mode~~ DONE
+**Status:** Added as Layer 4 subsection in `templates/PROMPT-COMPOSITION.md` + profile detection in `PREAMBLE.md` Step 0D-3.
 
-#### DOWN (confidence-gated debate)
-**What:** Only trigger debate tribunal when initial confidence < threshold. 6x efficiency.
-**Source:** Eo et al. 2025 (arXiv 2504.05047)
-**Effort:** M
+#### ~~DOWN (confidence-gated debate)~~ DONE
+**Status:** Added confidence-gated fast-path before Tri-Tiered Judge Panel in `omni-plan.md` Step 7. Threshold: 8.5/10.
 
-#### Confidence Calibration in judge
-**What:** Grades become "7.3 ± 0.4" not "7.3". Add confidence intervals to all judge scores.
-**Source:** CoCoA framework (arXiv 2503.15850)
-**Effort:** M
+#### ~~Confidence Calibration in judge~~ DONE
+**Status:** All judge scores now `X.X ± Y.Y` with CI-based consensus in `omni-plan.md` Step 7.
 
-#### Cross-session learning (enhance self-learn.sh)
-**What:** Convert session JSONL into persistent learned patterns at `~/.productionos/learned/`.
-**Source:** ECC continuous-learning + RESEARCH-RAG-RLM.md
-**Effort:** M
+#### ~~Cross-session learning (enhance self-learn.sh)~~ DONE
+**Status:** `hooks/self-learn.sh` v2 — aggregates across sessions every 100 entries, writes `CROSS-SESSION-PATTERNS.md` with hot files, fail patterns, dispatch frequency. Graceful degradation without jq.
 
-#### Document-release post-pipeline
-**What:** Auto-sync docs after changes. Detect count drift, stale references, version mismatches.
-**Source:** gstack `/document-release`
-**Effort:** M
+#### ~~Document-release post-pipeline~~ DONE
+**Status:** 6-point doc sync added to `omni-plan.md` Step 13 and `production-upgrade.md` Step 6. Auto-fixes count drift, version mismatches.
 
-#### /production-upgrade convergence loop (L-20)
-**What:** Flagship command is single-pass, not recursive. Users expecting recursive improvement get one shot.
-**Fix:** Add BEFORE/AFTER comparison with optional `--converge` flag that loops until target grade.
-**Effort:** M
+#### ~~/production-upgrade convergence loop (L-20)~~ DONE
+**Status:** `--converge` flag in `production-upgrade.md`. Default target: 10.0 (perfection). Max 5 iterations. Regression detection + diminishing returns halt.
 
-#### Enforce discuss-phase before pipeline (L-17)
-**What:** If discuss-phase is skipped, pipeline may optimize in wrong direction.
-**Fix:** omni-plan and production-upgrade should auto-invoke discuss-phase if DECISIONS-LOCKED.md doesn't exist.
-**Effort:** S
+#### ~~Enforce discuss-phase before pipeline (L-17)~~ DONE
 
 ### P2 — Medium
 
@@ -189,5 +172,5 @@ Items marked ~~strikethrough~~ are DONE.
 
 ## Score
 
-**Done:** 9 items (3 P0 agents, rollback, scratchpad, generated knowledge, convergence wired, cost wired, security hook)
-**Remaining:** 4 P0, 8 P1, 9 P2, 6 P3, 7 P4 = 34 items
+**Done:** 20 items (4 P0 loopholes, 3 P0 agents, rollback, scratchpad, generated knowledge, convergence wired, cost wired, security hook, distractor prompting, ES-CoT, DOWN gate, confidence calibration, cross-session learning, doc-release, convergence loop)
+**Remaining:** 0 P0, 0 P1, 5 P2, 6 P3, 7 P4 = 18 items

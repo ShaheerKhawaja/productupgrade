@@ -1,11 +1,13 @@
-# 9-Layer Prompt Composition Template
+# 10-Layer Prompt Composition Template
 
-Every agent in `/omni-plan` and `/auto-swarm deep` mode receives a composed prompt built from these 9 layers. Layers are applied selectively based on the agent's role and the current iteration context.
+Every agent in `/omni-plan` and `/auto-swarm deep` mode receives a composed prompt built from these 10 layers. Layers are applied selectively based on the agent's role and the current iteration context.
 
 ## Layer Architecture
 
 ```
 ┌───────────────────────────────────────────────────┐
+│ Layer 9: Distractor-Augmented (counterarguments)  │  ← Forces critical evaluation
+├───────────────────────────────────────────────────┤
 │ Layer 8: Generated Knowledge (domain practices)   │  ← Pre-evaluation standards
 ├───────────────────────────────────────────────────┤
 │ Layer 7: Chain of Density (compression)           │  ← Inter-iteration handoff
@@ -15,6 +17,7 @@ Every agent in `/omni-plan` and `/auto-swarm deep` mode receives a composed prom
 │ Layer 5: Tree of Thought (branching)              │  ← Exploration
 ├───────────────────────────────────────────────────┤
 │ Layer 4: Chain of Thought (reasoning)             │  ← Step-by-step logic
+│          └── ES-CoT (early stopping, budget mode) │
 ├───────────────────────────────────────────────────┤
 │ Layer 3: Context Retrieval (RAG)                  │  ← Documentation + memory
 ├───────────────────────────────────────────────────┤
@@ -99,6 +102,18 @@ For each finding, reason through these steps:
 Show your reasoning. Do not jump to conclusions.
 ```
 
+### ES-CoT: Early Stopping (active in budget/cost mode only)
+When operating in cost-optimized mode (`--profile budget`), detect reasoning convergence early (~41% token reduction per arXiv 2509.14004):
+
+```markdown
+- After OBSERVE + HYPOTHESIZE (steps 1-2), form an initial conclusion
+- After VERIFY (step 3), check: does this confirm or change the initial conclusion?
+- If CONFIRMED (same finding + same severity): STOP. Skip IMPACT and REMEDIATE.
+  Output: "[ES-CoT] Converged at step 3. Finding: {summary}. Severity: {level}."
+- If CHANGED: continue full 5-step chain (initial hypothesis was wrong)
+- Savings: ~41% token reduction on convergent findings
+```
+
 ## Layer 5: Tree of Thought
 Explores multiple approaches before committing to one.
 
@@ -156,21 +171,41 @@ Before analyzing the code, generate 5 established best practices for this domain
 Now evaluate the code against these generated standards.
 ```
 
+## Layer 9: Distractor-Augmented Prompting
+Forces critical evaluation by presenting plausible-but-wrong conclusions (+460% accuracy per Chhikara 2025, arXiv 2502.11028). Applied only to Judge and Adversarial agents.
+
+```markdown
+Before finalizing your evaluation, consider these PLAUSIBLE BUT WRONG conclusions:
+
+<distractors>
+1. "The code looks clean, so there are probably no serious issues" — WRONG because clean formatting doesn't guarantee correct logic or security
+2. "The tests pass, so the implementation is correct" — WRONG because tests may not cover edge cases, integration scenarios, or adversarial inputs
+3. "This follows the same pattern as similar code, so it's fine" — WRONG because copied patterns may not fit the current context, data model, or security requirements
+</distractors>
+
+For EACH distractor, explicitly explain:
+- Why it's tempting to believe in this specific case
+- Why it's actually wrong here (cite specific evidence)
+- What the correct conclusion is instead
+
+Only THEN proceed to your actual findings. This prevents anchoring bias and surface-level approval.
+```
+
 ## Application Matrix
 
-| Agent Type | L1 | L2 | L2.5 | L3 | L4 | L5 | L6 | L7 | L8 |
-|-----------|-----|-----|------|-----|-----|-----|-----|-----|-----|
-| Review agents | ✓ | ✓ | ✓ | ✓ | ✓ | | | | ✓ |
-| Planning agents | ✓ | ✓ | ✓ | ✓ | | ✓ | | | |
-| Execution agents | ✓ | | ✓ | ✓ | ✓ | | | | |
-| Judge agents | ✓ | ✓ | ✓ | ✓ | ✓ | | | ✓ | ✓ |
-| Synthesis agents | | | ✓ | ✓ | | | ✓ | ✓ | |
-| Adversarial agents | ✓ | ✓ | ✓ | | ✓ | ✓ | | | |
+| Agent Type | L1 | L2 | L2.5 | L3 | L4 | L5 | L6 | L7 | L8 | L9 |
+|-----------|-----|-----|------|-----|-----|-----|-----|-----|-----|-----|
+| Review agents | ✓ | ✓ | ✓ | ✓ | ✓ | | | | ✓ | |
+| Planning agents | ✓ | ✓ | ✓ | ✓ | | ✓ | | | | |
+| Execution agents | ✓ | | ✓ | ✓ | ✓ | | | | | |
+| Judge agents | ✓ | ✓ | ✓ | ✓ | ✓ | | | ✓ | ✓ | ✓ |
+| Synthesis agents | | | ✓ | ✓ | | | ✓ | ✓ | | |
+| Adversarial agents | ✓ | ✓ | ✓ | | ✓ | ✓ | | | | ✓ |
 
 ## Composition Function
 
 ```python
-def compose_prompt(agent_type: str, severity: str, iteration: int) -> str:
+def compose_prompt(agent_type: str, severity: str, iteration: int, profile: str = "quality") -> str:
     layers = APPLICATION_MATRIX[agent_type]
     prompt_parts = []
 
@@ -183,7 +218,7 @@ def compose_prompt(agent_type: str, severity: str, iteration: int) -> str:
     if "L3" in layers:
         prompt_parts.append(context_layer())
     if "L4" in layers:
-        prompt_parts.append(cot_layer())
+        prompt_parts.append(cot_layer(profile))  # ES-CoT activates when profile="budget"
     if "L5" in layers:
         prompt_parts.append(tot_layer())
     if "L6" in layers:
@@ -192,6 +227,8 @@ def compose_prompt(agent_type: str, severity: str, iteration: int) -> str:
         prompt_parts.append(cod_layer(iteration - 1))
     if "L8" in layers:
         prompt_parts.append(generated_knowledge_layer())
+    if "L9" in layers:
+        prompt_parts.append(distractor_augmented_layer())
 
     return "\n\n".join(prompt_parts)
 ```

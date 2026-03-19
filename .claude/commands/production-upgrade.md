@@ -9,6 +9,14 @@ arguments:
   - name: target
     description: "Target directory or repo URL to upgrade"
     required: false
+  - name: converge
+    description: "Enable recursive convergence loop: on | off | {target_grade} (default: off)"
+    required: false
+    default: "off"
+  - name: target_grade
+    description: "Target grade for convergence (default: 10.0 — perfection, production-ready, no rework)"
+    required: false
+    default: "10.0"
 ---
 
 # ProductionOS Upgrade Pipeline Orchestrator
@@ -139,7 +147,50 @@ Launch 5 parallel validation agents:
 
 Save to `.productionos/VALIDATION-REPORT.md` and `.productionos/RUBRIC-AFTER.md`.
 
+### Step 5.5: Convergence Loop (when --converge is active)
+
+If `$ARGUMENTS.converge` is "on" or a number (treated as target grade):
+
+```
+target_grade = (converge is a number) ? converge : $ARGUMENTS.target_grade (default: 10.0)
+max_convergence_iterations = 5
+
+AFTER each Step 5 validation:
+  current_grade = AFTER grade from RUBRIC-AFTER.md
+
+  IF current_grade >= target_grade:
+    → DONE. Proceed to Step 6.
+    → Log: "[ProductionOS] Converged at iteration {N} — grade {current_grade} >= target {target_grade}"
+
+  IF current_grade < previous_grade:
+    → REGRESSION DETECTED. Rollback last batch, HALT.
+    → Log: "[ProductionOS] Regression: {previous_grade} → {current_grade}. Rolling back."
+
+  IF convergence_iteration >= max_convergence_iterations:
+    → MAX ITERATIONS. Proceed to Step 6 with current grade.
+    → Log: "[ProductionOS] Max convergence iterations ({max}). Final grade: {current_grade}"
+
+  IF delta < 0.3 for 2 consecutive iterations:
+    → DIMINISHING RETURNS. Proceed to Step 6.
+    → Log: "[ProductionOS] Diminishing returns (delta < 0.3 x2). Final grade: {current_grade}"
+
+  ELSE:
+    → Read VALIDATION-REPORT.md for remaining issues
+    → Filter to items NOT yet fixed
+    → Loop back to Step 3 (Plan Generation) with remaining items only
+    → Display: "Convergence iteration {N}/5 — grade: {current_grade} → target: {target_grade}"
+```
+
+**Cost tracking:** Each convergence iteration costs ~$1-3. Display running total.
+
 ### Step 6: Summary
+
+**Post-Upgrade Doc Check:**
+1. If agent count changed: update CLAUDE.md agent count
+2. If test count changed: update README.md test count
+3. If version bumped: verify CHANGELOG.md entry exists
+4. Log: `[ProductionOS] Doc check: {N} items verified`
+
 Present the final summary:
 ```
 PRODUCTIONOS UPGRADE COMPLETE
@@ -149,6 +200,16 @@ Findings: X total (Y fixed, Z deferred)
 Commits: N batches
 Files changed: M
 Tests added: T
+```
+
+If convergence mode was active, show iteration history:
+```
+CONVERGENCE HISTORY
+───────────────────────
+Iteration 1: X.X → Y.Y (+Z.Z)
+Iteration 2: Y.Y → W.W (+V.V)
+...
+Final: A.A (target: T.T) — {CONVERGED|MAX_REACHED|DIMINISHING_RETURNS}
 ```
 
 ## CRITICAL RULES

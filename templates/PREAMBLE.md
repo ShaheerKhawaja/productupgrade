@@ -69,6 +69,15 @@ bun run scripts/cost-estimator.ts {command-name} {agent-count} {depth}
 ```
 If estimated cost > $5, warn the user and ask for confirmation.
 
+### Step 0D-3: Profile Detection
+
+If `--profile budget` is passed (or cost-optimized mode is active):
+- Enable **ES-CoT** (Early-Stopping Chain of Thought) in Layer 4 of prompt composition
+- ES-CoT detects reasoning convergence and stops early, saving ~41% tokens
+- Log: `[ProductionOS] Budget mode: ES-CoT enabled for all CoT agents`
+
+Default profile is `quality` — all layers run to completion for production-ready, no-rework output.
+
 ### Step 0E: Success Criteria
 
 State what "done" looks like for this command invocation:
