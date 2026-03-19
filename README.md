@@ -4,7 +4,7 @@
 
 **The problem:** You're building a production SaaS -- complex backend, frontend, infrastructure, security, billing -- and you need the output of a 10-person engineering team. You have one person.
 
-**The solution:** ProductionOS turns Claude Code into a full engineering department. 49 agents fill the roles you can't hire fast enough: code reviewer, QA engineer, security auditor, solutions architect, CTO-level strategic reviewer, and release manager. One command audits your entire codebase. Another deploys 500 agents to research any topic exhaustively. Another runs recursive improvement loops until every quality dimension hits 10/10.
+**The solution:** ProductionOS turns Claude Code into a full engineering department. 55 agents fill the roles you can't hire fast enough: code reviewer, QA engineer, security auditor, solutions architect, CTO-level strategic reviewer, and release manager. One command audits your entire codebase. Another deploys 500 agents to research any topic exhaustively. Another runs recursive improvement loops until every quality dimension hits 10/10.
 
 Built by a solo founder who needed to ship production-grade code at hackathon pace -- and couldn't afford to ship garbage.
 
@@ -65,7 +65,7 @@ git clone https://github.com/ShaheerKhawaja/ProductionOS.git ~/.claude/plugins/m
 /productionos-update         Self-update from GitHub
 ```
 
-## 49 Agents
+## 55 Agents
 
 These aren't chat personas -- they're specialized workflows with defined inputs, outputs, tool restrictions, and quality criteria. Read-only agents (judges, auditors) cannot modify code. Execution agents (fixers, healers) cannot evaluate their own work.
 
@@ -77,6 +77,7 @@ These aren't chat personas -- they're specialized workflows with defined inputs,
 | V5.1 | 6 | gitops, frontend-designer, asset-generator, comms-assistant, comparative-analyzer, reverse-engineer |
 | V5.2 | 5 | debate-tribunal, ecosystem-scanner, gap-analyzer, recursive-orchestrator, verification-gate |
 | V5.3 | 9 | discuss-phase, stub-detector, plan-checker, architecture-designer, intake-interviewer, nyquist-filler, prd-generator, requirements-tracer, scaffold-generator |
+| V5.3+ | 6 | version-control, e2e-architect, rag-expert, db-creator, aiml-engineer, infra-setup |
 
 ## Estimated Costs
 

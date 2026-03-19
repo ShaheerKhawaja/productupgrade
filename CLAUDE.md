@@ -1,6 +1,6 @@
 # ProductionOS 5.3 — Your AI Engineering Team
 
-49-agent AI engineering team with 17 commands that turn Claude Code into a full engineering department. Built for solo founders and small teams who need 10-person team quality from 1 person + AI. Recursive convergence, tri-tiered evaluation, 10-layer prompt composition, executable convergence engine, per-agent cost tracking, and security enforcement.
+55-agent AI engineering team with 17 commands that turn Claude Code into a full engineering department. Built for solo founders and small teams who need 10-person team quality from 1 person + AI. Recursive convergence, tri-tiered evaluation, 10-layer prompt composition, executable convergence engine, per-agent cost tracking, and security enforcement.
 
 ## Commands
 
@@ -76,7 +76,7 @@
 
 ## Agent Loading
 
-Agent definitions live in `agents/` (49 files). Commands load agents on-demand — do NOT preload all agent files. Only read the specific agent file when a command references it during execution.
+Agent definitions live in `agents/` (55 files). Commands load agents on-demand — do NOT preload all agent files. Only read the specific agent file when a command references it during execution.
 
 ## Prompting Architecture
 
