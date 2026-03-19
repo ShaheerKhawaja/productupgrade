@@ -9,6 +9,10 @@ arguments:
   - name: target
     description: "Target directory or repo URL to upgrade"
     required: false
+  - name: profile
+    description: "Model profile: quality (default) | balanced | budget. Budget reduces agent depth and enables ES-CoT."
+    required: false
+    default: "quality"
   - name: converge
     description: "Enable recursive convergence loop: on | off | {target_grade} (default: off)"
     required: false

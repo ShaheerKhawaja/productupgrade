@@ -14,6 +14,18 @@ import { join } from "path";
 
 // ─── Interfaces ────────────────────────────────────────────────
 
+export interface AgentRecord {
+  name: string;
+  startTime: string;
+  endTime: string | null;
+  durationMs: number | null;
+  estimatedTokens: number;
+  estimatedCostUSD: number;
+  retries: number;
+  status: "running" | "completed" | "failed" | "timeout";
+  filesModified: number;
+}
+
 export interface RunRecord {
   id: string;
   command: string;
@@ -27,6 +39,7 @@ export interface RunRecord {
   convergenceState?: string;
   estimatedTokens: number;
   estimatedCostUSD: number;
+  agents?: AgentRecord[];
 }
 
 // ─── Constants ─────────────────────────────────────────────────
@@ -106,6 +119,83 @@ export function endRun(run: RunRecord, results: Partial<RunRecord>): void {
     durationMs: now.getTime() - startMs,
   };
   writeRun(merged);
+}
+
+/** Record an agent start within an active run. */
+export function recordAgentStart(run: RunRecord, agentName: string): RunRecord {
+  const agent: AgentRecord = {
+    name: agentName,
+    startTime: new Date().toISOString(),
+    endTime: null,
+    durationMs: null,
+    estimatedTokens: 0,
+    estimatedCostUSD: 0,
+    retries: 0,
+    status: "running",
+    filesModified: 0,
+  };
+  run.agents = run.agents ?? [];
+  run.agents.push(agent);
+  run.agentsDispatched = run.agents.length;
+  writeRun(run);
+  return run;
+}
+
+/** Record an agent completion within an active run. */
+export function recordAgentEnd(
+  run: RunRecord,
+  agentName: string,
+  results: Partial<AgentRecord>
+): RunRecord {
+  run.agents = run.agents ?? [];
+  const agent = run.agents.find((a) => a.name === agentName && a.status === "running");
+  if (agent) {
+    const now = new Date();
+    agent.endTime = now.toISOString();
+    agent.durationMs = now.getTime() - new Date(agent.startTime).getTime();
+    agent.status = results.status ?? "completed";
+    agent.estimatedTokens = results.estimatedTokens ?? 0;
+    agent.estimatedCostUSD = results.estimatedCostUSD ?? 0;
+    agent.retries = results.retries ?? 0;
+    agent.filesModified = results.filesModified ?? 0;
+  }
+  // Roll up agent costs to run level
+  run.estimatedTokens = run.agents.reduce((s, a) => s + a.estimatedTokens, 0);
+  run.estimatedCostUSD = run.agents.reduce((s, a) => s + a.estimatedCostUSD, 0);
+  writeRun(run);
+  return run;
+}
+
+/** Format per-agent breakdown for a run. */
+export function formatAgentBreakdown(run: RunRecord): string {
+  if (!run.agents || run.agents.length === 0) return "No agent data recorded.";
+
+  const header = [
+    "Agent".padEnd(30),
+    "Status".padEnd(10),
+    "Duration".padStart(10),
+    "Tokens".padStart(10),
+    "Cost".padStart(8),
+    "Retries".padStart(8),
+  ].join(" | ");
+
+  const sep = "-".repeat(header.length);
+
+  const rows = run.agents.map((a) => {
+    const dur = a.durationMs != null ? `${(a.durationMs / 1000).toFixed(1)}s` : "running";
+    const tokens = a.estimatedTokens > 0 ? a.estimatedTokens.toLocaleString() : "-";
+    const cost = a.estimatedCostUSD > 0 ? `$${a.estimatedCostUSD.toFixed(2)}` : "-";
+    return [
+      a.name.padEnd(30),
+      a.status.padEnd(10),
+      dur.padStart(10),
+      tokens.padStart(10),
+      cost.padStart(8),
+      String(a.retries).padStart(8),
+    ].join(" | ");
+  });
+
+  return [sep, header, sep, ...rows, sep].join("\n");
 }
 
 /** Read all run files, optionally filtered to the last N days. */

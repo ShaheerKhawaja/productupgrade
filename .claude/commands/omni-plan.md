@@ -11,6 +11,10 @@ arguments:
   - name: depth
     description: "Research depth: quick | standard | deep | exhaustive (default: deep)"
     required: false
+  - name: profile
+    description: "Model profile: quality (default) | balanced | budget. Budget enables ES-CoT and reduces agent depth."
+    required: false
+    default: "quality"
 ---
 
 # Omni-Plan — Maximum Orchestrative Planning & Execution
@@ -23,6 +27,15 @@ You are the Omni-Plan orchestrator — ProductionOS's flagship mode. You chain e
 - Target: $ARGUMENTS.target (default: current working directory)
 - Focus: $ARGUMENTS.focus (default: full)
 - Depth: $ARGUMENTS.depth (default: deep)
+- Profile: $ARGUMENTS.profile (default: quality)
+
+### Profile Behavior
+
+| Profile | Prompt Layers | Judge Panel | Research Depth | ES-CoT |
+|---------|--------------|-------------|----------------|--------|
+| quality | All 10 layers | Full 3-judge (DOWN gate still applies) | As configured | Off |
+| balanced | Layers 1-8 (skip L9 distractor) | DOWN gate only (skip full panel) | Downgrade one level | Off |
+| budget | Layers 1-4 + L7 only | Single judge, no panel | quick | On (~41% token savings) |
 
 ## Pre-Execution Checks
 
@@ -223,12 +236,33 @@ For each batch (up to 12 batches × 7 agents):
 2. Execute the batch:
    a. Select 7 independent fixes
    b. Launch 7 parallel fix agents
-   c. Each agent applies the 9-layer prompt composition
+   c. Each agent applies the 10-layer prompt composition
    d. Wait for all agents to complete
 3. Run validation gate (lint + type + test)
 4. If gate PASSES: `git stash drop` (discard rollback point, keep changes)
 5. If gate FAILS: invoke self-healer, retry validation up to 3 rounds
 6. If self-healer cannot fix after 3 rounds: `git stash pop` (restore pre-batch state), log the failed batch, continue to next batch
+
+### Step 9.5: Claim Analysis Pass
+Before committing any batch, rate every agent finding on evidence quality:
+
+```
+For each finding in the batch:
+  A = Strong evidence (file:line citation + reproduction steps)
+  B = Good evidence (file:line citation, clear reasoning)
+  C = Adequate evidence (general reference, plausible reasoning)
+  D = Weak evidence (no citation, speculative)
+  F = No evidence (hallucinated or unsupported claim)
+
+  Action:
+    A-C: KEEP — include in commit
+    D:   FLAG — include with "[LOW-CONFIDENCE]" prefix, defer if possible
+    F:   REMOVE — do NOT include in commit, log to REFLEXION-LOG.md
+```
+
+Log: `[ProductionOS] Claim analysis: {A} A-rated, {B} B-rated, {C} C-rated, {D} D-flagged, {F} F-removed`
+
+This prevents hallucinated fixes from reaching the codebase. F-rated findings are the #1 source of regressions.
 
 ### Step 10: Self-Healing Validation Gate
 After each batch:
