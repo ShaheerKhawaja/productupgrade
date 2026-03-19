@@ -239,14 +239,13 @@ What happens when things fail:
 | Test suite fails after fix batch | Validation gate in Step 10 | self-healer (10 rounds), then rollback if unresolvable | Fix deferred to TODOS.md |
 | Git conflict during commit | gitops agent pre-check | Abort commit, report conflict, suggest resolution | Manual resolution required |
 
-### Graceful Degradation — NOT YET IMPLEMENTED
+### Graceful Degradation
 
-**Status: PLANNED.** Commands reference external skills (/plan-ceo-review, /qa, /browse from gstack). The intended behavior:
-- The command logs "SKIP: /plan-ceo-review not available" and continues
+**Status: IMPLEMENTED (Preamble Step 0F).** Commands reference external skills (/plan-ceo-review, /qa, /browse from gstack). When these aren't installed:
+- The command logs "SKIP: /{skill} not available" and continues
 - The review depth is reduced but the pipeline doesn't crash
 - The final report notes which reviews were skipped
-
-**Current behavior:** Missing skills cause a silent failure where the step produces no output and downstream consumers get no input. This is a known gap (see TODOS.md).
+- Skipped skills are tracked in `.productionos/SKIPPED-SKILLS.log`
 
 ## Dependencies
 
