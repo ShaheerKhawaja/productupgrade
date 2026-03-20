@@ -9,7 +9,6 @@
  *   bun run scripts/skill-check.ts
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
 import { parseFrontmatter, readFileOrNull, walkFiles, listMdFiles, ROOT } from './lib/shared';
 

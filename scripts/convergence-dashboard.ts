@@ -14,8 +14,6 @@
 
 import type {
   IterationResult,
-  DimensionScore,
-  VelocityMetrics,
   ConvergenceDecision,
 } from "./convergence";
 import { analyzeConvergence, EMAVelocityTracker, overallGrade } from "./convergence";
