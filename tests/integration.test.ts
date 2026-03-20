@@ -18,7 +18,6 @@ const TEMPLATES_DIR = join(ROOT, "templates");
 const agentFiles = listMdFiles(AGENTS_DIR);
 const commandFiles = listMdFiles(COMMANDS_DIR);
 const agentNames = agentFiles.map((f) => f.replace(".md", ""));
-const commandNames = commandFiles.map((f) => f.replace(".md", ""));
 
 /** Commands that dispatch agents and should reference INVOCATION-PROTOCOL */
 const AGENT_DISPATCHING_COMMANDS = [

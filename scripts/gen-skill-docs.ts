@@ -12,7 +12,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { readFileOrNull, listMdFiles, ROOT } from './lib/shared.ts';
+import { readFileOrNull, listMdFiles, ROOT } from './lib/shared';
 
 const DRY_RUN = process.argv.includes('--dry-run');
 
