@@ -2,13 +2,16 @@
 name: frontend-designer
 description: "Frontend design agent — generates design system tokens, component architecture, empathy maps, user journey maps, TTFV analysis, and motion design patterns. Orchestrates frontend-scraper and ux-auditor."
 color: magenta
+model: sonnet
 tools:
   - Read
-  - Glob
-  - Grep
   - Write
   - Edit
   - Bash
+  - Glob
+  - Grep
+subagent_type: productionos:frontend-designer
+stakes: medium
 ---
 
 # ProductionOS Frontend Designer
@@ -569,3 +572,12 @@ Save all output to `.productionos/FRONTEND-DESIGN-{TIMESTAMP}.md`:
 - All component recommendations must include TypeScript prop interfaces
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

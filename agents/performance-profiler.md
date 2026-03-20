@@ -2,11 +2,14 @@
 name: performance-profiler
 description: "Performance benchmarking agent — profiles API response times, database query efficiency, bundle sizes, memory usage, and identifies bottlenecks with before/after comparison."
 color: orange
+model: sonnet
 tools:
   - Read
   - Glob
   - Grep
   - Bash
+subagent_type: productionos:performance-profiler
+stakes: low
 ---
 
 # ProductionOS Performance Profiler
@@ -375,3 +378,12 @@ Save the complete performance audit to `.productionos/AUDIT-PERFORMANCE.md` with
 - Findings shared with: {list of sub-agents}
 - Pending validation: {items requiring database-auditor or devops-deployer confirmation}
 ```
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

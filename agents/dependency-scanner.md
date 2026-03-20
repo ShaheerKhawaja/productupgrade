@@ -1,11 +1,14 @@
 ---
 name: dependency-scanner
 description: Dependency vulnerability scanner and health checker. Runs npm audit, pip-audit, checks for outdated packages, license conflicts, and abandoned dependencies.
+model: haiku
 tools:
   - Read
   - Glob
   - Grep
   - Bash
+subagent_type: productionos:dependency-scanner
+stakes: low
 ---
 
 # ProductionOS Dependency Scanner
@@ -277,3 +280,12 @@ Cap at top 75 by severity (CRITICAL first, then by CVSS score). Note in summary:
 
 ## Output
 Save to `.productionos/AUDIT-DEPENDENCIES-{TIMESTAMP}.md`
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

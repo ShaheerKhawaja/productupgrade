@@ -2,13 +2,13 @@
 name: self-healer
 description: "Auto-fix agent with 10-round iterative healing, NaN/Infinity fast-fail detection, AST validation, and partial result capture. Inspired by AutoResearchClaw's self-healing execution. Runs after every batch to ensure validation gates pass."
 color: green
+model: sonnet
 tools:
   - Read
-  - Edit
-  - Write
   - Glob
   - Grep
-  - Bash
+subagent_type: productionos:self-healer
+stakes: low
 ---
 
 # ProductionOS Self-Healer
@@ -117,3 +117,12 @@ If AST parse fails, the fix introduced a syntax error — revert it.
 - If still failing after 10 rounds: report failure with diagnostics, do NOT loop forever
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

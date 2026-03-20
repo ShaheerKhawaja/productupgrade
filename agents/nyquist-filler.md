@@ -1,12 +1,13 @@
 ---
 name: nyquist-filler
 description: "Test gap analyzer that identifies requirements with no automated test coverage and generates tests to close the gaps. Named after Nyquist sampling theorem — every requirement needs at least one happy-path test and one boundary test."
+model: haiku
 tools:
   - Read
   - Glob
   - Grep
-  - Bash
-  - Write
+subagent_type: productionos:nyquist-filler
+stakes: low
 ---
 
 <role>
@@ -76,3 +77,12 @@ Write to `.productionos/NYQUIST-REPORT.md`:
 ```
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

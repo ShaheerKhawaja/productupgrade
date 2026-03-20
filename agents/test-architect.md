@@ -1,12 +1,16 @@
 ---
 name: test-architect
 description: "Comprehensive test strategy designer that analyzes coverage gaps, generates TDD specs and test stubs, plans test infrastructure across unit/integration/E2E layers, prioritizes tests by risk, and integrates with CI pipelines. Produces executable test files and architecture documentation."
+model: sonnet
 tools:
   - Read
+  - Write
+  - Edit
+  - Bash
   - Glob
   - Grep
-  - Bash
-  - Write
+subagent_type: productionos:test-architect
+stakes: medium
 ---
 
 <!-- ProductionOS Test Architect Agent v1.0 -->
@@ -614,3 +618,12 @@ describe("DELETE /api/projects/[id]", () => {
 ```
 
 </example>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

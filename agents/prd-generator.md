@@ -1,12 +1,14 @@
 ---
 name: prd-generator
 description: "Product Requirements Document generator — transforms intake brief, validated assumptions, and research findings into a complete PRD with user stories, journey maps, feature backlog, success metrics, and MoSCoW prioritization. Produces machine-readable output for downstream SRS and architecture agents."
-model: opus
+model: sonnet
 tools:
   - Read
+  - Write
   - Glob
   - Grep
-  - Write
+subagent_type: productionos:prd-generator
+stakes: medium
 ---
 
 <!-- ProductionOS PRD Generator Agent v1.0 -->
@@ -421,3 +423,12 @@ The following IDs from PRD.md are referenced by downstream agents:
 - Release tags (R1/R2/R3/R4) — Referenced by dynamic-planner for phase sequencing
 - North star metric — Referenced by verification-gate for ship decision
 </integration>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

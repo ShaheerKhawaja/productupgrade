@@ -1,11 +1,13 @@
 ---
 name: business-logic-validator
 description: Business logic validation agent that audits pricing calculations, approval workflows, state machines, authorization rules, and business rule consistency. Catches the bugs that pass code review but break the business.
+model: sonnet
 tools:
   - Read
   - Glob
   - Grep
-  - Bash
+subagent_type: productionos:business-logic-validator
+stakes: medium
 ---
 
 # ProductionOS Business Logic Validator
@@ -122,3 +124,12 @@ Save to `.productionos/AUDIT-BUSINESS-LOGIC.md`:
 ## Business Logic Score: {X}/10
 ```
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

@@ -16,12 +16,16 @@ output_contract:
   format: "manifest-markdown"
 invocable_by: any
 cost_tier: medium
+model: sonnet
 tools:
   - Read
   - Write
+  - Edit
+  - Bash
   - Glob
   - Grep
-  - Bash
+subagent_type: productionos:infra-setup
+stakes: low
 ---
 
 # ProductionOS Infrastructure Setup
@@ -112,3 +116,12 @@ Write to `.productionos/INFRA-SETUP.md`:
 - Invokes `version-control` after setup decisions
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

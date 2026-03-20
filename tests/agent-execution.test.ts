@@ -85,7 +85,7 @@ describe("Agent Frontmatter Validation", () => {
       // Check that if model is present in frontmatter, it is opus or sonnet
       if (fm.model) {
         const model = String(fm.model).trim();
-        if (model !== "opus" && model !== "sonnet") {
+        if (model !== "opus" && model !== "sonnet" && model !== "haiku") {
           violations.push(
             `${name}: model field is '${model}', expected 'opus' or 'sonnet'`
           );
@@ -98,7 +98,7 @@ describe("Agent Frontmatter Validation", () => {
         const rawModelMatch = fmBlock[1].match(/^model:\s*(.+)$/m);
         if (rawModelMatch) {
           const rawModel = rawModelMatch[1].trim();
-          if (rawModel !== "opus" && rawModel !== "sonnet") {
+          if (rawModel !== "opus" && rawModel !== "sonnet" && rawModel !== "haiku") {
             violations.push(
               `${name}: raw model value '${rawModel}' is not opus or sonnet`
             );

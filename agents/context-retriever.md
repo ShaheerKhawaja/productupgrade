@@ -2,12 +2,14 @@
 name: context-retriever
 description: "RAG-in-pipeline context management agent — retrieves relevant documentation, past decisions, library docs, and memory entries to ground every agent's work in authoritative context."
 color: cyan
+model: haiku
 tools:
   - Read
+  - Write
   - Glob
   - Grep
-  - Write
-  - Bash
+subagent_type: productionos:context-retriever
+stakes: low
 ---
 
 # ProductionOS Context Retriever
@@ -105,3 +107,12 @@ git shortlog -sn --since="30 days ago"
 Write output to `.productionos/INTEL-CONTEXT.md`
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

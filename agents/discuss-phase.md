@@ -1,11 +1,13 @@
 ---
 name: discuss-phase
 description: "Pre-pipeline decision capture agent — conducts structured user interview to lock requirements, constraints, and non-negotiables before any review or fix agents run. Prevents pipeline from optimizing in wrong direction."
-model: opus
+model: sonnet
 tools:
   - Read
   - Glob
   - Grep
+subagent_type: productionos:discuss-phase
+stakes: low
 ---
 
 <!-- ProductionOS Discuss Phase Agent v1.0 -->
@@ -356,3 +358,12 @@ Every pipeline agent MUST read `.productionos/DECISIONS-LOCKED.md` at the start 
 
 If `DECISIONS-LOCKED.md` does not exist, agents fall back to default rubrics with a warning logged to `.productionos/WARNINGS.md`.
 </integration>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

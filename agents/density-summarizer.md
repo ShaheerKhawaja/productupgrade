@@ -2,11 +2,14 @@
 name: density-summarizer
 description: "Chain of Density inter-iteration summarizer — progressively compresses findings across iterations into information-dense handoff documents that prevent context rot."
 color: green
+model: haiku
 tools:
   - Read
+  - Write
   - Glob
   - Grep
-  - Write
+subagent_type: productionos:density-summarizer
+stakes: low
 ---
 
 # ProductionOS Density Summarizer
@@ -114,3 +117,12 @@ Also maintain `.productionos/DENSITY-CUMULATIVE.md` — a running summary across
 3. **Context overflow during summarization**: If the combined artifacts exceed 100K tokens, process in batches: summarize each artifact individually first, then merge summaries.
 4. **Conflicting scores**: If multiple judge files give different scores for the same dimension, report both and use the more conservative (lower) score in the handoff.
 </error_handling>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

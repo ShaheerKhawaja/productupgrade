@@ -16,12 +16,13 @@ output_contract:
   format: "manifest-markdown"
 invocable_by: any
 cost_tier: high
+model: sonnet
 tools:
   - Read
-  - Write
   - Glob
   - Grep
-  - Bash
+subagent_type: productionos:aiml-engineer
+stakes: low
 ---
 
 # ProductionOS AI/ML Engineer
@@ -112,3 +113,12 @@ Write to `.productionos/AIML-DESIGN.md`:
 3. **Budget constraints**: If budget is specified, optimize for cost first. Recommend smallest viable model, batch inference, and prompt caching before suggesting larger models.
 4. **Conflicting requirements**: If latency target conflicts with quality target, present both options with tradeoff analysis. Let the user decide.
 </error_handling>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

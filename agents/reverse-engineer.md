@@ -2,11 +2,13 @@
 name: reverse-engineer
 description: "Reverse engineering agent — extracts architecture, decision archaeology, design patterns, API surfaces, security models, and performance architecture from any production codebase. Produces replication guides."
 color: orange
+model: sonnet
 tools:
   - Read
   - Glob
   - Grep
-  - Bash
+subagent_type: productionos:reverse-engineer
+stakes: low
 ---
 
 # ProductionOS Reverse Engineer
@@ -810,3 +812,12 @@ and the single most important thing to know about its architecture}
 - The replication guide describes HOW to build similar architecture, not clone the business
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

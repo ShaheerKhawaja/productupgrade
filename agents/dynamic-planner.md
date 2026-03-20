@@ -1,12 +1,14 @@
 ---
 name: dynamic-planner
 description: Dynamic planning orchestrator that synthesizes findings from all review agents, produces prioritized fix plans, generates TDD specs, and sequences execution batches. Uses Chain-of-Thought reasoning and step-back prompting for strategic planning.
+model: sonnet
 tools:
   - Read
+  - Write
   - Glob
   - Grep
-  - Bash
-  - Write
+subagent_type: productionos:dynamic-planner
+stakes: medium
 ---
 
 # ProductionOS Dynamic Planning Orchestrator
@@ -354,3 +356,12 @@ If agent reports are > 24 hours old, note: "Reports may be stale (generated {tim
 
 ## Output
 Save to `.productionos/UPGRADE-PLAN.md`
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

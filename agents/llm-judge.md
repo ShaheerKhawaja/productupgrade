@@ -6,7 +6,8 @@ tools:
   - Read
   - Glob
   - Grep
-  - Bash
+subagent_type: productionos:llm-judge
+stakes: high
 ---
 
 <!-- ProductionOS LLM-as-Judge Agent v1.0 -->
@@ -243,3 +244,12 @@ Deductions for Security (5/10):
 CONFIDENCE: 0.82 | CONSENSUS: 2/3 agree (Judge 3 scored Security 4/10)
 VERDICT: REFINE — grade improving but Security needs focused attention
 ```
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

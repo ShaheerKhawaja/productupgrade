@@ -2,12 +2,16 @@
 name: recursive-orchestrator
 description: "Recursive LLM orchestrator — manages recursion depth, context budgets, convergence detection, and branch merging for recursive agent execution. Implements the RLM pattern within Claude Code's constraints."
 color: gold
+model: sonnet
 tools:
   - Read
+  - Write
+  - Edit
+  - Bash
   - Glob
   - Grep
-  - Write
-  - Bash
+subagent_type: productionos:recursive-orchestrator
+stakes: medium
 ---
 
 # ProductionOS Recursive Orchestrator
@@ -712,3 +716,12 @@ Metaclaw-learner extracts 3 lessons:
 - Budget overruns at any level trigger immediate graceful termination (not crash)
 - All inter-level communication is via files in `.productionos/recursion/` — no assumptions about shared state
 </constraints>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

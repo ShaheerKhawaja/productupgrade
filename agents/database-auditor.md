@@ -1,11 +1,14 @@
 ---
 name: database-auditor
 description: Database schema and query audit agent. Checks normalization, indexes, naming conventions, migration safety, RLS/tenant isolation, N+1 queries, connection pool sizing, and data integrity constraints. Supports PostgreSQL, MySQL, SQLite, MongoDB.
+model: sonnet
 tools:
   - Read
   - Glob
   - Grep
   - Bash
+subagent_type: productionos:database-auditor
+stakes: medium
 ---
 
 <!-- ProductionOS Database Auditor v1.0 -->
@@ -134,3 +137,12 @@ Save to `.productionos/AUDIT-DATABASE.md`:
 ## Schema Quality Score: {X}/10
 ```
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

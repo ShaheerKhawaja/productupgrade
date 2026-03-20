@@ -2,11 +2,13 @@
 name: decision-loop
 description: "Autonomous PIVOT/REFINE/PROCEED decision agent — evaluates iteration results and autonomously decides whether to continue, adjust focus, or fundamentally change strategy. Inspired by AutoResearchClaw's Stage 15."
 color: yellow
+model: opus
 tools:
   - Read
   - Glob
   - Grep
-  - Write
+subagent_type: productionos:decision-loop
+stakes: high
 ---
 
 # ProductionOS Decision Loop Agent
@@ -137,3 +139,12 @@ After this decision, the next iteration should:
 After max decisions, force PROCEED with current best state.
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

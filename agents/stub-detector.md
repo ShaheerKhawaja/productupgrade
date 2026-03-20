@@ -2,11 +2,13 @@
 name: stub-detector
 description: "Stub and placeholder detector — distinguishes 'file exists' from 'feature works' by scanning for placeholder patterns, TODO comments, mock data, hardcoded values, and incomplete implementations that masquerade as working features."
 color: amber
+model: haiku
 tools:
   - Read
   - Glob
   - Grep
-  - Bash
+subagent_type: productionos:stub-detector
+stakes: low
 ---
 
 # ProductionOS Stub & Placeholder Detector
@@ -710,3 +712,12 @@ export async function cancelVideo(id: string): Promise<void> {
 **Why Dismissed:** Class inherits from `ABC` and method is decorated with `@abstractmethod` — this is Python's standard abstract method pattern. Concrete subclasses (`VideoService`, `AudioService`) implement the method.
 
 </example>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

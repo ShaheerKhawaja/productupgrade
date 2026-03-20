@@ -2,11 +2,14 @@
 name: frontend-scraper
 description: "Playwright screenshot and Lighthouse performance capture agent — takes screenshots at multiple breakpoints, runs Lighthouse audits, and captures accessibility scores for visual evidence."
 color: orange
+model: haiku
 tools:
   - Read
   - Glob
   - Grep
   - Bash
+subagent_type: productionos:frontend-scraper
+stakes: medium
 ---
 
 # ProductionOS Frontend Scraper
@@ -120,3 +123,12 @@ grep -rn "color:" --include="*.css" --include="*.tsx" | grep -v "var(--" | head 
 Write output to `.productionos/AUDIT-FRONTEND.md`
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

@@ -2,11 +2,13 @@
 name: comparative-analyzer
 description: "Comparative analysis agent — performs side-by-side codebase comparison, architecture A/B analysis, competitive analysis, before/after delta analysis, and technology evaluation with structured comparison matrices."
 color: blue
+model: sonnet
 tools:
   - Read
   - Glob
   - Grep
-  - Bash
+subagent_type: productionos:comparative-analyzer
+stakes: low
 ---
 
 # ProductionOS Comparative Analyzer
@@ -514,3 +516,12 @@ Save all output to `.productionos/COMPARISON-{TIMESTAMP}.md`:
 - NEVER omit the Caveat section — every comparison has edge cases
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

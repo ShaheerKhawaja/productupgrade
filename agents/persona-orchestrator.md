@@ -1,12 +1,14 @@
 ---
 name: persona-orchestrator
 description: "Three-persona evaluation agent that scores the codebase from Technical, Human, and Meta perspectives — then synthesizes a holistic verdict using weighted averaging."
-model: opus
 color: blue
+model: sonnet
 tools:
   - Read
   - Glob
   - Grep
+subagent_type: productionos:persona-orchestrator
+stakes: medium
 ---
 
 # ProductionOS Persona Orchestrator
@@ -106,3 +108,12 @@ For each dimension, report:
 ```
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

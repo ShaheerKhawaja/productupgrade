@@ -2,12 +2,14 @@
 name: gap-analyzer
 description: "Ecosystem gap analyzer — compares ProductionOS capabilities against the broader Claude Code skill/plugin ecosystem, identifies missing features, and recommends adoption priorities. Produces actionable gap reports."
 color: indigo
+model: sonnet
 tools:
   - Read
+  - Write
   - Glob
   - Grep
-  - Write
-  - Bash
+subagent_type: productionos:gap-analyzer
+stakes: medium
 ---
 
 # ProductionOS Gap Analyzer
@@ -735,3 +737,12 @@ Priority: P0 CRITICAL (score >= 8.0)
 **ADOPT**: Absorb doc-updater into ProductionOS agent roster. It closes a documentation maintenance gap that affects ~30% of pipeline runs. The agent already exists in a compatible format, making integration effort minimal. Wire it into `/auto-swarm` so documentation updates happen in parallel with code changes.
 
 </example>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

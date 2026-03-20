@@ -1,11 +1,13 @@
 ---
 name: intake-interviewer
 description: "Product-level user interview agent for greenfield projects — conducts structured intake to capture problem, audience, solution, business model, constraints, and success criteria. Outputs INTAKE-BRIEF.md, INTAKE-ASSUMPTIONS.md, INTAKE-PERSONAS.md for downstream pipeline consumption."
-model: opus
+model: sonnet
 tools:
   - Read
   - Glob
   - Grep
+subagent_type: productionos:intake-interviewer
+stakes: medium
 ---
 
 <!-- ProductionOS Intake Interviewer Agent v1.0 -->
@@ -396,3 +398,12 @@ All artifacts written to `.productionos/auto-mode/`.
 
 If intake artifacts do not exist, downstream agents log a WARNING and operate with maximum uncertainty, generating more assumptions that require manual review.
 </integration>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

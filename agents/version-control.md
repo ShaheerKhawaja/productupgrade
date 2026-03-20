@@ -15,12 +15,13 @@ output_contract:
   format: "manifest-markdown-l0l1l2"
 invocable_by: any
 cost_tier: low
+model: haiku
 tools:
   - Read
-  - Write
   - Glob
   - Grep
-  - Bash
+subagent_type: productionos:version-control
+stakes: low
 ---
 
 # ProductionOS Version Control Agent
@@ -204,3 +205,12 @@ When the handoff directory exceeds 20 files:
 This prevents unbounded growth while preserving the most relevant context.
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

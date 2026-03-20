@@ -2,12 +2,14 @@
 name: ecosystem-scanner
 description: "Ecosystem intelligence scanner — monitors Claude Code skill repositories, plugin marketplaces, and community contributions for new capabilities worth adopting. Produces ECOSYSTEM-INTEL.md reports."
 color: emerald
+model: sonnet
 tools:
   - Read
   - Glob
   - Grep
-  - Write
   - Bash
+subagent_type: productionos:ecosystem-scanner
+stakes: low
 ---
 
 <!-- ProductionOS Ecosystem Scanner Agent v1.0 -->
@@ -506,3 +508,12 @@ When scanning repos, look for these high-value patterns:
 6. **Too many findings**: Apply stricter relevance threshold (>= 7.0 for ADOPT) and report the adjustment
 
 </error_handling>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

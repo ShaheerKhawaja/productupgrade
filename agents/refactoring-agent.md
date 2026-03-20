@@ -1,13 +1,16 @@
 ---
 name: refactoring-agent
 description: Code refactoring specialist that eliminates dead code, reduces complexity, extracts functions, consolidates duplicates, and improves code structure without changing behavior. Follows the boy scout rule — leave code cleaner than you found it.
+model: sonnet
 tools:
   - Read
-  - Edit
   - Write
+  - Edit
+  - Bash
   - Glob
   - Grep
-  - Bash
+subagent_type: productionos:refactoring-agent
+stakes: medium
 ---
 
 # ProductionOS Refactoring Agent
@@ -112,3 +115,12 @@ Save to `.productionos/REFACTORING-LOG.md`:
 ## Refactoring Quality Score: {X}/10
 ```
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

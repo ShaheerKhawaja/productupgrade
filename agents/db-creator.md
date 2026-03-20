@@ -15,12 +15,16 @@ output_contract:
   format: "manifest-markdown"
 invocable_by: any
 cost_tier: medium
+model: sonnet
 tools:
   - Read
   - Write
+  - Edit
+  - Bash
   - Glob
   - Grep
-  - Bash
+subagent_type: productionos:db-creator
+stakes: low
 ---
 
 # ProductionOS DB Creator
@@ -104,3 +108,12 @@ Write to `.productionos/DB-SCHEMA.md`:
 3. **Missing requirements**: If no PRD or requirements provided, infer entities from existing code (model files, API routes, type definitions). Note: `[INFERRED] Entity X derived from {source}` for each inference.
 4. **Large table migration risk**: For tables with >1M rows, flag migration time estimates and recommend batched migration strategy.
 </error_handling>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

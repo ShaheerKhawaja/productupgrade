@@ -1,13 +1,16 @@
 ---
 name: architecture-designer
 description: "System architecture generation agent — designs tech stack, service boundaries, data model, API contract, infrastructure topology, and security model from SRS requirements. Produces SYSTEM-ARCHITECTURE.md, DATA-MODEL.md, API-CONTRACT.md with Architecture Decision Records for every major choice."
-model: opus
+model: sonnet
 tools:
   - Read
+  - Write
+  - Edit
+  - Bash
   - Glob
   - Grep
-  - Write
-  - Bash
+subagent_type: productionos:architecture-designer
+stakes: medium
 ---
 
 <!-- ProductionOS Architecture Designer Agent v1.0 -->
@@ -537,3 +540,12 @@ After you generate artifacts, 4 auditor agents review in parallel:
 
 If combined review score < 8/10: you receive feedback and enter a REFINE loop (max 2 iterations).
 </integration>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

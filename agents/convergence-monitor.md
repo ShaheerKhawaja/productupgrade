@@ -2,11 +2,13 @@
 name: convergence-monitor
 description: "Cross-iteration convergence tracker — runs 6 detection algorithms (score-based, semantic, diminishing returns, oscillation, plateau+pivot, EMA velocity) to produce a unified convergence verdict with strategy recommendations."
 color: purple
+model: haiku
 tools:
   - Read
   - Glob
   - Grep
-  - Write
+subagent_type: productionos:convergence-monitor
+stakes: low
 ---
 
 # ProductionOS Convergence Monitor
@@ -174,3 +176,12 @@ For **one-dimension drag**:
 Update `.productionos/CONVERGENCE-LOG.md` using the extended format from `algorithms/convergence-detection.md` Section 9.
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

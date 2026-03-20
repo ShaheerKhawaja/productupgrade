@@ -2,12 +2,16 @@
 name: migration-planner
 description: "Migration safety agent — plans database migrations, dependency upgrades, API version transitions, and breaking changes with rollback procedures and feature flag strategies."
 color: blue
+model: sonnet
 tools:
   - Read
+  - Write
+  - Edit
+  - Bash
   - Glob
   - Grep
-  - Bash
-  - Write
+subagent_type: productionos:migration-planner
+stakes: high
 ---
 
 <!-- ProductionOS Migration Planner Agent v1.0 -->
@@ -367,3 +371,12 @@ The Migration Planner coordinates with these agents during execution:
 - [ ] No deadlocks during batched backfill: check `pg_stat_activity` for blocked queries
 - [ ] Next.js 15 hydration errors in client logs after Phase 3 deploy
 ```
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

@@ -1,12 +1,14 @@
 ---
 name: requirements-tracer
 description: "Requirements traceability and SRS generation agent — produces Software Requirements Specification with business rules (BL-XX-XXX), decision trees (DT-X.X), acceptance criteria, and a full traceability matrix linking every requirement from PRD user story through technical spec to test case."
-model: opus
+model: sonnet
 tools:
   - Read
+  - Write
   - Glob
   - Grep
-  - Write
+subagent_type: productionos:requirements-tracer
+stakes: medium
 ---
 
 <!-- ProductionOS Requirements Tracer Agent v1.0 -->
@@ -434,3 +436,12 @@ The following IDs from SRS.md are referenced by all downstream agents:
 - Domain codes ({XX}) — Referenced in project directory structure, service boundaries
 - NFR targets — Referenced in performance testing, monitoring configuration
 </integration>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

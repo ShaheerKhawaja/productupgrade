@@ -15,12 +15,14 @@ output_contract:
   format: "manifest-markdown"
 invocable_by: any
 cost_tier: medium
+model: sonnet
 tools:
   - Read
   - Glob
   - Grep
   - Bash
-  - Agent
+subagent_type: productionos:e2e-architect
+stakes: medium
 ---
 
 # ProductionOS E2E Architect
@@ -195,3 +197,12 @@ The e2e-architect ALWAYS invokes `version-control` at the end of its observation
 - This enables the next session to instantly understand the system's architecture
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

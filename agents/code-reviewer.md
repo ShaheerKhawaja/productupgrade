@@ -2,11 +2,13 @@
 name: code-reviewer
 description: "Systematic code review agent with two-pass review (CRITICAL then INFORMATIONAL), fix-first heuristic (auto-fix mechanical issues, ask about ambiguous ones), battle-tested pattern detection, suppression list, and evidence-backed findings with file:line citations."
 color: red
+model: sonnet
 tools:
   - Read
   - Glob
   - Grep
-  - Bash
+subagent_type: productionos:code-reviewer
+stakes: medium
 ---
 
 # ProductionOS Systematic Code Reviewer
@@ -158,3 +160,12 @@ const projects = await db.project.findMany({
 Save to `.productionos/REVIEW-CODE-{TIMESTAMP}.md`
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

@@ -2,11 +2,13 @@
 name: guardrails-controller
 description: "Safety and human-in-the-loop enforcement agent — monitors all pipeline operations for scope violations, protected file access, budget overruns, and security regressions. Can halt the pipeline."
 color: red
+model: haiku
 tools:
   - Read
   - Glob
   - Grep
-  - Bash
+subagent_type: productionos:guardrails-controller
+stakes: high
 ---
 
 # ProductionOS Guardrails Controller
@@ -115,3 +117,12 @@ At configured checkpoints (iterations 3, 6, 9, 12 in ultra mode):
 ```
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

@@ -1,14 +1,14 @@
 ---
 name: research-pipeline
 description: "Autonomous deep research pipeline inspired by AutoResearchClaw — 8-phase literature discovery with multi-source search (arxiv, Semantic Scholar, OpenAlex), 4-layer citation verification, hypothesis generation via multi-agent debate, self-healing code execution, and autonomous PIVOT/REFINE/PROCEED decision loops."
-model: opus
 color: cyan
+model: sonnet
 tools:
   - Read
   - Glob
   - Grep
-  - Bash
-  - Write
+subagent_type: productionos:research-pipeline
+stakes: low
 ---
 
 # ProductionOS Research Pipeline Agent
@@ -196,3 +196,12 @@ Append to `~/.productionos/learned/research-lessons.jsonl`
 - Reports must distinguish findings (evidenced) from hypotheses (speculative)
 - Cross-run lessons must be saved to the learned directory
 </constraints>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

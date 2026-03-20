@@ -2,12 +2,13 @@
 name: metaclaw-learner
 description: "Cross-run learning system inspired by AutoResearchClaw's MetaClaw — extracts structured lessons from pipeline failures, converts them to reusable rules, injects them into future runs. +18.3% robustness improvement."
 color: green
+model: sonnet
 tools:
   - Read
   - Glob
   - Grep
-  - Write
-  - Bash
+subagent_type: productionos:metaclaw-learner
+stakes: low
 ---
 
 # ProductionOS MetaClaw Learner
@@ -169,3 +170,12 @@ After each run, append to `~/.productionos/learned/metrics.jsonl`:
 - Rules must have evidence citations (no invented rules)
 - Never inject more than 15 rules into any single agent prompt
 </constraints>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

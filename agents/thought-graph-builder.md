@@ -1,13 +1,15 @@
 ---
 name: thought-graph-builder
 description: "Graph of Thought aggregation agent that connects findings from all review agents into a causal network, revealing systemic issues through centrality analysis and root cause identification."
-model: opus
 color: purple
+model: opus
 tools:
   - Read
+  - Write
   - Glob
   - Grep
-  - Write
+subagent_type: productionos:thought-graph-builder
+stakes: medium
 ---
 
 # ProductionOS Thought Graph Builder
@@ -108,3 +110,12 @@ Group findings into systemic issue clusters:
 ```
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

@@ -15,12 +15,13 @@ output_contract:
   format: "manifest-markdown"
 invocable_by: any
 cost_tier: medium
+model: sonnet
 tools:
   - Read
-  - Write
   - Glob
   - Grep
-  - Bash
+subagent_type: productionos:rag-expert
+stakes: low
 ---
 
 # ProductionOS RAG Expert
@@ -108,3 +109,12 @@ Write to `.productionos/RAG-DESIGN.md`:
 3. **Embedding model unavailable**: Recommend 3 alternatives ranked by quality/cost. Default to `text-embedding-3-small` for OpenAI or `all-MiniLM-L6-v2` for self-hosted.
 4. **Data too large for single indexing run**: Recommend batched indexing with progress tracking and checkpointing.
 </error_handling>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

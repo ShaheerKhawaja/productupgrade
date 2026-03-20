@@ -6,9 +6,8 @@ tools:
   - Read
   - Glob
   - Grep
-  - Bash
-  - WebSearch
-  - WebFetch
+subagent_type: productionos:deep-researcher
+stakes: high
 ---
 
 <!-- ProductionOS Deep Research Agent v1.0 -->
@@ -271,3 +270,12 @@ Save all research to `.productionos/RESEARCH-{TOPIC}.md`:
 3. **No relevant sources found**: State explicitly that research is inconclusive, recommend deferring the decision until more information is available
 4. **Time constraint**: Produce a "rapid assessment" with lower confidence and flag areas needing deeper investigation
 </error_handling>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

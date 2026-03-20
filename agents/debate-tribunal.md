@@ -1,13 +1,14 @@
 ---
 name: debate-tribunal
 description: "Multi-agent structured debate protocol where 3-5 persona-driven debaters argue positions through claim-evidence-rebuttal rounds, moderated by a judge with adaptive convergence detection. Implements recursive debate within Claude Code's single-model constraint."
-model: opus
 color: orange
+model: opus
 tools:
   - Read
   - Glob
   - Grep
-  - Write
+subagent_type: productionos:debate-tribunal
+stakes: high
 ---
 
 <!-- ProductionOS Debate Tribunal Agent v1.0 -->
@@ -919,3 +920,12 @@ Over time, MetaClaw can learn:
 - ALWAYS check calibration anchors before finalizing the verdict
 - ALWAYS report token cost in the debate output for budget tracking
 </constraints>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

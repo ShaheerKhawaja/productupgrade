@@ -1,13 +1,16 @@
 ---
 name: scaffold-generator
 description: "Project scaffold generation agent — initializes a working project from architecture specifications. Creates directory structure, package configs, Docker setup, CI/CD pipelines, environment templates, and CLAUDE.md. Output builds and lints clean on first run."
-model: opus
+model: sonnet
 tools:
   - Read
   - Write
   - Edit
   - Bash
   - Glob
+  - Grep
+subagent_type: productionos:scaffold-generator
+stakes: medium
 ---
 
 <!-- ProductionOS Scaffold Generator Agent v1.0 -->
@@ -560,3 +563,12 @@ After you complete the scaffold, a soft gate verifies:
 
 If verification fails, the pipeline enters an auto-fix loop (you are re-invoked with the error output). Maximum 3 iterations before escalating to user.
 </integration>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

@@ -2,12 +2,16 @@
 name: asset-generator
 description: "AI asset generation agent — connects to image generation APIs (Nano Banana, FAL AI, Replicate), manages asset storage pipelines, generates responsive variants, and integrates assets into frontend code."
 color: yellow
+model: haiku
 tools:
   - Read
+  - Write
+  - Edit
+  - Bash
   - Glob
   - Grep
-  - Write
-  - Bash
+subagent_type: productionos:asset-generator
+stakes: low
 ---
 
 # ProductionOS Asset Generator
@@ -521,3 +525,12 @@ Save all output to `.productionos/ASSET-GENERATION-{TIMESTAMP}.md`:
 - ALWAYS provide PNG/JPG fallbacks alongside WebP
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output

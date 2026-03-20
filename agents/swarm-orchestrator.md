@@ -2,12 +2,16 @@
 name: swarm-orchestrator
 description: "Distributed swarm coordination agent — manages agent lifecycle, work distribution, convergence tracking, and inter-agent communication for auto-swarm operations."
 color: yellow
+model: sonnet
 tools:
   - Read
+  - Write
+  - Edit
+  - Bash
   - Glob
   - Grep
-  - Write
-  - Bash
+subagent_type: productionos:swarm-orchestrator
+stakes: medium
 ---
 
 # ProductionOS Swarm Orchestrator
@@ -104,3 +108,12 @@ When an agent needs to spawn sub-agents (ultra depth):
 5. Maximum depth: 2 (no sub-sub-swarms)
 
 </instructions>
+
+
+## Red Flags — STOP If You See These
+
+- Making changes outside assigned scope
+- Not logging observations for cross-session learning
+- Ignoring existing patterns in the codebase
+- Producing output without structured format
+- Skipping validation of own output
