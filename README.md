@@ -56,6 +56,11 @@ git clone https://github.com/ShaheerKhawaja/ProductionOS.git ~/.claude/plugins/m
 /max-research [topic]        500-1000 agents in ONE wave (nuclear option)
 ```
 
+### Frontend (v6.0)
+```
+/frontend-upgrade            CEO vision + parallel swarm frontend transformation
+```
+
 ### Specialized Tools
 ```
 /agentic-eval                CLEAR v2.0 quality framework evaluation
@@ -65,9 +70,28 @@ git clone https://github.com/ShaheerKhawaja/ProductionOS.git ~/.claude/plugins/m
 /productionos-update         Self-update from GitHub
 ```
 
-## 55 Agents
+### CLI Tools (v6.0)
+```
+pos-init                     Initialize ~/.productionos/ state directory
+pos-config list|get|set      Manage ProductionOS settings
+pos-analytics                Usage dashboard (events, top skills, sessions)
+pos-update-check             Version check with snooze
+```
 
-These aren't chat personas -- they're specialized workflows with defined inputs, outputs, tool restrictions, and quality criteria. Read-only agents (judges, auditors) cannot modify code. Execution agents (fixers, healers) cannot evaluate their own work.
+## What's New in v6.0 — The Nervous System
+
+ProductionOS v6.0 transforms from a command you invoke to an always-present AI engineering team:
+
+- **9 lifecycle hooks** — SessionStart banner, PreToolUse security scan on auth/payment files, PostToolUse telemetry + review hints after 10+ edits, Stop session handoff + instinct extraction
+- **6 CLI tools** — `pos-init`, `pos-config`, `pos-analytics`, `pos-update-check`, `pos-review-log`, `pos-telemetry`
+- **4 auto-activating skills** — Security-scan (auth/payment patterns), frontend-audit (tsx/vue/css), continuous-learning (instinct extraction), productionos (package.json/CLAUDE.md)
+- **HumanLayer stakes classification** — Every agent tagged LOW/MEDIUM/HIGH with approval gates for destructive operations
+- **79-command skill registry** — Invokes skills from superpowers, gstack, and GSD when relevant
+- **Persistent state** — `~/.productionos/` with config, analytics, sessions, instincts
+
+## 56 Agents
+
+These aren't chat personas -- they're specialized workflows with defined inputs, outputs, tool restrictions, and quality criteria. All agents have YAML frontmatter with `model`, `tools`, `subagent_type`, `stakes`, and behavioral `Red Flags`. Read-only agents (judges, auditors) cannot modify code. Execution agents (fixers, healers) cannot evaluate their own work.
 
 | Generation | Count | Agents |
 |------------|-------|--------|
@@ -78,6 +102,7 @@ These aren't chat personas -- they're specialized workflows with defined inputs,
 | V5.2 | 5 | debate-tribunal, ecosystem-scanner, gap-analyzer, recursive-orchestrator, verification-gate |
 | V5.3 | 9 | discuss-phase, stub-detector, plan-checker, architecture-designer, intake-interviewer, nyquist-filler, prd-generator, requirements-tracer, scaffold-generator |
 | V5.3+ | 6 | version-control, e2e-architect, rag-expert, db-creator, aiml-engineer, infra-setup |
+| V6.0 | 1 | approval-gate (HumanLayer-inspired stakes-based approval) |
 
 ## Estimated Costs
 
@@ -112,23 +137,36 @@ Costs depend on codebase size, depth setting, and model. Use `--profile budget` 
 
 ```bash
 bun run skill:check        # Plugin health score (10/10)
-bun run validate           # Agent validation (55/55)
-bun test                   # Full test suite (118 tests)
+bun run validate           # Agent validation (56/56)
+bun test                   # Full test suite (183+ tests)
 ```
 
 ## Tech
 
-- 49 agent definitions with research-grounded prompt composition
+- 56 agent definitions with YAML frontmatter (model routing, tool constraints, stakes classification)
 - 10-layer prompt architecture (Emotion → Meta → Scratchpad → Context → CoT → ToT → GoT → CoD → Generated Knowledge → Distractor-Augmented)
-- Executable convergence engine (TypeScript, Algorithm 1 + Algorithm 6 from formal spec)
-- Cost tracking and estimation (per-agent, per-run)
-- Security hooks (PreToolUse protected file guard)
+- 9 lifecycle hooks (SessionStart, PreToolUse security, PostToolUse telemetry/review, Stop handoff)
+- 6 CLI tools for config, analytics, telemetry, version management
+- 4 auto-activating skills with file pattern matching
+- Executable convergence engine (TypeScript, Algorithm 1 + Algorithm 6)
+- 79-command skill registry (superpowers + gstack + GSD integration)
+- Persistent state at ~/.productionos/ (config, analytics, instincts, sessions)
+- HumanLayer-inspired approval gate for HIGH-stakes operations
 - CI/CD pipeline (GitHub Actions: validate + lint + convergence check)
 - Zero runtime dependencies
 
+## Architecture Influences
+
+- [gstack](https://github.com/garry-tan/gstack) — hooks, CLI tools, preamble pattern, micro-state files
+- [superpowers](https://github.com/anthropics/claude-code) — behavioral gates, red flags, evidence-first
+- [everything-claude-code](https://github.com/shobrook/everything-claude-code) — continuous learning, instinct system
+- [12-factor-agents](https://github.com/humanlayer/12-factor-agents) — small focused agents, unified state
+- [HumanLayer](https://github.com/humanlayer/humanlayer) — stakes classification, approval as tool call
+- [get-shit-done](https://github.com/gsd-framework) — wave-based execution, project management
+
 ## Version
 
-5.3.0
+6.2.0
 
 ## Author
 
