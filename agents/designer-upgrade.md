@@ -135,10 +135,102 @@ Produce `.productionos/designer-upgrade/DESIGN-SYSTEM.md`:
 - Border widths: 0/1/2/4
 - Shadows: sm/md/lg/xl (with values)
 
-### Motion
-- Duration: fast/normal/slow (100ms/200ms/400ms)
-- Easing: ease-in/ease-out/ease-in-out/spring
-- Usage rules: when to animate, when not to
+### Motion (powered by userinterface-wiki + interface-craft)
+**MANDATORY:** Load `userinterface-wiki` (152 rules) + `interface-craft` (storyboard + dialkit + critique) before ANY motion/animation work.
+
+**Duration Scale (userinterface-wiki calibrated):**
+- Micro: 80-120ms (hover, active states)
+- Fast: 120-180ms (press, toggle, tab switch)
+- Normal: 180-260ms (small state changes, dropdown)
+- Slow: 260-300ms (page transitions, modal enter)
+- NEVER exceed 300ms for user-initiated actions
+
+**Easing Decisions:**
+- Entrance → ease-out (decelerate in)
+- Exit → ease-in (accelerate out)
+- View transition → ease-in-out
+- Gesture/drag → spring (preserves velocity)
+- Progress/loading → linear (ONLY valid linear use)
+- Context menu → NO entrance, exit only
+
+**Spring Parameters:**
+- UI entrance: stiffness 250-350, damping 20-30
+- Snappy pop-in: stiffness 400-600, damping 20-30
+- Gesture follow: stiffness 150-250, damping 15-25
+- Stagger: under 50ms per item
+
+**Storyboard Animation Pattern (interface-craft):**
+Every multi-step animation uses:
+1. ASCII storyboard comment (shot list, top-to-bottom)
+2. TIMING object (single source for all delays)
+3. Element config objects (scale, position, spring per element)
+4. Stage integer pattern (`stage >= N` in animate props)
+
+```tsx
+/* ────────────────────────────────────────
+ * ANIMATION STORYBOARD
+ *   0ms    idle
+ * 300ms    card fades in, scale 0.85 → 1.0
+ * 900ms    heading highlights
+ * 1500ms   rows slide up (staggered 50ms)
+ * ──────────────────────────────────────── */
+const TIMING = { cardAppear: 300, heading: 900, rows: 1500 };
+const CARD = { initialScale: 0.85, finalScale: 1.0, spring: { type: "spring", stiffness: 300, damping: 25 } };
+```
+
+**DialKit Live Tuning (interface-craft):**
+During development, expose key values with `useDialKit`:
+```tsx
+const values = useDialKit("Card", {
+  blur: [4, 0, 20], scale: [0.95, 0.5, 1.5],
+  spring: { type: "spring", visualDuration: 0.4, bounce: 0.2 },
+  replay: () => replayAnimation(),
+});
+```
+Install: `npm install dialkit motion` + add `<DialRoot />` to layout.
+
+### Visual Design Rules (userinterface-wiki)
+- `visual-concentric-radius` — Inner radius = outer - padding
+- `visual-layered-shadows` — Layer 2-3 shadows for depth
+- `visual-no-pure-black-shadow` — Neutral oklch, never pure black
+- `visual-shadow-direction` — Single light source
+- `visual-border-alpha-colors` — Semi-transparent borders
+- `visual-button-shadow-anatomy` — 6-layer shadow for polished buttons
+
+### Typography Rules (userinterface-wiki)
+- `type-tabular-nums-for-data` — tabular-nums for dashboards/pricing
+- `type-text-wrap-balance-headings` — text-wrap: balance on headings
+- `type-text-wrap-pretty` — text-wrap: pretty on body text
+- `type-antialiased-on-retina` — -webkit-font-smoothing: antialiased
+- `type-font-display-swap` — font-display: swap
+- `type-variable-weight-continuous` — Use weight 100-900 with variable fonts
+
+### UX Laws (userinterface-wiki)
+- `ux-fitts-target-size` — Min 32px (48px mobile)
+- `ux-doherty-under-400ms` — Respond within 400ms
+- `ux-jakobs-familiar-patterns` — Use patterns users know
+- `ux-progressive-disclosure` — Show what matters, reveal later
+- `ux-peak-end-finish-strong` — End with clear success states
+
+### Design Critique Methodology (interface-craft)
+When reviewing/refining interfaces, apply the 4-lens critique:
+1. **Visual Design** — color, type, spacing, shadows, hierarchy
+2. **Interface Design** — layout, focus mechanism, information density
+3. **Interaction Consistency** — icon styles, dividers, borders, states
+4. **User Context** — cognitive load, Fitts's law, accessibility
+
+Micro-refinement patterns (from Raphael Salaja's "Refining Today"):
+- Reduce vertical rules to 2-3
+- Standardize divider treatment (all or none)
+- Tokenize category labels
+- Align stroke widths + colors
+- Tighten optical padding
+- Each refinement REDUCES visual weight
+
+### Reference Design Sites
+- **interfacecraft.dev** — "Reduce until clear, refine until right"
+- **userinterface.wiki** — 152 codified UI rules across 12 categories
+- **calligraph** — Character-level text animation with Motion
 
 ## Components
 {list of every UI component with variants, states, and tokens used}
@@ -146,6 +238,15 @@ Produce `.productionos/designer-upgrade/DESIGN-SYSTEM.md`:
 ## Patterns
 {layout patterns, form patterns, navigation patterns, data display patterns}
 ```
+
+## Phase 2.5: Animation Architecture (NEW — powered by interface-craft)
+
+For any component with animations, apply the **Storyboard Animation Pattern** before mockup generation:
+
+1. Write ASCII storyboard for each animated view
+2. Extract TIMING + element config objects
+3. Implement stage-driven animation with springs
+4. Add DialKit controls for live tuning during development
 
 ## Phase 3: HTML Mockup Generation
 
