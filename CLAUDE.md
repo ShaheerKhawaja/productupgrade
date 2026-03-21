@@ -1,6 +1,6 @@
 # ProductionOS 7.0 — The Design Conscience
 
-64-agent AI engineering team with 21 commands, 15+ lifecycle hooks, 6 CLI tools, 4 auto-activating skills, continuous learning, and self-evaluation. Native embedding into Claude Code with design auditing, interactive HTML mockups, user story generation, and default-on self-evaluation that questions every action. Built for solo founders who need a 10-person engineering + design team from 1 person + AI.
+65-agent AI engineering team with 35 commands, 15+ lifecycle hooks, 6 CLI tools, 4 auto-activating skills, continuous learning, and self-evaluation. Native embedding into Claude Code with design auditing, interactive HTML mockups, user story generation, and default-on self-evaluation that questions every action. Built for solo founders who need a 10-person engineering + design team from 1 person + AI.
 
 ## What's New in v7.0
 
@@ -30,7 +30,7 @@
 - **Security Scanning** — PreToolUse hook detects edits to auth/payment/credential files
 - **Continuous Learning** — PostToolUse observation + Stop instinct extraction
 - **Stakes Classification** — Each agent tagged LOW/MEDIUM/HIGH (HumanLayer pattern)
-- **Red Flags** — Behavioral guardrails on all 64 agents
+- **Red Flags** — Behavioral guardrails on all 65 agents
 - **Declarative Agents** — YAML frontmatter with model, tools, subagent_type on all agents
 
 ## Commands
@@ -211,7 +211,7 @@ SELF-EVAL PROTOCOL (cross-cutting — embedded in ALL commands above)
 
 ## Agent Loading
 
-Agent definitions live in `agents/` (64 files). All agents have YAML frontmatter with `name`, `description`, `model`, `tools`, `subagent_type`, and `stakes`. Commands load agents on-demand — do NOT preload all agent files.
+Agent definitions live in `agents/` (65 files). All agents have YAML frontmatter with `name`, `description`, `model`, `tools`, `subagent_type`, and `stakes`. Commands load agents on-demand — do NOT preload all agent files.
 
 ## Prompting Architecture
 

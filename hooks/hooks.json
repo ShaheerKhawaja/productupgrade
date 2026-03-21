@@ -1,5 +1,5 @@
 {
-  "_meta": "ProductionOS v7.0 — 64 agents | 21 commands | 9 hook scripts | self-eval default-on",
+  "_meta": "ProductionOS v7.0 — 65 agents | 35 commands | 9 hook scripts | self-eval default-on | fully self-contained",
   "SessionStart": [
     {
       "matcher": "startup|resume|clear|compact",
