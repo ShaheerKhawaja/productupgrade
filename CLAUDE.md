@@ -1,6 +1,6 @@
 # ProductionOS 6.0 — The Nervous System
 
-55-agent AI engineering team with 18 commands, 15+ lifecycle hooks, 6 CLI tools, 4 auto-activating skills, and continuous learning. Native embedding into Claude Code — PreToolUse security scanning, PostToolUse telemetry and code review hints, Stop session handoff, and cross-session instinct extraction. Built for solo founders who need a 10-person engineering team from 1 person + AI.
+56-agent AI engineering team with 18 commands, 15+ lifecycle hooks, 6 CLI tools, 4 auto-activating skills, and continuous learning. Native embedding into Claude Code — PreToolUse security scanning, PostToolUse telemetry and code review hints, Stop session handoff, and cross-session instinct extraction. Built for solo founders who need a 10-person engineering team from 1 person + AI.
 
 ## What's New in v6.0
 
@@ -13,7 +13,7 @@
 - **Session Handoff** — Auto-generated handoff docs on session end
 - **Review Hints** — After 10+ edits, suggests code review
 - **Stakes Classification** — Each agent tagged LOW/MEDIUM/HIGH (HumanLayer pattern)
-- **Red Flags** — Behavioral guardrails on all 55 agents
+- **Red Flags** — Behavioral guardrails on all 56 agents
 - **Declarative Agents** — YAML frontmatter with model, tools, subagent_type on all agents
 - **Frontend Upgrade** — New `/frontend-upgrade` command (CEO vision + parallel swarm)
 

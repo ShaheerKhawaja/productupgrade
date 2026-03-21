@@ -1,5 +1,5 @@
 {
-  "_meta": "ProductionOS v6.0 — 55 agents | 18 commands | 9 hook scripts",
+  "_meta": "ProductionOS v6.0 — 56 agents | 18 commands | 9 hook scripts",
   "SessionStart": [
     {
       "matcher": "startup|resume|clear|compact",

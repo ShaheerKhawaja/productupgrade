@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # ProductionOS PreToolUse — security advisory on sensitive file edits
 set -euo pipefail
+# Resolve plugin root — works for both marketplace install and git clone
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 
 INPUT=$(cat)
 STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"

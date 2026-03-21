@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # ProductionOS session start — init state, track session, show status
 set -euo pipefail
+# Resolve plugin root — works for both marketplace install and git clone
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
 
 mkdir -p "$STATE_DIR"/{config,analytics,sessions,instincts/{project,global},review-log,cache}
@@ -25,7 +27,7 @@ cat << 'BANNER'
 
   ╔═══════════════════════════════════════════════════╗
   ║  ProductionOS v6.0 — The Nervous System           ║
-  ║  55 agents | 18 commands | 15+ hooks              ║
+  ║  56 agents | 18 commands | 15+ hooks              ║
   ╠═══════════════════════════════════════════════════╣
 BANNER
 printf "  ║  Sessions: %-3s | Auto-Review: %-5s | Learn: %-4s ║\n" "$SESSIONS" "$AUTO_REVIEW" "$PROACTIVE"

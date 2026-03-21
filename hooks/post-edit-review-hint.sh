@@ -2,6 +2,8 @@
 # ProductionOS PostToolUse — auto code review hint after edits
 # Tracks edit count per session. After 10+ edits, suggests running review.
 set -euo pipefail
+# Resolve plugin root — works for both marketplace install and git clone
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
 
 # Check if auto_review is enabled

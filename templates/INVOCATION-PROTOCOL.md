@@ -93,6 +93,65 @@ Every ProductionOS command can invoke ANY of these skills when relevant. The orc
 - `/ship` — Merge, test, version, push, PR (gstack)
 - `/retro` — Engineering retrospective (gstack)
 
+#### Project Management (from GSD)
+- `/gsd:new-project` — Initialize project with deep context gathering
+- `/gsd:plan-phase` — Create executable phase plan with verification loop
+- `/gsd:execute-phase` — Execute plans with wave-based parallelization
+- `/gsd:autonomous` — Run all remaining phases autonomously
+- `/gsd:next` — Suggest next best action
+- `/gsd:progress` — Show project progress and context
+- `/gsd:add-phase` — Add phase to roadmap
+- `/gsd:remove-phase` — Remove phase from roadmap
+- `/gsd:insert-phase` — Insert urgent work between existing phases
+- `/gsd:new-milestone` — Start new milestone cycle
+- `/gsd:complete-milestone` — Archive completed milestone
+- `/gsd:audit-milestone` — Audit milestone completion
+- `/gsd:plan-milestone-gaps` — Find gaps in milestone plan
+- `/gsd:add-todo` — Capture task from conversation context
+- `/gsd:check-todos` — List pending todos
+- `/gsd:add-tests` — Generate tests for completed phase
+- `/gsd:verify-work` — Validate built features through UAT
+- `/gsd:validate-phase` — Retroactive validation audit
+- `/gsd:research-phase` — Research before planning
+- `/gsd:discuss-phase` — Gather phase context through questioning
+- `/gsd:quick` — Quick task with GSD guarantees
+- `/gsd:note` — Zero-friction idea capture
+- `/gsd:pause-work` — Create context handoff when pausing
+- `/gsd:resume-work` — Resume from previous session
+- `/gsd:session-report` — Generate session report with metrics
+- `/gsd:map-codebase` — Analyze codebase with parallel agents
+- `/gsd:stats` — Display project statistics
+- `/gsd:health` — Diagnose planning directory health
+- `/gsd:cleanup` — Archive accumulated phase directories
+- `/gsd:ship` — Create PR, review, prepare for merge
+- `/gsd:debug` — Systematic debugging with persistent state
+
+#### Workflow & Development (from superpowers)
+- `/brainstorming` — Explore ideas before any creative work (MANDATORY)
+- `/test-driven-development` — Write tests before implementation
+- `/systematic-debugging` — Root-cause analysis framework
+- `/writing-plans` — Create step-by-step implementation plans
+- `/executing-plans` — Execute plans in separate session with checkpoints
+- `/dispatching-parallel-agents` — Coordinate 2+ independent tasks
+- `/subagent-driven-development` — Execute with subagents in current session
+- `/requesting-code-review` — Request review before merging
+- `/receiving-code-review` — Process review feedback
+- `/verification-before-completion` — Verify before claiming done
+- `/finishing-a-development-branch` — Decide merge strategy
+- `/using-git-worktrees` — Isolate feature work
+
+#### Browser & QA (from gstack)
+- `/browse` — Persistent headless Chromium for QA testing
+- `/setup-browser-cookies` — Import cookies from real browser
+- `/design-consultation` — Design system creation
+- `/design-review` — Visual consistency QA
+- `/document-release` — Post-ship documentation sync
+
+#### Safety & Control (from gstack)
+- `/freeze` — Restrict edits to single directory
+- `/careful` — Warn before destructive commands
+- `/guard` — Combined freeze + careful mode
+
 ### Skill Selection Rules
 
 When an orchestrator needs to select skills:

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # ProductionOS — config manager (get/set/list)
 set -euo pipefail
+# Check python3 availability
+HAS_PYTHON=$(command -v python3 >/dev/null 2>&1 && echo "yes" || echo "no")
 STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
 CONFIG="$STATE_DIR/config/settings.json"
 

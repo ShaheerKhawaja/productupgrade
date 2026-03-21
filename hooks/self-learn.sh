@@ -5,6 +5,8 @@
 # v2: Cross-session pattern aggregation
 
 set -euo pipefail
+# Resolve plugin root — works for both marketplace install and git clone
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 
 LEARN_DIR="${HOME}/.productionos/learned"
 SESSION_FILE="${LEARN_DIR}/session-$(date +%Y%m%d).jsonl"

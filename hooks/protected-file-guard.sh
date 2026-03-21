@@ -3,6 +3,8 @@
 # Returns JSON: {"decision":"block","reason":"..."} or {"decision":"allow"}
 # Handles Edit, Write, AND Bash tools (detects file writes in shell commands)
 set -euo pipefail
+# Resolve plugin root — works for both marketplace install and git clone
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 
 # Fail CLOSED if jq is not available — block everything rather than allow everything
 if ! command -v jq >/dev/null 2>&1; then

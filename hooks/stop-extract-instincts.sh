@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # ProductionOS Stop hook — extract instincts from session analytics
 set -euo pipefail
+# Resolve plugin root — works for both marketplace install and git clone
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
 ANALYTICS="$STATE_DIR/analytics/skill-usage.jsonl"
 INSTINCTS_DIR="$STATE_DIR/instincts/project"
