@@ -1,5 +1,26 @@
 # Changelog
 
+## [7.0.0] - 2026-03-21
+
+### Added — The Design Conscience
+- **Self-Evaluation Protocol (default-on)** — 7-question self-eval after every agent action: quality, necessity, correctness, dependencies, completeness, learning, honesty
+- **Quality Loop Controller** — Self-check → Self-eval → Self-heal → Learn cycle with score gating (>= 8.0 pass, 6.0-7.9 self-heal, < 6.0 block)
+- **`/self-eval` command** — Standalone evaluation of last output, session, or git diff
+- **`/designer-upgrade` command** — Full UI/UX redesign pipeline: audit → design system → interactive HTML mockups → browser annotation → implementation plan
+- **`/ux-genie` command** — User stories from UI guidelines, journey mapping, friction analysis, agent dispatch
+- **`/build-productionos` command** — Smart router that routes any intent to the right pipeline
+- **8 new agents** — self-evaluator, designer-upgrade, mockup-generator, design-system-architect, ux-genie, user-story-mapper, quality-loop-controller, session-context-manager
+- **14 absorbed commands** — brainstorming, writing-plans, tdd, debug, plan-ceo-review, plan-eng-review, review, ship, qa, qa-only, browse, retro, document-release (from gstack, superpowers, ECC)
+- **Session context management** — L0/L1/L2 progressive loading, context rot detection, cross-session instinct transfer
+- **SELF-EVAL-PROTOCOL.md template** — Embedded in PREAMBLE postamble for all flows
+
+### Changed
+- Agent count: 56 → 65
+- Command count: 21 → 35
+- Zero external dependencies — all core workflows absorbed natively
+- CLAUDE.md, ARCHITECTURE.md, PREAMBLE.md, INVOCATION-PROTOCOL.md rewritten for v7
+- VERSION: 6.3.0 → 7.0.0
+
 ## [6.0.0] - 2026-03-20
 
 ### Added — Native Embedding Architecture
