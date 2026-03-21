@@ -18,14 +18,89 @@ Use Claude Code's Agent tool to spawn a subagent with the target agent's instruc
 
 ## Method 2: Skill Invocation (for external skills)
 
-For skills from other plugins (gstack, superpowers):
+For skills from other plugins (gstack, superpowers, ECC, backend-development):
 
 ```
-1. Check if skill exists: attempt to invoke it
+1. Check if skill exists: attempt to invoke it via the Skill tool
 2. If available: let it execute, read its output
 3. If unavailable: log "SKIP: {skill} not available" and continue
 4. Never halt the pipeline because an external skill is missing
 ```
+
+### External Skill Registry
+
+Every ProductionOS command can invoke ANY of these skills when relevant. The orchestrator selects skills based on the task, codebase type, and dimension being addressed.
+
+#### Code Quality & Review
+- `/review` — Pre-landing PR review (gstack)
+- `/code-review` — Comprehensive code review
+- `/simplify` — Review changed code for reuse and quality
+- `/plan-eng-review` — Engineering architecture review (gstack)
+
+#### Strategy & Planning
+- `/plan-ceo-review` — CEO/founder-mode scope review (gstack)
+- `/brainstorming` — Explore ideas before building (superpowers)
+- `/writing-plans` — Create step-by-step implementation plans (superpowers)
+
+#### Testing & QA
+- `/qa` — Systematic QA testing with health scoring (gstack)
+- `/qa-only` — Report-only QA (no fixes) (gstack)
+- `/browse` — Headless browser for manual inspection (gstack)
+- `/test-driven-development` — TDD workflow (superpowers)
+- `/e2e` — Playwright E2E testing (ECC)
+
+#### Security
+- `/security-audit` — 7-domain OWASP/MITRE/NIST audit (ProductionOS)
+- `/security-review` — Auth, input handling, secrets review (ECC)
+- `/security-scan` — Auto-activated on auth/payment files (ProductionOS)
+
+#### Frontend
+- `/frontend-upgrade` — CEO-enriched frontend transformation (ProductionOS)
+- `/frontend-design` — Production-grade frontend interfaces
+- `/design-review` — Visual inconsistency finder (gstack)
+- `/design-consultation` — Full design system proposal
+- `/react-best-practices` — TSX quality review (Vercel)
+- `/shadcn` — shadcn/ui component guidance (Vercel)
+
+#### Research
+- `/deep-research` — 8-phase autonomous research (ProductionOS)
+- `/max-research` — 500-1000 agent nuclear research (ProductionOS)
+
+#### Architecture & Backend
+- `/architecture-patterns` — Clean/Hexagonal/DDD patterns
+- `/api-design` — REST API best practices
+- `/postgresql` — Schema design and optimization
+- `/docker-patterns` — Container security and orchestration
+- `/microservices-patterns` — Service boundaries and resilience
+
+#### Python
+- `/python-review` — PEP 8, type hints, security (ECC)
+- `/python-testing-patterns` — pytest, fixtures, mocking
+- `/python-code-style` — Formatting and naming conventions
+- `/python-error-handling` — Exception hierarchies
+
+#### JavaScript/TypeScript
+- `/typescript-advanced-types` — Generics, conditional types
+- `/javascript-testing-patterns` — Jest, Vitest, Testing Library
+- `/nodejs-backend-patterns` — Express/Fastify patterns
+
+#### AI/LLM
+- `/ai-sdk` — Vercel AI SDK guidance
+- `/claude-api` — Anthropic API patterns
+
+#### DevOps & Deployment
+- `/deployment-patterns` — CI/CD, rollback strategies
+- `/ship` — Merge, test, version, push, PR (gstack)
+- `/retro` — Engineering retrospective (gstack)
+
+### Skill Selection Rules
+
+When an orchestrator needs to select skills:
+1. Match the **dimension being addressed** (security → security skills, frontend → frontend skills)
+2. Prefer **ProductionOS native skills** over external when both exist
+3. If external skill is unavailable, **degrade gracefully** — use the internal agent equivalent
+4. **Log every skill invocation** to ~/.productionos/analytics/skill-usage.jsonl
+5. **Never invoke more than 5 external skills per iteration** — focus force
 
 ## Method 3: File-Based Handoff (for sequential agents)
 

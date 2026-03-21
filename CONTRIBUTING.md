@@ -3,8 +3,8 @@
 ## Quick Setup
 
 ```bash
-git clone https://github.com/ShaheerKhawaja/productupgrade.git
-cd productupgrade
+git clone https://github.com/ShaheerKhawaja/ProductionOS.git
+cd ProductionOS
 bun install
 bun run skill:check    # Must pass 10/10
 bun run validate       # Must show 55/55 valid
@@ -16,8 +16,8 @@ bun test               # Must pass all tests
 ```
 productupgrade/
 ├── .claude-plugin/           # Plugin manifest + marketplace listing
-├── .claude/commands/         # 17 command definitions (.md)
-├── .claude/skills/           # Skill definition (SKILL.md)
+├── .claude/commands/         # 18 command definitions (.md)
+├── .claude/skills/           # 4 auto-activating skills with file patterns
 ├── agents/                   # 55 agent definitions (.md)
 ├── templates/                # Shared templates (preamble, rubric, convergence)
 ├── prompts/                  # Prompt engineering technique files

@@ -7,7 +7,15 @@ description: "Show how to use ProductionOS — explains commands, recommended wo
 
 ## Getting Started
 
-ProductionOS is your AI engineering team — 55 agents and 17 commands. Here's how to use it effectively.
+ProductionOS v6.0 is your AI engineering team — 55 agents, 18 commands, 15+ hooks, 6 CLI tools, always present. Here's how to use it effectively.
+
+## What's New in v6.0
+
+- **Always-present hooks** — Security scan on auth/payment files, telemetry on every edit, review hints after 10+ changes, session handoff on exit
+- **CLI tools** — `pos-init`, `pos-config`, `pos-analytics`, `pos-update-check`
+- **Auto-activating skills** — Skills trigger based on file patterns (auth → security-scan, .tsx → frontend-audit)
+- **Continuous learning** — Extracts patterns from sessions, builds instincts with confidence scoring
+- **`/frontend-upgrade`** — CEO vision + parallel swarm for frontend transformation
 
 ## Step 0: Preamble
 
@@ -32,7 +40,17 @@ COMMAND                          WHEN TO USE
 /productionos-pause              Save pipeline state for later
 /productionos-resume             Resume from checkpoint
 /productionos-update             Update to latest version
+/frontend-upgrade                CEO-enriched frontend transformation
 /productionos-help               This guide
+```
+
+### CLI Tools (v6.0)
+
+```
+pos-init                         Initialize ~/.productionos/ state
+pos-config list|get|set          Manage settings
+pos-analytics                    Usage dashboard
+pos-update-check                 Version check
 ```
 
 ## Recommended Workflows
