@@ -1,5 +1,5 @@
 {
-  "_meta": "ProductionOS v7.0 — 65 agents | 35 commands | 9 hook scripts | self-eval default-on | fully self-contained",
+  "_meta": "ProductionOS v7.0 — 65 agents | 35 commands | 10 hook scripts | self-eval default-on | fully self-contained",
   "SessionStart": [
     {
       "matcher": "startup|resume|clear|compact",
@@ -68,6 +68,11 @@
         {
           "type": "command",
           "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/stop-session-handoff.sh\"",
+          "async": true
+        },
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/stop-extract-instincts.sh\"",
           "async": true
         }
       ]

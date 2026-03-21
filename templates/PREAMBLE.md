@@ -24,7 +24,7 @@ _REPO=$(basename "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null || e
 
 # 5. Log skill invocation
 _TEL_START=$(date +%s)
-bash "${CLAUDE_PLUGIN_ROOT}/bin/pos-telemetry" "SKILL_NAME" 2>/dev/null || true
+bash "${CLAUDE_PLUGIN_ROOT}/bin/pos-telemetry" "${_POS_SKILL_NAME:-unknown}" 2>/dev/null || true
 
 # 6. Print status
 echo "ProductionOS | Branch: $_BRANCH | Sessions: $_SESSIONS | Review: $_AUTO_REVIEW"
