@@ -26,8 +26,8 @@ echo "{\"event\":\"session_start\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"p
 cat << 'BANNER'
 
   ╔═══════════════════════════════════════════════════╗
-  ║  ProductionOS v6.0 — The Nervous System           ║
-  ║  56 agents | 18 commands | 15+ hooks              ║
+  ║  ProductionOS v7.0 — The Design Conscience        ║
+  ║  65 agents | 35 commands | 15+ hooks              ║
   ╠═══════════════════════════════════════════════════╣
 BANNER
 printf "  ║  Sessions: %-3s | Auto-Review: %-5s | Learn: %-4s ║\n" "$SESSIONS" "$AUTO_REVIEW" "$PROACTIVE"

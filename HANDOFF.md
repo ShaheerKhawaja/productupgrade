@@ -122,7 +122,7 @@ Resume ProductionOS v7.0 → v8.0 (Full Skill Absorption).
 
 Context:
 1. /mem-search "ProductionOS v7 skill absorption"
-2. Read ~/productupgrade/HANDOFF.md
+2. Read ~/.claude/plugins/marketplaces/productupgrade/HANDOFF.md
 3. cd ~/productupgrade && bun test (expect 196+ pass)
 
 This session: Built v7.0 with 8 new agents, 3 new commands, self-eval protocol.
@@ -147,20 +147,20 @@ Run: /auto-swarm-nth "Absorb P0 skills from gstack/superpowers into ProductionOS
 
 | Purpose | Path |
 |---------|------|
-| ProductionOS repo | `~/productupgrade/` |
-| Agents (64) | `~/productupgrade/agents/` |
-| Commands (21) | `~/productupgrade/.claude/commands/` |
-| Skills (4) | `~/productupgrade/.claude/skills/` |
-| Hooks (9) | `~/productupgrade/hooks/` |
-| CLI tools (6) | `~/productupgrade/bin/` |
-| Templates (7) | `~/productupgrade/templates/` |
-| Tests (9 files) | `~/productupgrade/tests/` |
+| ProductionOS repo | `~/.claude/plugins/marketplaces/productupgrade/` |
+| Agents (65) | `~/.claude/plugins/marketplaces/productupgrade/agents/` |
+| Commands (35) | `~/.claude/plugins/marketplaces/productupgrade/.claude/commands/` |
+| Skills (4) | `~/.claude/plugins/marketplaces/productupgrade/.claude/skills/` |
+| Hooks (10) | `~/.claude/plugins/marketplaces/productupgrade/hooks/` |
+| CLI tools (6) | `~/.claude/plugins/marketplaces/productupgrade/bin/` |
+| Templates (7) | `~/.claude/plugins/marketplaces/productupgrade/templates/` |
+| Tests (9 files) | `~/.claude/plugins/marketplaces/productupgrade/tests/` |
 | Plugin cache | `~/.claude/plugins/cache/productupgrade/productupgrade/3.0.0/` |
 | Persistent state | `~/.productionos/` |
 | Gstack source | `~/repos/gstack/` |
 | Superpowers skills | `~/.claude/skills/` |
 | ECC source | `~/.claude/plugins/cache/everything-claude-code/everything-claude-code/1.8.0/` |
-| Consolidated review | `~/productupgrade/.productionos/V7-CONSOLIDATED-REVIEW.md` |
+| Consolidated review | `~/.claude/plugins/marketplaces/productupgrade/.productionos/V7-CONSOLIDATED-REVIEW.md` |
 
 ---
 

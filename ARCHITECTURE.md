@@ -6,8 +6,8 @@ This document explains **why** ProductionOS is built the way it is. For setup an
 
 | Capability | Status | Notes |
 |------------|--------|-------|
-| 64 agent definitions | IMPLEMENTED | All with YAML frontmatter, stakes, Red Flags |
-| 21 commands | IMPLEMENTED | All pipeline commands have Step 0 preambles |
+| 65 agent definitions | IMPLEMENTED | All with YAML frontmatter, stakes, Red Flags |
+| 35 commands | IMPLEMENTED | All pipeline commands have Step 0 preambles (14 absorbed from gstack/superpowers/ECC) |
 | 9 hook scripts | IMPLEMENTED | SessionStart, PreToolUse, PostToolUse, Stop |
 | 6 CLI tools | IMPLEMENTED | pos-init, pos-config, pos-analytics, pos-update-check, pos-review-log, pos-telemetry |
 | 4 auto-activating skills | IMPLEMENTED | security-scan (p95), productionos (p90), frontend-audit (p80), continuous-learning (p70) |
@@ -18,7 +18,7 @@ This document explains **why** ProductionOS is built the way it is. For setup an
 | Session Context Management | IMPLEMENTED | L0/L1/L2 progressive loading, context rot detection |
 | Convergence engine | IMPLEMENTED | PIVOT/REFINE/PROCEED with tri-tiered judging |
 | Persistent state | IMPLEMENTED | ~/.productionos/ with config, analytics, sessions, instincts |
-| Stakes classification | IMPLEMENTED | LOW/MEDIUM/HIGH on all 64 agents (HumanLayer pattern) |
+| Stakes classification | IMPLEMENTED | LOW/MEDIUM/HIGH on all 65 agents (HumanLayer pattern) |
 
 ## Design Philosophy
 
@@ -58,7 +58,7 @@ Codebase (grade: 9.7)
 
 ## The 4 Primary Commands
 
-ProductionOS has 21 commands, but users need to know only 4:
+ProductionOS has 35 commands, but users need to know only 4:
 
 ```
 /omni-plan-nth     THE orchestrator. Chains ALL skills. Loops until 10/10.
@@ -217,7 +217,7 @@ PHASE 6: VERIFICATION
 
 ## Agent Architecture
 
-### Why 64 agents instead of 1 big prompt
+### Why 65 agents instead of 1 big prompt
 
 A single prompt covering security, UX, performance, design, accessibility, database, API, business logic, and deployment would be 50K+ tokens. The model attends to all weakly instead of any strongly.
 
@@ -369,7 +369,7 @@ Context rot detection monitors for: repeated work, contradictions, score regress
 - Pre-commit diff review required
 - Pre-push ALWAYS requires approval
 - Automatic rollback on test failure or score regression
-- Stakes classification on all 64 agents (LOW/MEDIUM/HIGH)
+- Stakes classification on all 65 agents (LOW/MEDIUM/HIGH)
 - Red Flags behavioral guardrails on all agents
 - Self-eval catches scope creep and untested claims
 
@@ -478,7 +478,7 @@ Minimum requirements: Claude Code 2.0+, Bun 1.0+, macOS or Linux.
 
 | Dimension | gstack | ProductionOS |
 |-----------|--------|-------------|
-| Architecture | 22 skills (sequential) | 64 agents (parallel swarm) |
+| Architecture | 22 skills (sequential) | 65 agents (parallel swarm) |
 | Multi-model | Eval-only | Tri-tiered tribunal with DOWN gate |
 | Prompt layers | Implicit (latent-space) | Explicit 12-layer composition |
 | Convergence | hyper-plan (10 dims) | Parameterized per command |

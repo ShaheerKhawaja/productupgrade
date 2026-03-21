@@ -87,16 +87,18 @@ After answering all 7 questions, produce a structured block:
 5. **On demand** — via `/self-eval` command
 
 ### Score Thresholds
-- **>= 8.0** — Proceed. Log evaluation to `.productionos/self-eval/`
-- **6.0 - 7.9** — Proceed with warnings. Flag issues. Attempt self-fix.
-- **< 6.0** — STOP. Do NOT commit. Do NOT declare success. Self-heal or escalate.
+- **10.0** — Proceed. The ONLY acceptable score. Best-in-class, bulletproof, 1000/10 mentality.
+- **9.0 - 9.9** — Self-heal loop. Close but not perfect. Fix the gaps.
+- **8.0 - 8.9** — STOP. Significant self-heal required. Re-do lowest-scoring dimensions.
+- **< 8.0** — BLOCK. Do NOT commit. Do NOT declare success. Escalate to human.
 
-### Self-Heal Loop (score < 8.0)
-If self-eval score < 8.0:
-1. Identify the lowest-scoring question
-2. Re-do ONLY that aspect of the work
-3. Re-run self-eval (max 3 loops)
-4. If still < 8.0 after 3 loops: escalate to human with full eval report
+### Self-Heal Loop (score < 10.0)
+If self-eval score < 10.0:
+1. Identify the lowest-scoring question(s)
+2. Re-do ONLY those aspects of the work — apply /plan-ceo-review logic (is this truly 10-star?)
+3. Apply /plan-eng-review rigor (architecture, edge cases, test coverage, performance)
+4. Re-run self-eval (max 5 loops — perfection takes iteration)
+5. If still < 10.0 after 5 loops: escalate to human with full eval report and /retro analysis
 
 ### Integration with Existing Flows
 - **/omni-plan-nth**: Self-eval runs after each iteration, score feeds into convergence

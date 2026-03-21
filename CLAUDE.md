@@ -7,7 +7,7 @@
 ### Self-Evaluation (default-on)
 - **Self-Eval Protocol** — 7 questions after every agent action: quality, necessity, correctness, dependencies, completeness, learning, honesty
 - **Quality Loop Controller** — Self-check → Self-eval → Self-heal → Learn cycle on all outputs
-- **Score Gating** — >= 8.0 passes, 6.0-7.9 triggers self-heal loop, < 6.0 blocks and escalates
+- **Score Gating** — 10.0 is the ONLY passing score. 9.0-9.9 triggers self-heal. < 9.0 blocks and escalates. Best-in-class, bulletproof, 1000/10 mentality.
 - **`/self-eval` command** — Standalone evaluation of last output, session, or git diff
 
 ### Design & UX
