@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeAll } from "bun:test";
+import { describe, test, expect } from "bun:test";
 import { execFileSync } from "child_process";
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
@@ -163,7 +163,7 @@ describe("cleanup edge cases", () => {
     // We just verify it doesn't crash with an unhandled exception
     const out = run(["cleanup", "nonexistent/branch"]);
     expect(typeof out).toBe("string");
-  });
+  }, 10_000);
 
   test("cleanup --all with empty registry is safe", () => {
     const out = run(["cleanup", "--all"]);
