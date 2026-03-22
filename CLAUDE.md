@@ -1,6 +1,6 @@
 # ProductionOS 8.0.0-alpha.2 — The Nervous System
 
-73-agent AI engineering team with 35 commands, 11 lifecycle hooks, 6 CLI tools, 4 auto-activating skills, continuous learning, and self-evaluation. Native embedding into Claude Code with design auditing, interactive HTML mockups, user story generation, and default-on self-evaluation that questions every action. Built for solo founders who need a 10-person engineering + design team from 1 person + AI.
+74-agent AI engineering team with 37 commands, 11 lifecycle hooks, 6 CLI tools, 4 auto-activating skills, continuous learning, and self-evaluation. Native embedding into Claude Code with design auditing, interactive HTML mockups, user story generation, and default-on self-evaluation that questions every action. Built for solo founders who need a 10-person engineering + design team from 1 person + AI.
 
 ## What's New in v7.0
 
@@ -211,7 +211,7 @@ SELF-EVAL PROTOCOL (cross-cutting — embedded in ALL commands above)
 
 ## Agent Loading
 
-Agent definitions live in `agents/` (65 files). All agents have YAML frontmatter with `name`, `description`, `model`, `tools`, `subagent_type`, and `stakes`. Commands load agents on-demand — do NOT preload all agent files.
+Agent definitions live in `agents/` (74 files). All agents have YAML frontmatter with `name`, `description`, `model`, `tools`, `subagent_type`, and `stakes`. Commands load agents on-demand — do NOT preload all agent files.
 
 ## Prompting Architecture
 

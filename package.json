@@ -1,7 +1,7 @@
 {
   "name": "productionos",
   "version": "8.0.0-alpha.3",
-  "description": "ProductionOS — Your AI engineering team. 66 agents, 35 commands, 11 hooks, repo boundary guard, gitleaks, self-eval, design auditing, UX analysis.",
+  "description": "ProductionOS — Your AI engineering team. 74 agents, 37 commands, 11 hooks, repo boundary guard, gitleaks, self-eval, design auditing, UX analysis, autoresearch self-improvement.",
   "license": "MIT",
   "type": "module",
   "bin": {
