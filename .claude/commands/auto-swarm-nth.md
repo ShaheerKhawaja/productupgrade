@@ -20,6 +20,10 @@ arguments:
     description: "Maximum accumulated cost in USD before halting (default: 20)"
     required: false
     default: "20"
+  - name: isolation
+    description: "Agent isolation mode: none (default) | worktree (each agent gets isolated git worktree with non-overlapping file scopes)"
+    required: false
+    default: "none"
 ---
 
 # Auto-Swarm Nth — Recursive Swarm Until Complete
@@ -78,6 +82,31 @@ For the detected mode, select the agent roster:
 | fix | refactoring-agent, self-healer, code-reviewer | test-architect, naming-enforcer |
 | explore | reverse-engineer, comparative-analyzer, deep-researcher | comms-assistant, thought-graph-builder |
 
+### P3.5: Worktree Setup (when isolation=worktree)
+
+If `$ARGUMENTS.isolation` is `worktree`:
+
+1. Read the `worktree-orchestrator` agent definition from `agents/worktree-orchestrator.md`
+2. Create N worktrees (one per `swarm_size`):
+   ```bash
+   bun run scripts/worktree-manager.ts create "swarm/wave-1-agent-{i}" --base main
+   ```
+3. Run preflight on each:
+   ```bash
+   bun run scripts/worktree-manager.ts preflight "swarm/wave-1-agent-{i}"
+   ```
+4. Write task scope descriptions to `.productionos/swarm-tasks.json`
+5. Compute non-overlapping scope assignments:
+   ```bash
+   bun run scripts/worktree-manager.ts assign .productionos/swarm-tasks.json
+   ```
+6. Read assignments — each agent in Phase 3 will receive:
+   - `cd $WORKTREE_PATH` as first instruction
+   - SCOPE restriction in prompt (files and directories they may modify)
+   - Instruction: "Work ONLY within $WORKTREE_PATH. Do NOT modify files outside your scope."
+
+If preflight fails for a worktree, reduce wave size and continue with remaining worktrees.
+
 ### P4: Coverage Baseline
 Define the full coverage map — every item that needs to be covered:
 ```
@@ -104,6 +133,7 @@ WAVE N
 ├── PHASE 2: AGENT ASSIGNMENT — Which agents tackle which gaps?
 ├── PHASE 3: PARALLEL DISPATCH — Launch 7 agents simultaneously
 ├── PHASE 4: SYNTHESIS — Merge findings, deduplicate, map coverage
+├── PHASE 4.5: MERGE (worktree mode) — Sequential merge with test gates
 ├── PHASE 5: EVALUATE — Score coverage + quality
 ├── PHASE 6: DECIDE — Continue, pivot, or deliver
 └── OUTPUT: .productionos/SWARM-WAVE-{N}.md

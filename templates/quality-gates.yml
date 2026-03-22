@@ -1,0 +1,44 @@
+# ProductionOS Quality Gates Configuration
+# Projects can override by placing their own quality-gates.yml in .productionos/
+# Values here are defaults — customize per-project as needed.
+
+gates:
+  # Self-eval scoring thresholds
+  self-eval-minimum: 8.0          # >= this passes
+  self-eval-critical: 6.0         # < this blocks and escalates
+  self-eval-max-heal-loops: 3     # max self-heal iterations before escalating
+
+  # Test coverage requirements
+  test-ratio-minimum: 0.20        # 20% test LOC ratio target
+  test-ratio-warn: 0.10           # warn below 10%
+
+  # Commit safety limits
+  max-files-per-commit: 15        # auto-split batches larger than this
+  max-lines-per-file-change: 200  # flag individual file changes larger than this
+
+  # Security gates (skip if tool not installed)
+  require-semgrep-clean: true     # block on semgrep findings (severity >= error)
+  require-gitleaks-clean: true    # block on gitleaks secret detection
+  require-no-console-log: false   # warn on console.log in production code
+
+  # Convergence thresholds
+  convergence-delta: 0.1          # delta < this for 2 iterations = converged
+  convergence-max-iterations: 7   # hard cap on iteration count
+  regression-halt-threshold: 0.5  # any dimension drop > this = HALT
+
+  # Agent execution limits
+  max-agents-per-wave: 7          # parallel agent cap per swarm wave
+  max-worktrees: 10               # maximum concurrent worktrees
+  cost-ceiling-usd: 20            # halt if accumulated cost exceeds this
+
+  # Custom pattern gates (project-specific)
+  custom-gates: []
+  # Example:
+  # - name: "no-console-log"
+  #   pattern: "console\\.log"
+  #   exclude: ["*.test.*", "*.spec.*"]
+  #   action: warn    # warn | block
+  # - name: "no-any-type"
+  #   pattern: ": any[^a-zA-Z]"
+  #   include: ["*.ts", "*.tsx"]
+  #   action: warn
