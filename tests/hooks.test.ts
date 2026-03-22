@@ -201,9 +201,9 @@ describe("Agent Declarative Frontmatter", () => {
 // ─── Version Consistency ──────────────────────────────────
 
 describe("v8.0 version consistency", () => {
-  test("VERSION file says 8.0.0-alpha.1", () => {
+  test("VERSION file says 8.0.0-alpha.3", () => {
     const v = readFileSync(join(ROOT, "VERSION"), "utf-8").trim();
-    expect(v).toBe("8.0.0-alpha.1");
+    expect(v).toBe("8.0.0-alpha.3");
   });
 
   test("CLAUDE.md references v8.0", () => {

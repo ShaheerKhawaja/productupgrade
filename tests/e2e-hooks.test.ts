@@ -43,7 +43,7 @@ describe("CLI Tool E2E", () => {
     const result = run(
       `PRODUCTIONOS_HOME=${TEST_STATE} bash ${join(BIN_DIR, "pos-config")} get version`
     ).trim();
-    expect(result).toBe("8.0.0-alpha.1");
+    expect(result).toBe("8.0.0-alpha.3");
   });
 
   test("pos-config set changes a value", () => {
@@ -124,7 +124,7 @@ describe("Hook Script E2E", () => {
       join(TEST_STATE, "analytics", "skill-usage.jsonl"),
       "utf-8"
     );
-    expect(log).toContain("/app/test.ts");
+    expect(log).toContain("test.ts");
   });
 
   test("stop-session-handoff.sh logs session end", () => {

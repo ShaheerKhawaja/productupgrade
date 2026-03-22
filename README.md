@@ -4,7 +4,7 @@
 
 **The problem:** You're building a production SaaS -- complex backend, frontend, infrastructure, security, billing -- and you need the output of a 10-person engineering team. You have one person.
 
-**The solution:** ProductionOS turns Claude Code into a full engineering department. 69 agents across 35 commands fill the roles you can't hire fast enough: code reviewer, QA engineer, security auditor, solutions architect, CTO-level strategic reviewer, designer, and release manager. One command audits your entire codebase. Another deploys 500 agents to research any topic exhaustively. Another runs recursive improvement loops until every quality dimension hits 10/10. A default-on self-evaluation protocol questions every action before it ships.
+**The solution:** ProductionOS turns Claude Code into a full engineering department. 73 agents across 35 commands fill the roles you can't hire fast enough: code reviewer, QA engineer, security auditor, solutions architect, CTO-level strategic reviewer, designer, and release manager. One command audits your entire codebase. Another deploys 500 agents to research any topic exhaustively. Another runs recursive improvement loops until every quality dimension hits 10/10. A default-on self-evaluation protocol questions every action before it ships.
 
 Built by a solo founder who needed to ship production-grade code at hackathon pace -- and couldn't afford to ship garbage.
 
@@ -223,11 +223,11 @@ bun test                   # Full test suite (196+ tests)
 
 ## Version
 
-7.0.0
+8.0.0-alpha.2
 
 ## Author
 
-[Shaheer Khawaja](https://github.com/ShaheerKhawaja) / [EntropyandCo](https://entropyandco.com)
+[ProductionOS Contributors](https://github.com/ShaheerKhawaja/ProductionOS)
 
 ## License
 

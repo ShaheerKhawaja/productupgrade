@@ -31,15 +31,22 @@ fi
 # Detect orphaned worktrees from crashed sessions
 ORPHAN_MSG=""
 if [ -f "$STATE_DIR/worktrees.json" ]; then
+  # C-2 fix: Pass path via sys.argv; M-2 fix: Use os.kill for cross-platform PID check
   ORPHAN_COUNT=$(python3 -c "
-import json, os
+import json, os, sys
+def is_running(pid):
+    try:
+        os.kill(pid, 0)
+        return True
+    except (OSError, ProcessLookupError, PermissionError):
+        return False
 try:
-    wt = json.load(open('$STATE_DIR/worktrees.json'))
-    orphans = [w for w in wt if w.get('status') == 'active' and not os.path.exists(os.path.join('/proc', str(w.get('pid', 0))))]
+    wt = json.load(open(sys.argv[1]))
+    orphans = [w for w in wt if w.get('status') == 'active' and not is_running(w.get('pid', 0))]
     print(len(orphans))
 except:
     print(0)
-" 2>/dev/null || echo "0")
+" "$STATE_DIR/worktrees.json" 2>/dev/null || echo "0")
   if [ "$ORPHAN_COUNT" -gt 0 ] 2>/dev/null; then
     ORPHAN_MSG="$ORPHAN_COUNT orphaned worktree(s)"
   fi
@@ -49,18 +56,26 @@ fi
 PROACTIVE="true"
 AUTO_REVIEW="true"
 if [ -f "$STATE_DIR/config/settings.json" ]; then
-  PROACTIVE=$(python3 -c "import json; print(json.load(open('$STATE_DIR/config/settings.json')).get('proactive', True))" 2>/dev/null || echo "true")
-  AUTO_REVIEW=$(python3 -c "import json; print(json.load(open('$STATE_DIR/config/settings.json')).get('auto_review', True))" 2>/dev/null || echo "true")
+  # C-2 fix: Pass file path via sys.argv to prevent injection
+  PROACTIVE=$(python3 -c "import json, sys; print(json.load(open(sys.argv[1])).get('proactive', True))" "$STATE_DIR/config/settings.json" 2>/dev/null || echo "true")
+  AUTO_REVIEW=$(python3 -c "import json, sys; print(json.load(open(sys.argv[1])).get('auto_review', True))" "$STATE_DIR/config/settings.json" 2>/dev/null || echo "true")
 fi
 
 # Log session start with project context
-echo "{\"event\":\"session_start\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"pid\":$$,\"sessions\":$SESSIONS,\"project\":\"$PROJECT_ROOT\"}" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+# C-1 fix: Use jq for safe JSON construction
+if command -v jq >/dev/null 2>&1; then
+  jq -n --arg event "session_start" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson pid $$ --argjson sessions "$SESSIONS" --arg project "$PROJECT_NAME" \
+    '{event: $event, ts: $ts, pid: $pid, sessions: $sessions, project: $project}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+else
+  SAFE_PROJ=$(printf '%s' "$PROJECT_NAME" | tr -cd '[:alnum:]._/-')
+  printf '{"event":"session_start","ts":"%s","pid":%d,"sessions":%d,"project":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" $$ "$SESSIONS" "$SAFE_PROJ" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+fi
 
 cat << 'BANNER'
 
   ╔═══════════════════════════════════════════════════╗
-  ║  ProductionOS v8.0 — The Nervous System           ║
-  ║  69 agents | 35 commands | 11 hooks               ║
+  ║  ProductionOS v8.0.0-alpha.2 — The Nervous System  ║
+  ║  73 agents | 35 commands | 11 hooks               ║
   ╠═══════════════════════════════════════════════════╣
 BANNER
 printf "  ║  Sessions: %-3s | Auto-Review: %-5s | Learn: %-4s ║\n" "$SESSIONS" "$AUTO_REVIEW" "$PROACTIVE"
@@ -73,16 +88,17 @@ echo "  ╚═══════════════════════
 if [ -d "$STATE_DIR/retro" ]; then
   LAST_RETRO=$(ls -1 "$STATE_DIR/retro"/*.json 2>/dev/null | sort | tail -1 || true)
   if [ -n "$LAST_RETRO" ] && [ -f "$LAST_RETRO" ] 2>/dev/null; then
+    # C-2 fix: Pass file path via sys.argv
     LAST_RETRO_ACTION=$(python3 -c "
-import json
+import json, sys
 try:
-    data = json.load(open('$LAST_RETRO'))
+    data = json.load(open(sys.argv[1]))
     action = data.get('top_action_item', '')
     if action:
         print(action[:70])
 except:
     pass
-" 2>/dev/null || true)
+" "$LAST_RETRO" 2>/dev/null || true)
     if [ -n "${LAST_RETRO_ACTION:-}" ]; then
       echo "  Retro action: $LAST_RETRO_ACTION"
     fi
