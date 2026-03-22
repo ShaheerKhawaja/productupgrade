@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+# ProductionOS session start — init state, track session, detect project, show status
+set -euo pipefail
+# Resolve plugin root — works for both marketplace install and git clone
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
+STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
+
+mkdir -p "$STATE_DIR"/{config,analytics,sessions,instincts/{project,global},review-log,cache,retro}
+
+# Track session
+touch "$STATE_DIR/sessions/$$"
+find "$STATE_DIR/sessions" -mmin +120 -type f ! -name "active-project" ! -name "project-meta" -delete 2>/dev/null || true
+SESSIONS=$(find "$STATE_DIR/sessions" -mmin -120 -type f ! -name "active-project" ! -name "project-meta" 2>/dev/null | wc -l | tr -d ' ')
+
+# Detect and persist active project root
+PROJECT_ROOT=""
+PROJECT_NAME=""
+if command -v git >/dev/null 2>&1; then
+  PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || echo "")
+fi
+if [ -n "$PROJECT_ROOT" ]; then
+  PROJECT_NAME=$(basename "$PROJECT_ROOT")
+  echo "$PROJECT_ROOT" > "$STATE_DIR/sessions/active-project"
+  # Detect monorepo (3+ manifest files at depth 1-2)
+  SUBPROJECT_COUNT=$(find "$PROJECT_ROOT" -maxdepth 2 \( -name "package.json" -o -name "go.mod" -o -name "pyproject.toml" -o -name "Cargo.toml" \) ! -path "*/node_modules/*" ! -path "*/.worktrees/*" 2>/dev/null | wc -l | tr -d ' ')
+  if [ "$SUBPROJECT_COUNT" -gt 3 ]; then
+    echo "{\"monorepo\":true,\"subprojects\":$SUBPROJECT_COUNT}" > "$STATE_DIR/sessions/project-meta"
+  fi
+fi
+
+# Detect orphaned worktrees from crashed sessions
+ORPHAN_MSG=""
+if [ -f "$STATE_DIR/worktrees.json" ]; then
+  # C-2 fix: Pass path via sys.argv; M-2 fix: Use os.kill for cross-platform PID check
+  ORPHAN_COUNT=$(python3 -c "
+import json, os, sys
+def is_running(pid):
+    try:
+        os.kill(pid, 0)
+        return True
+    except (OSError, ProcessLookupError, PermissionError):
+        return False
+try:
+    wt = json.load(open(sys.argv[1]))
+    orphans = [w for w in wt if w.get('status') == 'active' and not is_running(w.get('pid', 0))]
+    print(len(orphans))
+except:
+    print(0)
+" "$STATE_DIR/worktrees.json" 2>/dev/null || echo "0")
+  if [ "$ORPHAN_COUNT" -gt 0 ] 2>/dev/null; then
+    ORPHAN_MSG="$ORPHAN_COUNT orphaned worktree(s)"
+  fi
+fi
+
+# Load config
+PROACTIVE="true"
+AUTO_REVIEW="true"
+if [ -f "$STATE_DIR/config/settings.json" ]; then
+  # C-2 fix: Pass file path via sys.argv to prevent injection
+  PROACTIVE=$(python3 -c "import json, sys; print(json.load(open(sys.argv[1])).get('proactive', True))" "$STATE_DIR/config/settings.json" 2>/dev/null || echo "true")
+  AUTO_REVIEW=$(python3 -c "import json, sys; print(json.load(open(sys.argv[1])).get('auto_review', True))" "$STATE_DIR/config/settings.json" 2>/dev/null || echo "true")
+fi
+
+# Log session start with project context
+# C-1 fix: Use jq for safe JSON construction
+if command -v jq >/dev/null 2>&1; then
+  jq -n --arg event "session_start" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson pid $$ --argjson sessions "$SESSIONS" --arg project "$PROJECT_NAME" \
+    '{event: $event, ts: $ts, pid: $pid, sessions: $sessions, project: $project}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+else
+  SAFE_PROJ=$(printf '%s' "$PROJECT_NAME" | tr -cd '[:alnum:]._/-')
+  printf '{"event":"session_start","ts":"%s","pid":%d,"sessions":%d,"project":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" $$ "$SESSIONS" "$SAFE_PROJ" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+fi
+
+cat << 'BANNER'
+
+  ╔═══════════════════════════════════════════════════╗
+  ║  ProductionOS v8.0.0-alpha.2 — The Nervous System  ║
+  ║  73 agents | 35 commands | 11 hooks               ║
+  ╠═══════════════════════════════════════════════════╣
+BANNER
+printf "  ║  Sessions: %-3s | Auto-Review: %-5s | Learn: %-4s ║\n" "$SESSIONS" "$AUTO_REVIEW" "$PROACTIVE"
+if [ -n "$PROJECT_NAME" ]; then
+  printf "  ║  Project: %-40s ║\n" "$PROJECT_NAME"
+fi
+echo "  ╚═══════════════════════════════════════════════════╝"
+
+# Show last retro action item if available
+if [ -d "$STATE_DIR/retro" ]; then
+  LAST_RETRO=$(ls -1 "$STATE_DIR/retro"/*.json 2>/dev/null | sort | tail -1 || true)
+  if [ -n "$LAST_RETRO" ] && [ -f "$LAST_RETRO" ] 2>/dev/null; then
+    # C-2 fix: Pass file path via sys.argv
+    LAST_RETRO_ACTION=$(python3 -c "
+import json, sys
+try:
+    data = json.load(open(sys.argv[1]))
+    action = data.get('top_action_item', '')
+    if action:
+        print(action[:70])
+except:
+    pass
+" "$LAST_RETRO" 2>/dev/null || true)
+    if [ -n "${LAST_RETRO_ACTION:-}" ]; then
+      echo "  Retro action: $LAST_RETRO_ACTION"
+    fi
+  fi
+fi
+
+# Show orphan warning
+if [ -n "${ORPHAN_MSG:-}" ]; then
+  echo "  WARNING: $ORPHAN_MSG — run: bun run scripts/worktree-manager.ts status"
+fi
+echo ""

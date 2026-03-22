@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# ProductionOS — Initialize persistent state directory
+set -euo pipefail
+STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
+mkdir -p "$STATE_DIR"/{config,analytics,sessions,instincts/{project,global},review-log,cache}
+if [ ! -f "$STATE_DIR/config/settings.json" ]; then
+  cat > "$STATE_DIR/config/settings.json" << 'CONF'
+{
+  "version": "8.0.0-alpha.3",
+  "proactive": true,
+  "telemetry": "off",
+  "auto_review": true,
+  "auto_learn": true,
+  "self_eval": true,
+  "review_on_edit": true,
+  "security_scan_patterns": ["auth", "payment", "admin", "secret", "credential"],
+  "max_agents_per_wave": 7,
+  "max_iterations": 7
+}
+CONF
+  echo "ProductionOS: Initialized config at $STATE_DIR/config/settings.json"
+fi
+echo "ProductionOS state: $STATE_DIR"

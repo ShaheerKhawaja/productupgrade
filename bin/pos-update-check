@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# ProductionOS — version check with snooze support
+set -euo pipefail
+STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
+# M-3 fix: Read version from VERSION file instead of hardcoding
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+CURRENT=$(cat "$SCRIPT_DIR/../VERSION" 2>/dev/null | tr -d '[:space:]' || echo "unknown")
+
+SNOOZE_FILE="$STATE_DIR/cache/update-snoozed"
+if [ -f "$SNOOZE_FILE" ]; then
+  # H-4 fix: Validate snooze file contains only digits
+  SNOOZE_UNTIL=$(cat "$SNOOZE_FILE" 2>/dev/null | tr -cd '0-9' | head -c 20)
+  NOW=$(date +%s)
+  if [[ "$SNOOZE_UNTIL" =~ ^[0-9]+$ ]] && [ "$NOW" -lt "$SNOOZE_UNTIL" ]; then
+    exit 0
+  fi
+fi
+
+echo "ProductionOS v$CURRENT"

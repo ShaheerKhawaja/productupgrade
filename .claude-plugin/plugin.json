@@ -1,0 +1,41 @@
+{
+  "name": "productionos",
+  "description": "Your AI engineering team — 73 agents, 35 commands, 11 hooks, 6 CLI tools, repo boundary guard, gitleaks secret detection, self-eval, design auditing, UX analysis. Native embedding into Claude Code with default-on self-evaluation, interactive HTML mockups, user story generation, and cross-session instincts. Zero external dependencies.",
+  "version": "8.0.0-alpha.3",
+  "author": {
+    "name": "ProductionOS Contributors",
+    "url": "https://github.com/ShaheerKhawaja/ProductionOS"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/ShaheerKhawaja/ProductionOS",
+  "repository": "https://github.com/ShaheerKhawaja/ProductionOS",
+  "keywords": [
+    "product-upgrade",
+    "production-upgrade",
+    "auto-swarm",
+    "recursive-improvement",
+    "llm-judge",
+    "multi-model-tribunal",
+    "adversarial-review",
+    "chain-of-thought",
+    "tree-of-thought",
+    "graph-of-thought",
+    "chain-of-density",
+    "emotion-prompting",
+    "meta-prompting",
+    "constitutional-ai",
+    "reflexion",
+    "self-consistency",
+    "mixture-of-agents",
+    "swarm-intelligence",
+    "guardrails",
+    "human-in-the-loop",
+    "thought-graph",
+    "persona-evaluation",
+    "10-layer-prompt-composition",
+    "convergence-engine",
+    "self-healing",
+    "max-research",
+    "nuclear-scale-research"
+  ]
+}

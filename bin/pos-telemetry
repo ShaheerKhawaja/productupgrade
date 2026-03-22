@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# ProductionOS — telemetry logger (append-only)
+set -euo pipefail
+STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
+mkdir -p "$STATE_DIR/analytics"
+LOG="$STATE_DIR/analytics/skill-usage.jsonl"
+echo "{\"skill\":\"${1:-unknown}\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"duration_s\":\"${2:-0}\",\"outcome\":\"${3:-unknown}\"}" >> "$LOG"

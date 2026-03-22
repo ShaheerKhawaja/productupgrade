@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# ProductionOS — config manager (get/set/list)
+set -euo pipefail
+STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
+CONFIG="$STATE_DIR/config/settings.json"
+
+if [ ! -f "$CONFIG" ]; then
+  echo "ERROR: No config found. Run pos-init first." >&2
+  exit 1
+fi
+
+# M-4 fix: Allowlist of valid config keys
+VALID_KEYS="proactive telemetry auto_review auto_learn self_eval review_on_edit max_agents_per_wave max_iterations"
+
+case "${1:-list}" in
+  get)
+    # C-2 fix: Pass file path and key via sys.argv
+    python3 -c "import json, sys; print(json.load(open(sys.argv[1])).get(sys.argv[2],''))" "$CONFIG" "${2:-}"
+    ;;
+  set)
+    KEY="${2:-}"
+    if [ -z "$KEY" ]; then
+      echo "Usage: pos-config set <key> <value>" >&2; exit 1
+    fi
+    # M-4 fix: Validate key against allowlist
+    if ! echo "$VALID_KEYS" | grep -qw "$KEY"; then
+      echo "ERROR: Unknown key '$KEY'. Valid keys: $VALID_KEYS" >&2; exit 1
+    fi
+    # C-2 fix: Pass all values via sys.argv to prevent injection
+    python3 -c "
+import json, sys
+config_path = sys.argv[1]
+key = sys.argv[2]
+val = sys.argv[3]
+d = json.load(open(config_path))
+if val.lower() in ('true','false'): val = val.lower() == 'true'
+elif val.isdigit(): val = int(val)
+d[key] = val
+json.dump(d, open(config_path,'w'), indent=2)
+print(f'Set {key}={val}')
+" "$CONFIG" "$KEY" "${3:-}"
+    ;;
+  list)
+    # C-2 fix: Pass file path via sys.argv
+    python3 -c "import json, sys; [print(f'  {k}: {v}') for k,v in json.load(open(sys.argv[1])).items()]" "$CONFIG"
+    ;;
+  *)
+    echo "Usage: pos-config [get|set|list] [key] [value]"
+    ;;
+esac

@@ -1,0 +1,61 @@
+{
+  "name": "productionos",
+  "version": "8.0.0-alpha.3",
+  "description": "ProductionOS — Your AI engineering team. 66 agents, 35 commands, 11 hooks, repo boundary guard, gitleaks, self-eval, design auditing, UX analysis.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "productionos": "bin/install.cjs"
+  },
+  "files": [
+    "bin/",
+    ".claude/commands/",
+    ".claude/skills/",
+    "agents/",
+    "VERSION",
+    "CLAUDE.md"
+  ],
+  "scripts": {
+    "build": "bun run gen:skill-docs",
+    "gen:skill-docs": "bun run scripts/gen-skill-docs.ts",
+    "skill:check": "bun run scripts/skill-check.ts",
+    "test": "bun test tests/",
+    "validate": "bun run scripts/validate-agents.ts",
+    "audit:context": "bun run scripts/context-audit.ts",
+    "dashboard": "bun run scripts/review-dashboard.ts show",
+    "dashboard:log": "bun run scripts/review-dashboard.ts log",
+    "dashboard:clear": "bun run scripts/review-dashboard.ts clear",
+    "eval": "bun run scripts/eval-runner.ts",
+    "test:integration": "bun run scripts/integration-test.ts",
+    "test:integration:mock": "bun run scripts/integration-test.ts --mock-only",
+    "test:integration:validate": "bun run scripts/integration-test.ts --validate-only",
+    "test:integration:contracts": "bun run scripts/integration-test.ts --contracts"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "productionos",
+    "claude-code",
+    "claude-code-plugin",
+    "agentic-dev",
+    "llm-judge",
+    "auto-swarm",
+    "recursive-improvement",
+    "multi-agent"
+  ],
+  "author": {
+    "name": "ProductionOS Contributors",
+    "url": "https://github.com/ShaheerKhawaja/ProductionOS"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShaheerKhawaja/ProductionOS.git"
+  },
+  "homepage": "https://github.com/ShaheerKhawaja/ProductionOS",
+  "devDependencies": {
+    "bun-types": "^1.3.0",
+    "markdownlint-cli": "^0.48.0",
+    "typescript": "^5.9.3"
+  }
+}
