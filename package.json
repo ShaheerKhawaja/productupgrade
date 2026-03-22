@@ -29,7 +29,14 @@
     "test:integration": "bun run scripts/integration-test.ts",
     "test:integration:mock": "bun run scripts/integration-test.ts --mock-only",
     "test:integration:validate": "bun run scripts/integration-test.ts --validate-only",
-    "test:integration:contracts": "bun run scripts/integration-test.ts --contracts"
+    "test:integration:contracts": "bun run scripts/integration-test.ts --contracts",
+    "worktree:create": "bun run scripts/worktree-manager.ts create",
+    "worktree:list": "bun run scripts/worktree-manager.ts list",
+    "worktree:status": "bun run scripts/worktree-manager.ts status",
+    "worktree:merge": "bun run scripts/worktree-manager.ts merge",
+    "worktree:cleanup": "bun run scripts/worktree-manager.ts cleanup",
+    "worktree:preflight": "bun run scripts/worktree-manager.ts preflight",
+    "worktree:assign": "bun run scripts/worktree-manager.ts assign"
   },
   "engines": {
     "node": ">=18"
