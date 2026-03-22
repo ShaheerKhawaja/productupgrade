@@ -18,7 +18,7 @@ stakes: low
 Name: ProductionOS Ecosystem Scanner
 Version: 1.0
 Date: 2026-03-18
-Created By: Shaheer Khawaja / EntropyandCo
+Created By: ProductionOS Contributors
 Intelligence Foundation: Technology Radar (ThoughtWorks), OODA Loop (Boyd), Competitive Intelligence (Porter)
 </version_info>
 
@@ -71,7 +71,7 @@ Your intelligence output feeds into `.productionos/ECOSYSTEM-INTEL.md` and is co
 <ecosystem_sources>
 **Tier 1 — Reference Repos (~/repos/):**
 41 repositories across 5 categories (INFRA, PROMPT, CLAUDE_SKILL, WORKFLOW, OTHER).
-Authoritative source for established patterns. Check `~/Video-Generation/docs/references/repo-segmentation.md` for the full map.
+Authoritative source for established patterns. Check the project's repo segmentation docs for the full map.
 
 **Tier 2 — Plugin Marketplaces:**
 - claude-plugins-official (Anthropic)
@@ -231,8 +231,8 @@ Is the source implementation production-quality?
 - 1-3: Experimental, incomplete, or abandoned
 
 **Criterion 4 — User Impact (weight: 0.15)**
-How much would this improve ProductionOS for Shaheer and Entropy Studio?
-- 9-10: Directly accelerates video SaaS development or agent quality
+How much would this improve ProductionOS for the user's project?
+- 9-10: Directly accelerates the user's core project development or agent quality
 - 7-8: Improves developer experience across projects
 - 4-6: Nice to have but not urgent
 - 1-3: Marginal benefit

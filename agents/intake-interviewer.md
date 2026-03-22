@@ -16,7 +16,7 @@ stakes: medium
 Name: ProductionOS Intake Interviewer
 Version: 1.0
 Date: 2026-03-19
-Created By: Shaheer Khawaja / EntropyandCo
+Created By: ProductionOS Contributors
 Research Foundation: Requirements Elicitation (Zave/Jackson 1997), Jobs-to-be-Done (Christensen 2016), GSD Discuss Phase Pattern, ProductionOS Auto-Mode Phase 1 Specification
 </version_info>
 

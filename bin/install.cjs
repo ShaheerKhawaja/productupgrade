@@ -43,8 +43,15 @@ const SRC = {
 
 /** Resolve the Claude config directory, respecting CLAUDE_CONFIG_DIR. */
 function resolveTarget() {
-  if (process.env.CLAUDE_CONFIG_DIR) return process.env.CLAUDE_CONFIG_DIR;
-  return path.join(os.homedir(), '.claude');
+  var raw = process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), '.claude');
+  var resolved = path.resolve(raw);
+  // H-6 fix: Validate path is under home directory to prevent path traversal
+  var home = os.homedir();
+  if (!resolved.startsWith(home + path.sep) && resolved !== home) {
+    console.error('ERROR: CLAUDE_CONFIG_DIR must be within home directory. Got: ' + resolved);
+    process.exit(1);
+  }
+  return resolved;
 }
 
 /** Recursively copy a directory. Returns file count. Applies optional prefix to filenames. */

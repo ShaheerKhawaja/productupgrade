@@ -76,7 +76,7 @@ ProductionOS's **moat** is quality methodology (recursive convergence, tri-tiere
 ### 2.5 OpenTelemetry Tracing (P1)
 - Instrument agent dispatches, tool calls, convergence loops
 - Trace > Span hierarchy with token usage and timing
-- Export to Langfuse (already in Entropy Studio stack)
+- Export to Langfuse (common observability integration)
 - **Impact:** See where time/tokens go in 65-agent orchestration
 
 ### 2.6 Configurable Quality Gates (P0 — from quality tools research)

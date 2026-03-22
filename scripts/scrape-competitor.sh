@@ -6,6 +6,10 @@
 set -euo pipefail
 
 URL="${1:?Usage: scrape-competitor.sh <url> [output_dir]}"
+# M-5 fix: Validate URL starts with https:// to prevent file:// and SSRF attacks
+if ! echo "$URL" | grep -qE '^https://[a-zA-Z0-9]'; then
+  echo "Error: URL must start with https://" >&2; exit 1
+fi
 OUTPUT_DIR="${2:-.productionos/competitors/$(echo "$URL" | sed 's/https\?:\/\///' | sed 's/[\/:]/_/g')}"
 
 mkdir -p "$OUTPUT_DIR"

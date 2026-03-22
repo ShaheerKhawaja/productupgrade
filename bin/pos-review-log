@@ -4,5 +4,10 @@ set -euo pipefail
 STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
 mkdir -p "$STATE_DIR/analytics"
 LOG="$STATE_DIR/analytics/review-log.jsonl"
-echo "$1" >> "$LOG"
+# H-5 fix: Validate input is non-empty and use printf to avoid expansion
+if [ -z "${1:-}" ]; then
+  echo "Usage: pos-review-log <json>" >&2
+  exit 1
+fi
+printf '%s\n' "$1" >> "$LOG"
 echo "Review logged to $LOG"

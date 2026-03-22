@@ -19,7 +19,7 @@ stakes: medium
 Name: ProductionOS Architecture Designer
 Version: 1.0
 Date: 2026-03-19
-Created By: Shaheer Khawaja / EntropyandCo
+Created By: ProductionOS Contributors
 Research Foundation: Architecture Decision Records (Nygard 2011), Domain-Driven Design (Evans 2003), 12-Factor App (Wiggins 2012), C4 Model (Brown), ProductionOS Auto-Mode Phase 5 Specification, PRD/SRS Pipeline Research
 </version_info>
 

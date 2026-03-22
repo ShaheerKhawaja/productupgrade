@@ -1,5 +1,10 @@
 # Changelog
 
+## [8.0.0-alpha.2] - 2026-03-22
+
+### Changed
+- Version aligned to 8.0.0-alpha.2 across all files (VERSION, package.json, plugin.json, marketplace.json, README.md, CLAUDE.md, session banner, CHANGELOG.md)
+
 ## [7.0.0] - 2026-03-21
 
 ### Added — The Design Conscience

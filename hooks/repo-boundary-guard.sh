@@ -129,13 +129,14 @@ if [ "$FILE_GIT_ROOT" != "$ACTIVE_PROJECT" ]; then
   # Check if this is a monorepo (cross-subproject edits are OK within same git root)
   IS_MONOREPO="false"
   if [ -f "$STATE_DIR/sessions/project-meta" ]; then
+    # C-2 fix: Pass file path via sys.argv
     IS_MONOREPO=$(python3 -c "
-import json
+import json, sys
 try:
-    print(str(json.load(open('$STATE_DIR/sessions/project-meta')).get('monorepo', False)).lower())
+    print(str(json.load(open(sys.argv[1])).get('monorepo', False)).lower())
 except:
     print('false')
-" 2>/dev/null || echo "false")
+" "$STATE_DIR/sessions/project-meta" 2>/dev/null || echo "false")
   fi
 
   # Monorepo: same git root is fine
@@ -147,9 +148,18 @@ except:
   ACTIVE_NAME=$(basename "$ACTIVE_PROJECT")
   TARGET_NAME=$(basename "$FILE_GIT_ROOT")
   # Log cross-repo edit event
-  echo "{\"event\":\"cross_repo_edit\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"file\":\"$FILE_PATH\",\"target_repo\":\"$TARGET_NAME\",\"active_project\":\"$ACTIVE_NAME\"}" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
-
-  echo "{\"additionalContext\":\"REPO BOUNDARY WARNING: Editing file in '$TARGET_NAME' but active project is '$ACTIVE_NAME'. This edit will not be tracked in session telemetry. If intentional, continue.\"}"
+  # C-1 fix: Use jq for safe JSON construction (prevents injection via repo names)
+  if command -v jq >/dev/null 2>&1; then
+    jq -n --arg event "cross_repo_edit" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg file "$(basename "$FILE_PATH")" --arg target "$TARGET_NAME" --arg active "$ACTIVE_NAME" \
+      '{event: $event, ts: $ts, file: $file, target_repo: $target, active_project: $active}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+    jq -n --arg ctx "REPO BOUNDARY WARNING: Editing file in '$TARGET_NAME' but active project is '$ACTIVE_NAME'. This edit will not be tracked in session telemetry. If intentional, continue." \
+      '{additionalContext: $ctx}'
+  else
+    SAFE_TARGET=$(printf '%s' "$TARGET_NAME" | tr -cd '[:alnum:]._/-')
+    SAFE_ACTIVE=$(printf '%s' "$ACTIVE_NAME" | tr -cd '[:alnum:]._/-')
+    printf '{"event":"cross_repo_edit","ts":"%s","target_repo":"%s","active_project":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$SAFE_TARGET" "$SAFE_ACTIVE" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+    printf '{"additionalContext":"REPO BOUNDARY WARNING: Editing file in %s but active project is %s. If intentional, continue."}\n' "$SAFE_TARGET" "$SAFE_ACTIVE"
+  fi
   exit 0
 fi
 

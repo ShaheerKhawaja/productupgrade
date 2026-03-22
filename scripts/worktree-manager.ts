@@ -12,7 +12,7 @@
  *   status                           Health check
  *   preflight <branch>              Run preflight checks
  */
-import { execSync } from "child_process";
+import { execSync, execFileSync } from "child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { join, dirname } from "path";
 
@@ -26,6 +26,14 @@ const STATE_DIR = process.env.PRODUCTIONOS_HOME || join(process.env.HOME || "~",
 const WORKTREES_FILE = join(STATE_DIR, "worktrees.json");
 const WORKTREES_DIR = ".worktrees";
 
+// H-2 fix: runSafe uses execFileSync with argument arrays to prevent shell injection
+function runSafe(cmd: string, args: string[], opts?: { cwd?: string; timeout?: number }): string {
+  try {
+    return execFileSync(cmd, args, { encoding: "utf-8", timeout: opts?.timeout ?? 30000, cwd: opts?.cwd, stdio: ["pipe", "pipe", "pipe"] }).trim();
+  } catch (e: any) { return e.stdout?.trim?.() ?? ""; }
+}
+
+// Legacy wrapper for static commands only — NEVER pass user-controlled input
 function run(cmd: string, opts?: { cwd?: string; timeout?: number }): string {
   try {
     return execSync(cmd, { encoding: "utf-8", timeout: opts?.timeout ?? 30000, cwd: opts?.cwd, stdio: ["pipe", "pipe", "pipe"] }).trim();
@@ -53,13 +61,14 @@ function createWorktree(branchName: string, baseRef?: string): WorktreeInfo {
   }
   mkdirSync(wtDir, { recursive: true });
   const base = baseRef || run("git branch --show-current") || "main";
-  run(`git worktree add -b ${branchName} "${wtPath}" ${base}`);
+  // H-2 fix: Use execFileSync with args array to prevent shell injection via branch name
+  runSafe("git", ["worktree", "add", "-b", branchName, wtPath, base]);
   if (existsSync(join(wtPath, "package.json"))) {
     const lock = existsSync(join(wtPath, "bun.lock")) ? "bun" : "npm";
     run(`${lock} install`, { cwd: wtPath, timeout: 60000 });
   }
   const info: WorktreeInfo = {
-    branch: branchName, path: wtPath, headCommit: run(`git -C "${wtPath}" rev-parse HEAD`),
+    branch: branchName, path: wtPath, headCommit: runSafe("git", ["-C", wtPath, "rev-parse", "HEAD"]),
     isActive: true, createdAt: new Date().toISOString(), status: "active", pid: process.ppid,
   };
   const registry = loadRegistry(); registry.push(info); saveRegistry(registry);

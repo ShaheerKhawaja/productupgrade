@@ -10,26 +10,28 @@ INSTINCTS_DIR="$STATE_DIR/instincts/project"
 # Only run if analytics exist and auto_learn is enabled
 if [ ! -f "$ANALYTICS" ]; then exit 0; fi
 
+# C-2 fix: Pass paths via sys.argv to prevent injection
 AUTO_LEARN=$(python3 -c "
-import json
+import json, sys
 try:
-    c = json.load(open('$STATE_DIR/config/settings.json'))
+    c = json.load(open(sys.argv[1]))
     print(str(c.get('auto_learn', True)).lower())
 except:
     print('true')
-" 2>/dev/null || echo "true")
+" "$STATE_DIR/config/settings.json" 2>/dev/null || echo "true")
 
 if [ "$AUTO_LEARN" != "true" ]; then exit 0; fi
 
 mkdir -p "$INSTINCTS_DIR"
 
 # Count session events
+# C-2 fix: Pass paths via sys.argv to prevent injection
 python3 -c "
-import json, collections, os
+import json, collections, os, sys
 from datetime import datetime
 
-log_path = '$ANALYTICS'
-instincts_dir = '$INSTINCTS_DIR'
+log_path = sys.argv[1]
+instincts_dir = sys.argv[2]
 
 # Read today's events
 events = []
@@ -74,4 +76,4 @@ summary = {
 summary_path = os.path.join(instincts_dir, f'session-{today}.json')
 with open(summary_path, 'w') as f:
     json.dump(summary, f, indent=2)
-" 2>/dev/null || true
+" "$ANALYTICS" "$INSTINCTS_DIR" 2>/dev/null || true

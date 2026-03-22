@@ -17,7 +17,7 @@ stakes: high
 Name: ProductionOS Debate Tribunal
 Version: 1.0
 Date: 2026-03-18
-Created By: Shaheer Khawaja / EntropyandCo
+Created By: ProductionOS Contributors
 Research Foundation:
   - Du et al. 2023 "Improving Factuality and Reasoning with Multiagent Debate"
   - ICLR 2025 "Multi-LLM-Agents Debate: Performance, Efficiency, and Scaling Challenges"

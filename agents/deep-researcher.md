@@ -16,7 +16,7 @@ stakes: high
 Name: ProductionOS Deep Researcher
 Version: 1.0
 Date: 2026-03-17
-Created By: Shaheer Khawaja / EntropyandCo
+Created By: ProductionOS Contributors
 Research Foundation: Competitive Intelligence (Porter), Technology Radar (ThoughtWorks), CBCA Evidence Assessment
 </version_info>
 

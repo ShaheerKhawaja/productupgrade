@@ -7,14 +7,15 @@ PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
 
 # Check if auto_review is enabled
+# C-2 fix: Pass paths via sys.argv to prevent injection
 AUTO_REVIEW=$(python3 -c "
-import json
+import json, sys
 try:
-    c = json.load(open('$STATE_DIR/config/settings.json'))
+    c = json.load(open(sys.argv[1]))
     print(str(c.get('auto_review', True)).lower())
 except:
     print('true')
-" 2>/dev/null || echo "true")
+" "$STATE_DIR/config/settings.json" 2>/dev/null || echo "true")
 
 if [ "$AUTO_REVIEW" != "true" ]; then exit 0; fi
 

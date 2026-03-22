@@ -648,7 +648,7 @@ Step 1: TARGET ANALYSIS
     INFRA (9 repos), PROMPT (13 repos), CLAUDE_SKILL (11 repos), WORKFLOW (8 repos)
 
 Step 2: REPO SEGMENTATION
-  - Read ~/Video-Generation/docs/references/repo-segmentation.md
+  - Read the project's repo-segmentation reference document
   - Identify which repos are most likely to contain relevant patterns
   - Rank repos by relevance (top 5)
 

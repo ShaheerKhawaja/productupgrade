@@ -1,6 +1,6 @@
 # Handoff files contain internal paths and session state — never push to public repo
-HANDOFF-*.md
-HANDOVER-*.md
+HANDOFF*.md
+HANDOVER*.md
 
 # Session and learned data
 .productionos/

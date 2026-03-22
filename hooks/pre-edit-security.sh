@@ -42,8 +42,17 @@ if [ -n "$MATCHED" ]; then
   if [ -f "$STATE_DIR/sessions/active-project" ]; then
     ACTIVE_PROJECT_NAME=$(basename "$(cat "$STATE_DIR/sessions/active-project" 2>/dev/null)" 2>/dev/null || echo "unknown")
   fi
-  echo "{\"event\":\"security_edit\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"file\":\"$FILE_PATH\",\"pattern\":\"$MATCHED\",\"project\":\"$ACTIVE_PROJECT_NAME\"}" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
-  echo "{\"additionalContext\":\"ProductionOS Security [$ACTIVE_PROJECT_NAME]: Editing security-sensitive file ($MATCHED pattern in $BASENAME). Review before committing.\"}"
+  # C-1 fix: Use jq for safe JSON construction (prevents injection via file paths)
+  if command -v jq >/dev/null 2>&1; then
+    jq -n --arg event "security_edit" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg file "$BASENAME" --arg pattern "$MATCHED" --arg proj "$ACTIVE_PROJECT_NAME" \
+      '{event: $event, ts: $ts, file: $file, pattern: $pattern, project: $proj}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+    jq -n --arg ctx "ProductionOS Security [$ACTIVE_PROJECT_NAME]: Editing security-sensitive file ($MATCHED pattern in $BASENAME). Review before committing." \
+      '{additionalContext: $ctx}'
+  else
+    SAFE_BASE=$(printf '%s' "$BASENAME" | tr -cd '[:alnum:]._/-')
+    printf '{"event":"security_edit","ts":"%s","file":"%s","pattern":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$SAFE_BASE" "$MATCHED" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+    printf '{"additionalContext":"ProductionOS Security: Editing security-sensitive file (%s pattern in %s). Review before committing."}\n' "$MATCHED" "$SAFE_BASE"
+  fi
 else
   echo '{}'
 fi
