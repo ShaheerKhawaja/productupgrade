@@ -6,6 +6,10 @@
 set -euo pipefail
 
 REPO_URL="${1:?Usage: pull-source.sh <repo_url> [output_dir]}"
+# M-6 fix: Only allow https:// URLs to prevent file://, ssh://, ext:: protocol attacks
+if ! echo "$REPO_URL" | grep -qE '^https://'; then
+  echo "Error: Only https:// URLs are allowed (prevents file:// and ext:: protocol attacks)" >&2; exit 1
+fi
 REPO_NAME=$(basename "$REPO_URL" .git)
 OUTPUT_DIR="${2:-.productionos/sources/$REPO_NAME}"
 

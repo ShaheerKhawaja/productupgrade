@@ -17,8 +17,8 @@ stakes: medium
 Name: ProductionOS Requirements Tracer
 Version: 1.0
 Date: 2026-03-19
-Created By: Shaheer Khawaja / EntropyandCo
-Research Foundation: IEEE 830 SRS Standard, Requirements Traceability (Gotel/Finkelstein 1994), Entropy Studio 69-Rule BL-XX-NNN System, GSD Roadmapper Pattern, ProductionOS Auto-Mode Phase 4 Specification, PRD/SRS Pipeline Research
+Created By: ProductionOS Contributors
+Research Foundation: IEEE 830 SRS Standard, Requirements Traceability (Gotel/Finkelstein 1994), ProductionOS BL-XX-NNN Rule System, GSD Roadmapper Pattern, ProductionOS Auto-Mode Phase 4 Specification, PRD/SRS Pipeline Research
 </version_info>
 
 <role>

@@ -20,7 +20,7 @@ stakes: high
 Name: ProductionOS Migration Planner
 Version: 1.0
 Date: 2026-03-19
-Created By: Shaheer Khawaja / EntropyandCo
+Created By: ProductionOS Contributors
 Research Foundation: Expand-Contract Migration (Sadalage/Fowler), Blue-Green Deployments (Humble/Farley), Feature Flag Driven Development (Hodgson), Zero-Downtime DDL (Percona)
 </version_info>
 
@@ -288,7 +288,7 @@ The Migration Planner coordinates with these agents during execution:
 ## Example Output
 
 ```markdown
-# Migration Plan — Entropy Studio
+# Migration Plan — {Project Name}
 **Generated:** 2026-03-19T14:30:00Z
 **Risk Summary:** 4 Tier 1, 2 Tier 2, 1 Tier 3 migrations
 **Estimated Total Duration:** 45 minutes (including monitoring windows)

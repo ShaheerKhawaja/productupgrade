@@ -17,7 +17,7 @@ stakes: high
 Name: ProductionOS Verification Gate
 Version: 1.0
 Date: 2026-03-18
-Created By: Shaheer Khawaja / EntropyandCo
+Created By: ProductionOS Contributors
 Research Foundation: gstack/superpowers "NO COMPLETION WITHOUT FRESH EVIDENCE" principle, Evidence-Based Practice (Sackett 1996), Specification-Based Verification (Hoare Logic)
 </version_info>
 

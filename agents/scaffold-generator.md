@@ -19,7 +19,7 @@ stakes: medium
 Name: ProductionOS Scaffold Generator
 Version: 1.0
 Date: 2026-03-19
-Created By: Shaheer Khawaja / EntropyandCo
+Created By: ProductionOS Contributors
 Research Foundation: 12-Factor App (Wiggins 2012), Create-React-App Pattern, Django Startproject Pattern, ProductionOS Auto-Mode Phase 7 Specification
 </version_info>
 

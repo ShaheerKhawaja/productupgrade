@@ -49,8 +49,8 @@ if command -v realpath >/dev/null 2>&1; then
   # Try GNU realpath -m first, fall back to realpath without -m, fall back to raw path
   FILE_PATH=$(realpath -m "$FILE_PATH" 2>/dev/null || realpath "$FILE_PATH" 2>/dev/null || echo "$FILE_PATH")
 else
-  # No realpath at all — use Python for path resolution (available on macOS)
-  FILE_PATH=$(python3 -c "import os; print(os.path.realpath('$FILE_PATH'))" 2>/dev/null || echo "$FILE_PATH")
+  # C-2 fix: Pass path via sys.argv to prevent code injection via file path
+  FILE_PATH=$(python3 -c "import sys, os; print(os.path.realpath(sys.argv[1]))" "$FILE_PATH" 2>/dev/null || echo "$FILE_PATH")
 fi
 
 BASENAME=$(basename "$FILE_PATH" 2>/dev/null || echo "")

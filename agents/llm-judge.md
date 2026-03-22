@@ -16,7 +16,7 @@ stakes: high
 Name: ProductionOS LLM Judge
 Version: 1.0
 Date: 2026-03-17
-Created By: Shaheer Khawaja / EntropyandCo
+Created By: ProductionOS Contributors
 Research Foundation: LLM-as-Judge (Zheng et al. 2023), CBCA Evidence Assessment (Steller/Kohnken), Process Complexity Metrics (Mendling et al. 2010)
 </version_info>
 

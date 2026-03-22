@@ -2,7 +2,7 @@
 
 **Version:** 1.0
 **Date:** 2026-03-18
-**Author:** ProductionOS / EntropyandCo
+**Author:** ProductionOS Contributors
 **Research Foundation:** Self-Refine (Madaan et al. 2023), Reflexion (Shinn et al. 2023), Geometric Dynamics of Agentic Loops (arxiv 2512.10350), CUSUM (Page 1954), EMA Optimization (FAME 2024), LLM-as-Judge Calibration (Zheng et al. 2023)
 
 ---

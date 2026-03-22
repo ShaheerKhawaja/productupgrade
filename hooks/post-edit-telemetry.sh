@@ -27,14 +27,38 @@ if [ -n "$ACTIVE_PROJECT" ] && [ -n "$FILE_PATH" ]; then
   case "$FILE_PATH" in
     "$ACTIVE_PROJECT"/*)
       # Within active project — log normally
-      echo "{\"event\":\"edit\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"file\":\"$FILE_PATH\"}" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+      # C-1 fix: Use jq for safe JSON construction; M-1 fix: log basename only
+      FILE_BASE=$(basename "$FILE_PATH" 2>/dev/null || echo "unknown")
+      if command -v jq >/dev/null 2>&1; then
+        jq -n --arg event "edit" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg file "$FILE_BASE" \
+          '{event: $event, ts: $ts, file: $file}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+      else
+        SAFE_FILE=$(printf '%s' "$FILE_BASE" | tr -cd '[:alnum:]._/-')
+        printf '{"event":"edit","ts":"%s","file":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$SAFE_FILE" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+      fi
       ;;
     *)
-      # Outside active project — log as cross-repo, skip normal telemetry
-      echo "{\"event\":\"cross_repo_edit\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"file\":\"$FILE_PATH\",\"active_project\":\"$(basename "$ACTIVE_PROJECT")\"}" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+      # Outside active project — log as cross-repo
+      FILE_BASE=$(basename "$FILE_PATH" 2>/dev/null || echo "unknown")
+      PROJ_BASE=$(basename "$ACTIVE_PROJECT" 2>/dev/null || echo "unknown")
+      if command -v jq >/dev/null 2>&1; then
+        jq -n --arg event "cross_repo_edit" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg file "$FILE_BASE" --arg proj "$PROJ_BASE" \
+          '{event: $event, ts: $ts, file: $file, active_project: $proj}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+      else
+        SAFE_FILE=$(printf '%s' "$FILE_BASE" | tr -cd '[:alnum:]._/-')
+        SAFE_PROJ=$(printf '%s' "$PROJ_BASE" | tr -cd '[:alnum:]._/-')
+        printf '{"event":"cross_repo_edit","ts":"%s","file":"%s","active_project":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$SAFE_FILE" "$SAFE_PROJ" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+      fi
       ;;
   esac
 else
   # No active project — log everything (backwards compatible)
-  echo "{\"event\":\"edit\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"file\":\"$FILE_PATH\"}" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+  FILE_BASE=$(basename "$FILE_PATH" 2>/dev/null || echo "unknown")
+  if command -v jq >/dev/null 2>&1; then
+    jq -n --arg event "edit" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg file "$FILE_BASE" \
+      '{event: $event, ts: $ts, file: $file}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+  else
+    SAFE_FILE=$(printf '%s' "$FILE_BASE" | tr -cd '[:alnum:]._/-')
+    printf '{"event":"edit","ts":"%s","file":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$SAFE_FILE" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+  fi
 fi

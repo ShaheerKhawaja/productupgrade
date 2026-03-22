@@ -17,19 +17,30 @@ rm -f "$STATE_DIR/sessions/active-project" 2>/dev/null || true
 rm -f "$STATE_DIR/sessions/project-meta" 2>/dev/null || true
 
 # 2. Log session end
-echo "{\"event\":\"session_end\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"pid\":$$,\"project\":\"$ACTIVE_PROJECT\"}" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+# C-1 fix: Use jq for safe JSON construction
+if command -v jq >/dev/null 2>&1; then
+  jq -n --arg event "session_end" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson pid $$ --arg project "$ACTIVE_PROJECT_NAME" \
+    '{event: $event, ts: $ts, pid: $pid, project: $project}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+else
+  SAFE_PROJ=$(printf '%s' "$ACTIVE_PROJECT_NAME" | tr -cd '[:alnum:]._/-')
+  printf '{"event":"session_end","ts":"%s","pid":%d,"project":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" $$ "$SAFE_PROJ" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+fi
 
 # 3. Generate project-scoped session summary
 ANALYTICS="$STATE_DIR/analytics/skill-usage.jsonl"
 if [ -f "$ANALYTICS" ]; then
+  # C-2 fix: Pass all paths via sys.argv to prevent Python code injection
   python3 -c "
-import json, collections, os
+import json, collections, os, sys
 from datetime import datetime
 
+analytics_path = sys.argv[1]
+active_project = sys.argv[2]
+state_dir = sys.argv[3]
+
 today = datetime.utcnow().strftime('%Y-%m-%d')
-active_project = '$ACTIVE_PROJECT'
 events = []
-for line in open('$ANALYTICS'):
+for line in open(analytics_path):
     try:
         e = json.loads(line)
         if e.get('ts', '').startswith(today):
@@ -73,22 +84,24 @@ handoff = f'''# ProductionOS Session Summary — {today} ({project_label})
 {chr(10).join(f'- {e.get(\"file\", \"\")} (target: {e.get(\"target_repo\", \"\")})' for e in cross_repo[:5]) if cross_repo else '- None'}
 '''
 
-handoff_dir = os.path.join('$STATE_DIR', 'sessions')
+handoff_dir = os.path.join(state_dir, 'sessions')
 os.makedirs(handoff_dir, exist_ok=True)
 with open(os.path.join(handoff_dir, f'handoff-{today}.md'), 'w') as f:
     f.write(handoff)
-" 2>/dev/null || true
+" "$ANALYTICS" "$ACTIVE_PROJECT" "$STATE_DIR" 2>/dev/null || true
 fi
 
 # 3.5. Mini-retro: append session summary to retro sessions log
 if [ -n "$ACTIVE_PROJECT" ]; then
   mkdir -p "$STATE_DIR/retro"
+  # C-2 fix: Pass all paths via sys.argv to prevent Python code injection
   python3 -c "
-import json, os, subprocess
+import json, os, subprocess, sys
 from datetime import datetime
 
-state_dir = '$STATE_DIR'
-active_project = '$ACTIVE_PROJECT'
+state_dir = sys.argv[1]
+active_project = sys.argv[2]
+pid = sys.argv[3]
 now = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
 today = datetime.utcnow().strftime('%Y-%m-%d')
 
@@ -100,7 +113,7 @@ if os.path.exists(analytics_file):
     for line in open(analytics_file):
         try:
             e = json.loads(line)
-            if e.get('event') == 'session_start' and e.get('ts', '').startswith(today) and str(e.get('pid', '')) == '$$':
+            if e.get('event') == 'session_start' and e.get('ts', '').startswith(today) and str(e.get('pid', '')) == pid:
                 session_start = e['ts']
             if e.get('event') == 'edit' and e.get('ts', '').startswith(today):
                 if e.get('file', '').startswith(active_project):
@@ -110,13 +123,10 @@ if os.path.exists(analytics_file):
 
 # Count commits since session start
 commits = 0
-loc_added = 0
-loc_removed = 0
 try:
     if session_start:
         result = subprocess.run(['git', '-C', active_project, 'log', '--oneline', f'--since={session_start}'], capture_output=True, text=True, timeout=5)
         commits = len([l for l in result.stdout.strip().split(chr(10)) if l])
-        stat = subprocess.run(['git', '-C', active_project, 'diff', '--shortstat', f'--since={session_start}', 'HEAD'], capture_output=True, text=True, timeout=5)
 except:
     pass
 
@@ -144,7 +154,7 @@ retro = {
 retro_file = os.path.join(state_dir, 'retro', 'sessions.jsonl')
 with open(retro_file, 'a') as f:
     f.write(json.dumps(retro) + chr(10))
-" 2>/dev/null || true
+" "$STATE_DIR" "$ACTIVE_PROJECT" "$$" 2>/dev/null || true
 fi
 
 # 4. Extract instincts

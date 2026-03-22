@@ -631,9 +631,9 @@ Save all output to `.productionos/STUB-REPORT.md`.
 
 <example>
 
-## Example Scan: Entropy Studio Frontend
+## Example Scan: Sample Project Frontend
 
-**Scan command invoked on `~/Video-Generation/frontend/`**
+**Scan command invoked on `~/my-project/frontend/`**
 
 ### STUB-001: src/app/projects/[id]/settings/page.tsx
 **Classification:** FULL_STUB

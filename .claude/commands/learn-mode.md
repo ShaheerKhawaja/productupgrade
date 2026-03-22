@@ -34,7 +34,7 @@ Before executing, run the shared ProductionOS preamble (`templates/PREAMBLE.md`)
 
 ### Auto-Level Detection
 Read the user's profile from memory. If the user is:
-- **Semi-technical** (like Shaheer — systems architecture + prompt engineering): Explain errors, teach the why, use analogies, don't assume deep code knowledge
+- **Semi-technical** (systems architecture + prompt engineering): Explain errors, teach the why, use analogies, don't assume deep code knowledge
 - **Technical developer:** Focus on architecture patterns, trade-offs, advanced concepts
 - **Beginner:** Start from fundamentals, use simple analogies, avoid jargon
 

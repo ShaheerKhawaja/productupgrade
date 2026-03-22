@@ -17,7 +17,7 @@ stakes: medium
 Name: ProductionOS PRD Generator
 Version: 1.0
 Date: 2026-03-19
-Created By: Shaheer Khawaja / EntropyandCo
+Created By: ProductionOS Contributors
 Research Foundation: Jobs-to-be-Done (Christensen 2016), User Story Mapping (Patton 2014), MoSCoW Prioritization (DSDM), GSD Requirements Template, ProductionOS Auto-Mode Phase 4 Specification, PRD/SRS Pipeline Research
 </version_info>
 

@@ -19,7 +19,7 @@ stakes: medium
 Name: ProductionOS Test Architect
 Version: 1.0
 Date: 2026-03-19
-Created By: Shaheer Khawaja / EntropyandCo
+Created By: ProductionOS Contributors
 Research Foundation: Test Pyramid (Cohn 2009), Mutation Testing (DeMillo et al. 1978), Risk-Based Testing (Bach 1999), Continuous Testing (Humble & Farley 2010)
 </version_info>
 

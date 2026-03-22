@@ -16,7 +16,7 @@ stakes: low
 Name: ProductionOS Discuss Phase
 Version: 1.0
 Date: 2026-03-19
-Created By: Shaheer Khawaja / EntropyandCo
+Created By: ProductionOS Contributors
 Research Foundation: Requirements Elicitation (Zave/Jackson 1997), Structured Decision Making (Hammond/Keeney/Raiffa), GSD Discuss Phase Pattern
 </version_info>
 

@@ -289,10 +289,10 @@ A machine-readable index of everything the session has produced, enabling effici
 # Session State Index
 
 ## Metadata
-- session_id: 2026-03-18-omni-nth-entropy
+- session_id: 2026-03-18-omni-nth-example
 - started: 2026-03-18T09:00:00Z
 - command: /omni-plan-nth
-- target: ~/Video-Generation/
+- target: ~/my-project/
 - baseline_grade: 4.2/10
 - current_grade: 6.5/10
 - iterations_completed: 4
@@ -365,7 +365,7 @@ Long-term memory lives in `~/.productionos/learned/` (user-global, not project-s
 ~/.productionos/learned/
 +-- rules.yaml                    # Active rules (injected at session start)
 +-- lessons/
-|   +-- 2026-03-18-entropy.jsonl  # Raw lesson extractions per session
+|   +-- 2026-03-18-example.jsonl  # Raw lesson extractions per session
 |   +-- 2026-03-15-website.jsonl
 |   +-- 2026-03-10-docs.jsonl
 +-- patterns/
@@ -397,7 +397,7 @@ rules:
     category: "findings"
     confidence: 0.92
     source_lessons:
-      - "lesson-2026-03-18-001"  # Entropy Studio: RLS was root cause for 7 findings
+      - "lesson-2026-03-18-001"  # Example Project: RLS was root cause for 7 findings
       - "lesson-2026-03-12-004"  # Other project: same pattern
     applied_count: 3
     confirmed_count: 2           # Times the rule led to a real finding
@@ -541,8 +541,8 @@ agents:
 Append-only JSONL tracking run-over-run performance. Enables trend analysis across weeks and months.
 
 ```jsonl
-{"run_id":"run-2026-03-18-001","date":"2026-03-18","target":"entropy-studio","stack":"django+nextjs","mode":"omni-plan-nth","grade_start":4.2,"grade_end":6.5,"iterations":4,"agents_deployed":56,"fixes_applied":34,"lessons_extracted":8,"rules_generated":3,"rules_injected":12,"rules_confirmed":7,"pivot_count":1,"refine_count":2,"batch_failure_rate":0.18,"self_heal_rate":0.65,"total_tokens":2800000,"duration_minutes":45}
-{"run_id":"run-2026-03-15-001","date":"2026-03-15","target":"entropy-website","stack":"nextjs","mode":"production-upgrade","grade_start":5.0,"grade_end":7.8,"iterations":3,"agents_deployed":21,"fixes_applied":18,"lessons_extracted":5,"rules_generated":2,"rules_injected":8,"rules_confirmed":5,"pivot_count":0,"refine_count":1,"batch_failure_rate":0.12,"self_heal_rate":0.80,"total_tokens":1200000,"duration_minutes":22}
+{"run_id":"run-2026-03-18-001","date":"2026-03-18","target":"example-saas","stack":"django+nextjs","mode":"omni-plan-nth","grade_start":4.2,"grade_end":6.5,"iterations":4,"agents_deployed":56,"fixes_applied":34,"lessons_extracted":8,"rules_generated":3,"rules_injected":12,"rules_confirmed":7,"pivot_count":1,"refine_count":2,"batch_failure_rate":0.18,"self_heal_rate":0.65,"total_tokens":2800000,"duration_minutes":45}
+{"run_id":"run-2026-03-15-001","date":"2026-03-15","target":"example-website","stack":"nextjs","mode":"production-upgrade","grade_start":5.0,"grade_end":7.8,"iterations":3,"agents_deployed":21,"fixes_applied":18,"lessons_extracted":5,"rules_generated":2,"rules_injected":8,"rules_confirmed":5,"pivot_count":0,"refine_count":1,"batch_failure_rate":0.12,"self_heal_rate":0.80,"total_tokens":1200000,"duration_minutes":22}
 ```
 
 ---
@@ -862,7 +862,7 @@ by_stack:
   django:
     rules: [rule-001, rule-004, rule-015, rule-023, rule-045]
     patterns: ["patterns/django.md"]
-    lessons: ["2026-03-18-entropy.jsonl#L1-L4", "2026-03-12-other.jsonl#L2"]
+    lessons: ["2026-03-18-example.jsonl#L1-L4", "2026-03-12-other.jsonl#L2"]
   nextjs:
     rules: [rule-002, rule-008, rule-019, rule-031]
     patterns: ["patterns/nextjs.md"]
