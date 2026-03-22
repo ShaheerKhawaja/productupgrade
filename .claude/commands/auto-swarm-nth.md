@@ -221,6 +221,26 @@ After all agents report:
 4. **Calculate quality:** average quality score across covered items
 5. **Identify new gaps** discovered during this wave
 
+### Phase 4.5: Worktree Merge (ONLY when isolation=worktree)
+
+After all agents complete and Phase 4 synthesis is done, merge each agent's worktree branch sequentially:
+
+```
+FOR each completed agent branch in wave:
+  1. bun run scripts/worktree-manager.ts merge "swarm/wave-{N}-agent-{M}" --into main
+  2. IF merge succeeds (tests pass): continue to next branch
+  3. IF merge fails (conflict or test failure):
+     → Mark branch as CONFLICT, skip, continue with remaining
+     → Log to WORKTREE-MERGE-LOG.md
+  4. AFTER all merges attempted:
+     → bun run scripts/worktree-manager.ts cleanup --all
+     → Write .productionos/WORKTREE-MERGE-LOG.md with results table
+```
+
+**Merge ordering:** Earliest-completed agent first (minimizes conflict probability).
+
+**Fallback:** If ALL merges fail, revert to pre-wave checkpoint and flag as WAVE_MERGE_FAILURE.
+
 ### Phase 5: Evaluate — Strict Quality Gate
 
 For each deliverable produced this wave, run evaluation:

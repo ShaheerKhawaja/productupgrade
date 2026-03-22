@@ -75,7 +75,7 @@ cat << 'BANNER'
 
   ╔═══════════════════════════════════════════════════╗
   ║  ProductionOS v8.0.0-alpha.2 — The Nervous System  ║
-  ║  73 agents | 35 commands | 11 hooks               ║
+  ║  74 agents | 37 commands | 11 hooks               ║
   ╠═══════════════════════════════════════════════════╣
 BANNER
 printf "  ║  Sessions: %-3s | Auto-Review: %-5s | Learn: %-4s ║\n" "$SESSIONS" "$AUTO_REVIEW" "$PROACTIVE"

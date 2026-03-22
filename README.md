@@ -84,7 +84,7 @@ You work across many codebases and need fast, repeatable quality audits:
 #### AI Engineers
 You're building AI-powered products and need agent orchestration patterns:
 
-- **73 agent definitions** with YAML frontmatter (model routing, tool constraints, stakes classification)
+- **74 agent definitions** with YAML frontmatter (model routing, tool constraints, stakes classification)
 - **10-layer prompt composition** (Emotion → Meta → Context → CoT → ToT → GoT → CoD → Generated Knowledge → Distractor-Augmented)
 - **Tri-tiered judging** (3 independent judges with debate on disagreement)
 - **Convergence engine** (recursive improvement with regression detection)
@@ -156,8 +156,8 @@ You're building AI-powered products and need agent orchestration patterns:
 ## Architecture
 
 ```
-73 agents (declarative YAML frontmatter, 3-tier model routing)
-35 commands (orchestrate agents, loop until convergence)
+74 agents (declarative YAML frontmatter, 3-tier model routing)
+37 commands (orchestrate agents, loop until convergence)
 11 hooks (SessionStart, PreToolUse security, PostToolUse telemetry, Stop handoff)
  8 templates (PREAMBLE, SELF-EVAL, INVOCATION, PROMPT-COMPOSITION, MODEL-ROUTING, etc.)
  6 CLI tools (pos-init, pos-config, pos-analytics, etc.)
@@ -218,7 +218,7 @@ pos-init  # Initialize state directory
 
 ```bash
 bun test              # 589 tests, 0 failures
-bun run validate      # 73/73 agents valid
+bun run validate      # 74/74 agents valid
 bun run skill:check   # Plugin health score
 ```
 
@@ -293,8 +293,8 @@ pos-telemetry       # Log skill usage events
 
 ## Tech
 
-- 73 agent definitions with YAML frontmatter (model routing, tool constraints, stakes classification)
-- 35 commands (14 absorbed from gstack/superpowers/ECC, 4 recursive orchestrators)
+- 74 agent definitions with YAML frontmatter (model routing, tool constraints, stakes classification)
+- 37 commands (14 absorbed from gstack/superpowers/ECC, 4 recursive orchestrators)
 - 10-layer prompt architecture (Emotion → Meta → Scratchpad → Context → CoT → ToT → GoT → CoD → Generated Knowledge → Distractor-Augmented)
 - Default-on self-evaluation protocol (7-question quality gate on all outputs)
 - 11 lifecycle hooks (SessionStart, PreToolUse security + boundary + gitleaks, PostToolUse telemetry/review, Stop handoff)
