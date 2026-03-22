@@ -4,9 +4,6 @@
  * Reads quality-gates.yml, evaluates each gate, returns pass/fail/warn.
  */
 import { execSync } from "child_process";
-import { existsSync, readFileSync } from "fs";
-import { join } from "path";
-import { ROOT } from "./lib/shared";
 
 interface GateResult { name: string; status: "pass" | "fail" | "warn" | "skip"; value: string; threshold: string; }
 
