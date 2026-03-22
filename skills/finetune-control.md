@@ -1,11 +1,11 @@
 ---
-name: dialkit-live-tuning
+name: finetune-control-live-tuning
 description: "Live parameter tuning for UI development. DialKit provides floating control panel with sliders, toggles, spring configs, and action buttons wired to component values. Parametric visualization philosophy."
 metadata:
   author: raphael-salaja (forked + refactored for ProductionOS)
   version: "1.0.0"
   filePattern: "**/*.tsx,**/*.jsx,**/components/**"
-  bashPattern: "dialkit|useDialKit"
+  bashPattern: "finetune-control|useDialKit"
   priority: 75
 ---
 
@@ -33,13 +33,13 @@ Live tuning: drag slider → see result INSTANTLY. Feel the difference. Build in
 ## Installation
 
 ```bash
-npm install dialkit motion
+npm install finetune-control motion
 ```
 
 Layout setup (add as SIBLING, not wrapper):
 ```tsx
-import { DialRoot } from "dialkit";
-import "dialkit/styles.css";
+import { DialRoot } from "finetune-control";
+import "finetune-control/styles.css";
 
 export default function Layout({ children }) {
   return (
@@ -140,7 +140,7 @@ Add DialKit to this grid layout. Sliders for gap, padding, column
 count (1-6), and card border radius. Group card controls in a folder.
 ```
 
-## Integration with Storyboard Animation
+## Integration with Motion System
 
 Combine both patterns for maximum design velocity:
 ```

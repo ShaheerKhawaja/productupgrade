@@ -1,6 +1,6 @@
-# Storyboard Animation
+# Motion System
 
-**Part of [Interface Craft](SKILL.md) by Josh Puckett**
+**Part of [Interface Craft](SKILL.md) by ProductionOS Design**
 
 A pattern for writing and refactoring React animations into a human-readable storyboard format. Every timing value, scale, position, and spring config is extracted to named constants at the top of the file so you can read the animation like a script and tune any value instantly.
 

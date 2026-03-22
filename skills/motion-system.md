@@ -1,5 +1,5 @@
 ---
-name: storyboard-animation
+name: motion-system
 description: "Turn multi-step animations into readable scripts. ASCII storyboard at top, TIMING object for delays, element config objects for scales/positions/springs, single stage integer drives sequence. Motion/Framer Motion pattern."
 metadata:
   author: raphael-salaja (forked + refactored for ProductionOS)
@@ -9,7 +9,7 @@ metadata:
   priority: 80
 ---
 
-# Storyboard Animation Skill
+# Motion System Skill
 
 Turns multi-step animations into something you can read like a script. Every timing value, scale, position, and spring config gets extracted to named constants at the top. A single stage integer drives the whole sequence.
 

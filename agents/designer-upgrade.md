@@ -136,7 +136,7 @@ Produce `.productionos/designer-upgrade/DESIGN-SYSTEM.md`:
 - Shadows: sm/md/lg/xl (with values)
 
 ### Motion (powered by userinterface-wiki + interface-craft)
-**MANDATORY:** Load `userinterface-wiki` (152 rules) + `interface-craft` (storyboard + dialkit + critique) before ANY motion/animation work.
+**MANDATORY:** Load `userinterface-wiki` (152 rules) + `interface-craft` (motion-system + finetune-control + design-evaluator) before ANY motion/animation work.
 
 **Duration Scale (userinterface-wiki calibrated):**
 - Micro: 80-120ms (hover, active states)
@@ -187,7 +187,7 @@ const values = useDialKit("Card", {
   replay: () => replayAnimation(),
 });
 ```
-Install: `npm install dialkit motion` + add `<DialRoot />` to layout.
+Install finetune-control and motion libraries as needed for the target framework.
 
 ### Visual Design Rules (userinterface-wiki)
 - `visual-concentric-radius` — Inner radius = outer - padding

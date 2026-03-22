@@ -1,6 +1,6 @@
 # DialKit
 
-**Part of [Interface Craft](SKILL.md) by Josh Puckett**
+**Part of [Interface Craft](SKILL.md) by ProductionOS Design**
 
 Generate DialKit configurations for React + Motion projects — live control panels for tuning animation and style values in real time.
 
@@ -17,16 +17,16 @@ Generate DialKit configurations for React + Motion projects — live control pan
 ### Direct Mode
 Triggers when user describes what they want with context:
 - "use DialKit to give me sliders for blur and opacity"
-- "add dialkit controls for scale, rotation, and a spring"
+- "add finetune-control controls for scale, rotation, and a spring"
 - "I need toggles and sliders for my card animation"
 
 In direct mode, generate the config immediately based on the request.
 
 ### Guided Mode
 Triggers when user invokes without specific context or asks for help:
-- `/interface-craft dialkit`
-- "help me set up dialkit"
-- "walk me through adding dialkit"
+- `/interface-craft finetune-control`
+- "help me set up finetune-control"
+- "walk me through adding finetune-control"
 
 In guided mode, ask 2-3 concise questions then generate.
 
@@ -34,16 +34,16 @@ In guided mode, ask 2-3 concise questions then generate.
 
 Before generating configs, verify DialKit is installed. If working in a project:
 
-1. Check if `dialkit` is in package.json dependencies
+1. Check if `finetune-control` is in package.json dependencies
 2. If not installed, provide:
 ```bash
-npm install dialkit motion
+npm install finetune-control motion
 ```
 
 3. Check if DialRoot is set up in a layout file. If not, remind user:
 ```tsx
-import { DialRoot } from 'dialkit'
-import 'dialkit/styles.css'
+import { DialRoot } from 'finetune-control'
+import 'finetune-control/styles.css'
 
 // Add to your root layout:
 <DialRoot position="top-right" />
@@ -162,7 +162,7 @@ shadow: {
 Always generate complete, copy-paste ready code:
 
 ```tsx
-import { useDialKit } from 'dialkit'
+import { useDialKit } from 'finetune-control'
 import { motion } from 'motion/react'
 
 function ComponentName() {

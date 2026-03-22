@@ -1,6 +1,6 @@
-# Design Critique
+# Design Evaluator
 
-A systematic interface critique skill based on Josh Puckett's methodology from Interface Craft. Analyzes UI screenshots or component code and delivers specific, actionable feedback organized by visual design, interface design, interaction consistency, and user context.
+A systematic interface critique skill based on ProductionOS Design's methodology from Interface Craft. Analyzes UI screenshots or component code and delivers specific, actionable feedback organized by visual design, interface design, interaction consistency, and user context.
 
 ---
 

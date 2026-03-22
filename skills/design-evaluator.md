@@ -1,5 +1,5 @@
 ---
-name: design-critique
+name: design-evaluator
 description: "Structured interface review methodology. 4 lenses: visual design, interface design, interaction consistency, user context. Works with screenshots, component files, or URLs. Produces specific observations with impact and alternative."
 metadata:
   author: raphael-salaja (forked + refactored for ProductionOS)
@@ -8,7 +8,7 @@ metadata:
   priority: 85
 ---
 
-# Design Critique Skill
+# Design Evaluator Skill
 
 Structured methodology for reviewing interfaces. Instead of vague feedback, produce specific, tangible observations organized into 4 lenses.
 
@@ -112,4 +112,4 @@ When refining an interface that's already good (7/10+), apply these micro-refine
 10. **Weight reduction** — Each refinement should REDUCE visual weight of the interface
 
 ## Output Location
-Write critique to: `.productionos/designer-upgrade/audit/design-critique.md`
+Write critique to: `.productionos/designer-upgrade/audit/design-evaluator.md`
