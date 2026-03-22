@@ -1,17 +1,17 @@
 {
   "name": "productionos",
   "owner": {
-    "name": "Shaheer Khawaja",
-    "email": "shaheer@entropyandco.com"
+    "name": "ProductionOS Contributors",
+    "url": "https://github.com/ShaheerKhawaja/ProductionOS"
   },
   "plugins": [
     {
       "name": "productionos",
-      "description": "Your AI engineering team — 69 agents, 35 commands, 11 hooks, repo boundary guard, gitleaks, self-eval, design auditing, UX analysis",
-      "version": "8.0.0-alpha.1",
+      "description": "Your AI engineering team — 73 agents, 35 commands, 11 hooks, repo boundary guard, gitleaks, self-eval, design auditing, UX analysis",
+      "version": "8.0.0-alpha.2",
       "author": {
-        "name": "Shaheer Khawaja",
-        "email": "shaheer@entropyandco.com"
+        "name": "ProductionOS Contributors",
+        "url": "https://github.com/ShaheerKhawaja/ProductionOS"
       },
       "source": ".",
       "category": "development",
