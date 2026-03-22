@@ -1,6 +1,6 @@
 {
   "name": "productionos",
-  "version": "8.0.0-alpha.1",
+  "version": "8.0.0-alpha.3",
   "description": "ProductionOS — Your AI engineering team. 66 agents, 35 commands, 11 hooks, repo boundary guard, gitleaks, self-eval, design auditing, UX analysis.",
   "license": "MIT",
   "type": "module",
@@ -45,8 +45,8 @@
     "multi-agent"
   ],
   "author": {
-    "name": "Shaheer Khawaja",
-    "email": "shaheer@entropyandco.com"
+    "name": "ProductionOS Contributors",
+    "url": "https://github.com/ShaheerKhawaja/ProductionOS"
   },
   "repository": {
     "type": "git",

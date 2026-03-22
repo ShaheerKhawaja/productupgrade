@@ -8,7 +8,7 @@
     {
       "name": "productionos",
       "description": "Your AI engineering team — 73 agents, 35 commands, 11 hooks, repo boundary guard, gitleaks, self-eval, design auditing, UX analysis",
-      "version": "8.0.0-alpha.2",
+      "version": "8.0.0-alpha.3",
       "author": {
         "name": "ProductionOS Contributors",
         "url": "https://github.com/ShaheerKhawaja/ProductionOS"
