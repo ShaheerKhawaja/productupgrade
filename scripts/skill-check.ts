@@ -49,7 +49,7 @@ runCheck('VERSION is valid semver', () => {
   const content = readFileOrNull(path.join(ROOT, 'VERSION'));
   if (!content) return { pass: false, details: ['VERSION file not found'] };
   const version = content.trim();
-  const valid = /^\d+\.\d+\.\d+$/.test(version);
+  const valid = /^\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?$/.test(version);
   return { pass: valid, details: valid ? [`v${version}`] : [`Invalid: "${version}"`] };
 });
 

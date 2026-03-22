@@ -44,7 +44,7 @@ function check(name: string, status: 'pass' | 'fail' | 'warn', message: string):
 // 1. VERSION file
 const versionContent = readFileOrNull(path.join(ROOT, 'VERSION'));
 const version = versionContent?.trim() ?? '';
-const semverRegex = /^\d+\.\d+\.\d+$/;
+const semverRegex = /^\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?$/;
 
 if (!versionContent) {
   check('VERSION file', 'fail', 'VERSION file not found');

@@ -46,7 +46,7 @@ describe('VERSION file', () => {
     const content = readFileOrNull(path.join(ROOT, 'VERSION'));
     expect(content).not.toBeNull();
     const version = content!.trim();
-    expect(version).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(version).toMatch(/^\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?$/);
   });
 });
 

@@ -1,6 +1,6 @@
-# ProductionOS 7.0 — The Design Conscience
+# ProductionOS 8.0 — The Nervous System
 
-65-agent AI engineering team with 35 commands, 15+ lifecycle hooks, 6 CLI tools, 4 auto-activating skills, continuous learning, and self-evaluation. Native embedding into Claude Code with design auditing, interactive HTML mockups, user story generation, and default-on self-evaluation that questions every action. Built for solo founders who need a 10-person engineering + design team from 1 person + AI.
+66-agent AI engineering team with 35 commands, 11 lifecycle hooks, 6 CLI tools, 4 auto-activating skills, continuous learning, and self-evaluation. Native embedding into Claude Code with design auditing, interactive HTML mockups, user story generation, and default-on self-evaluation that questions every action. Built for solo founders who need a 10-person engineering + design team from 1 person + AI.
 
 ## What's New in v7.0
 

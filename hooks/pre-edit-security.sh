@@ -37,8 +37,13 @@ done
 
 if [ -n "$MATCHED" ]; then
   mkdir -p "$STATE_DIR/analytics"
-  echo "{\"event\":\"security_edit\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"file\":\"$FILE_PATH\",\"pattern\":\"$MATCHED\"}" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
-  echo "{\"additionalContext\":\"ProductionOS Security: Editing security-sensitive file ($MATCHED pattern in $BASENAME). Review before committing.\"}"
+  # Include active project context for better observability
+  ACTIVE_PROJECT_NAME=""
+  if [ -f "$STATE_DIR/sessions/active-project" ]; then
+    ACTIVE_PROJECT_NAME=$(basename "$(cat "$STATE_DIR/sessions/active-project" 2>/dev/null)" 2>/dev/null || echo "unknown")
+  fi
+  echo "{\"event\":\"security_edit\",\"ts\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",\"file\":\"$FILE_PATH\",\"pattern\":\"$MATCHED\",\"project\":\"$ACTIVE_PROJECT_NAME\"}" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+  echo "{\"additionalContext\":\"ProductionOS Security [$ACTIVE_PROJECT_NAME]: Editing security-sensitive file ($MATCHED pattern in $BASENAME). Review before committing.\"}"
 else
   echo '{}'
 fi

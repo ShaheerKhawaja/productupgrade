@@ -17,6 +17,13 @@ mkdir -p "$LEARN_DIR"
 # Read hook input from stdin
 INPUT=$(cat)
 
+# Scope check: only learn from active project
+STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
+ACTIVE_PROJECT=""
+if [ -f "$STATE_DIR/sessions/active-project" ]; then
+  ACTIVE_PROJECT=$(cat "$STATE_DIR/sessions/active-project" 2>/dev/null || echo "")
+fi
+
 # Graceful degradation without jq
 if ! command -v jq >/dev/null 2>&1; then
   # Minimal capture without jq — just log the event type
@@ -39,6 +46,13 @@ case "$TOOL_NAME" in
   Edit|Write)
     # Capture file modifications — use jq -n to prevent JSON injection from file paths
     FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // "unknown"' 2>/dev/null || echo "unknown")
+    # Skip learning for files outside active project
+    if [ -n "$ACTIVE_PROJECT" ] && [ "$FILE_PATH" != "unknown" ]; then
+      case "$FILE_PATH" in
+        "$ACTIVE_PROJECT"/*) ;; # Within active project, proceed
+        *) exit 0 ;; # Outside active project, skip learning
+      esac
+    fi
     jq -n --arg ts "$TIMESTAMP" --arg tool "$TOOL_NAME" --arg file "$FILE_PATH" \
       '{ts: $ts, event: "file_modified", tool: $tool, file: $file}' >> "$SESSION_FILE" 2>/dev/null || true
     ;;

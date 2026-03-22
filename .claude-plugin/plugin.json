@@ -1,7 +1,7 @@
 {
   "name": "productionos",
-  "description": "Your AI engineering team — 65 agents, 35 commands, 15+ hooks, 6 CLI tools, self-eval, design auditing, UX analysis. Native embedding into Claude Code with default-on self-evaluation, interactive HTML mockups, user story generation, and cross-session instincts. Zero external dependencies.",
-  "version": "7.0.0",
+  "description": "Your AI engineering team — 66 agents, 35 commands, 11 hooks, 6 CLI tools, repo boundary guard, gitleaks secret detection, self-eval, design auditing, UX analysis. Native embedding into Claude Code with default-on self-evaluation, interactive HTML mockups, user story generation, and cross-session instincts. Zero external dependencies.",
+  "version": "8.0.0-alpha.1",
   "author": {
     "name": "Shaheer Khawaja",
     "email": "shaheer@entropyandco.com"

@@ -149,7 +149,7 @@ describe("version consistency across all sources", () => {
   const ver = readFileOrNull(path.join(ROOT, "VERSION"))?.trim() ?? "";
 
   test("VERSION is valid semver", () => {
-    expect(ver).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(ver).toMatch(/^\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?$/);
   });
 
   test("package.json matches", () => {
