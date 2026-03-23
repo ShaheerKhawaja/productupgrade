@@ -1,6 +1,6 @@
-# ProductionOS 8.0.0-alpha.2 — The Nervous System
+# ProductionOS 1.0.0-beta.1 — Production House
 
-74-agent AI engineering team with 37 commands, 11 lifecycle hooks, 6 CLI tools, 4 auto-activating skills, continuous learning, and self-evaluation. Native embedding into Claude Code with design auditing, interactive HTML mockups, user story generation, and default-on self-evaluation that questions every action. Built for solo founders who need a 10-person engineering + design team from 1 person + AI.
+75-agent AI engineering OS with 39 commands, 11 lifecycle hooks, 6 CLI tools, 4 auto-activating skills, continuous learning, and self-evaluation. 4-layer Production House: Smart Router (auto-dispatch agents by goal), Stack Detector (auto-provision tools), Adaptive Learning (dispatch history feeds routing), Dynamic Factory (create ephemeral agents). Built for solo founders who need a 10-person engineering + design team from 1 person + AI.
 
 ## What's New in v7.0
 
@@ -30,7 +30,7 @@
 - **Security Scanning** — PreToolUse hook detects edits to auth/payment/credential files
 - **Continuous Learning** — PostToolUse observation + Stop instinct extraction
 - **Stakes Classification** — Each agent tagged LOW/MEDIUM/HIGH (HumanLayer pattern)
-- **Red Flags** — Behavioral guardrails on all 65 agents
+- **Red Flags** — Behavioral guardrails on all 75 agents
 - **Declarative Agents** — YAML frontmatter with model, tools, subagent_type on all agents
 
 ## Commands
@@ -211,7 +211,7 @@ SELF-EVAL PROTOCOL (cross-cutting — embedded in ALL commands above)
 
 ## Agent Loading
 
-Agent definitions live in `agents/` (74 files). All agents have YAML frontmatter with `name`, `description`, `model`, `tools`, `subagent_type`, and `stakes`. Commands load agents on-demand — do NOT preload all agent files.
+Agent definitions live in `agents/` (75 files). All agents have YAML frontmatter with `name`, `description`, `model`, `tools`, `subagent_type`, and `stakes`. Commands load agents on-demand — do NOT preload all agent files.
 
 ## Prompting Architecture
 

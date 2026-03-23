@@ -4,7 +4,7 @@
 
 **One command. Your entire codebase reviewed, scored, and improved.**
 
-ProductionOS is a Claude Code plugin that turns AI into a full engineering team. It deploys specialized agents that review your code, find issues, fix them, and keep improving until every quality dimension hits the target. Default-on self-evaluation questions every action before it ships.
+ProductionOS is a Claude Code plugin with 75 agents, 39 commands, and 11 hooks that turns AI into a full engineering team. It deploys specialized agents that review your code, find issues, fix them, and keep improving until every quality dimension hits the target. Smart routing dispatches the right agents for your goal automatically.
 
 ## Quick Start
 
