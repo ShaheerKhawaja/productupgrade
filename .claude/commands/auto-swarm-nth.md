@@ -50,6 +50,14 @@ When dispatching agents, follow `templates/INVOCATION-PROTOCOL.md`:
 - **File-Based Handoff**: Write structured output with MANIFEST block to `.productionos/`
 - **Nesting limit**: command → agent → sub-agent → skill (max depth 3)
 
+### Self-Evaluation Gate
+
+After each agent completes, dispatch the self-evaluator agent (`agents/self-evaluator.md`). Apply the 7-question protocol from `templates/SELF-EVAL-PROTOCOL.md`:
+- If score >= 8.0: **PASS** — proceed to next agent/phase
+- If score < 8.0: **SELF-HEAL** — trigger `agents/self-healer.md` (max 3 iterations)
+- Log all evaluations to `.productionos/self-eval/`
+- Feed scores into convergence tracking via `scripts/convergence.ts`
+
 ## Preliminary Layer (runs ONCE)
 
 ### P1: Task Decomposition
@@ -120,6 +128,24 @@ COVERAGE MAP (0/N)
 ### P5: Success Criteria
 **EXIT CONDITION: 100% of items covered AND every deliverable scores 10/10.**
 If any item uncovered OR any deliverable < 10: continue swarming.
+
+---
+
+## RLM Auto-Detection (transparent)
+
+Before processing any file, check if it exceeds 50K characters.
+If yes, invoke the rlm-auto-activator agent to chunk and pre-process.
+This is transparent -- the command continues with pre-processed chunks.
+
+Each swarm agent calls the rlm-auto-activator before processing any file in its work queue:
+```
+for file in work_queue:
+    result = rlm-auto-activator(file_path=file, session_id=f"swarm-nth-{wave}-{agent}")
+    if result.action == "passthrough":
+        process_file_directly(file)
+    elif result.action == "chunked":
+        process_via_rlm_pipeline(result.chunk_paths, query)
+```
 
 ---
 

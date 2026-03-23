@@ -8,7 +8,7 @@ set -euo pipefail
 # Resolve plugin root — works for both marketplace install and git clone
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 
-LEARN_DIR="${HOME}/.productionos/learned"
+LEARN_DIR="${HOME}/.productionos/instincts/learned"
 SESSION_FILE="${LEARN_DIR}/session-$(date +%Y%m%d).jsonl"
 CROSS_SESSION_FILE="${LEARN_DIR}/CROSS-SESSION-PATTERNS.md"
 

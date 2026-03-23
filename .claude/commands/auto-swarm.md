@@ -138,6 +138,21 @@ Each agent explores a different code path or module:
 
 Convergence: full module map with dependency graph
 
+## RLM Auto-Detection (transparent)
+
+Before processing any file, check if it exceeds 50K characters.
+If yes, invoke the rlm-auto-activator agent to chunk and pre-process.
+This is transparent -- the command continues with pre-processed chunks.
+
+```
+for file in work_queue:
+    result = rlm-auto-activator(file_path=file, session_id=f"swarm-{agent_letter}")
+    if result.action == "passthrough":
+        process_file_directly(file)
+    elif result.action == "chunked":
+        process_via_rlm_pipeline(result.chunk_paths, query)
+```
+
 ## Orchestration Protocol
 
 ### Step 1: Task Analysis

@@ -158,7 +158,7 @@ with open(retro_file, 'a') as f:
 fi
 
 # 4. Extract instincts
-PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(dirname "$(dirname "$0")")}"
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 if [ -f "$PLUGIN_ROOT/hooks/stop-extract-instincts.sh" ]; then
   bash "$PLUGIN_ROOT/hooks/stop-extract-instincts.sh" 2>/dev/null || true
 fi
