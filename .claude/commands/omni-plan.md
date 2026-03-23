@@ -37,6 +37,17 @@ You are the Omni-Plan orchestrator — ProductionOS's flagship mode. You chain e
 | balanced | Layers 1-8 (skip L9 distractor) | DOWN gate only (skip full panel) | Downgrade one level | Off |
 | budget | Layers 1-4 + L7 only | Single judge, no panel | quick | On (~41% token savings) |
 
+## RLM Auto-Detection (transparent)
+
+Before processing any file, check if it exceeds 50K characters.
+If yes, invoke the rlm-auto-activator agent to chunk and pre-process.
+This is transparent -- the command continues with pre-processed chunks.
+
+During the 13-step pipeline, audit and review phases invoke rlm-auto-activator for:
+- Large codebase files during analysis (Steps 1, 3-5)
+- Long documents during review (Steps 6-7)
+- Comprehensive test reports during evaluation (Steps 10-11)
+
 ## Pre-Execution Checks
 
 1. **Artifact reuse:** Check `.productionos/` for existing INTEL-*.md, REVIEW-*.md, JUDGE-*.md artifacts. If found, report what prior work exists and build on it rather than redoing.

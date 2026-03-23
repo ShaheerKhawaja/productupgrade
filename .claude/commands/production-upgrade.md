@@ -49,6 +49,25 @@ When dispatching agents, follow `templates/INVOCATION-PROTOCOL.md`:
 - **File-Based Handoff**: Write structured output with MANIFEST block to `.productionos/`
 - **Nesting limit**: command → agent → sub-agent → skill (max depth 3)
 
+### Self-Evaluation Gate
+
+After each agent completes, dispatch the self-evaluator agent (`agents/self-evaluator.md`). Apply the 7-question protocol from `templates/SELF-EVAL-PROTOCOL.md`:
+- If score >= 8.0: **PASS** — proceed to next agent/phase
+- If score < 8.0: **SELF-HEAL** — trigger `agents/self-healer.md` (max 3 iterations)
+- Log all evaluations to `.productionos/self-eval/`
+- Feed scores into convergence tracking via `scripts/convergence.ts`
+
+## RLM Auto-Detection (transparent)
+
+Before processing any file, check if it exceeds 50K characters.
+If yes, invoke the rlm-auto-activator agent to chunk and pre-process.
+This is transparent -- the command continues with pre-processed chunks.
+
+During audit phases, agents call rlm-auto-activator before reading source files:
+- Code reviewer calls it before analyzing large source files
+- Database auditor calls it before reading migration files
+- Dependency scanner calls it before parsing lock files
+
 ## Pre-Execution Checks
 
 Before running, perform these checks:

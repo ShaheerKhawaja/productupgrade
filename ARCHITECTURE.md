@@ -1,4 +1,4 @@
-# ProductionOS v7.0 Architecture
+# ProductionOS v1.0 Architecture
 
 This document explains **why** ProductionOS is built the way it is. For setup and commands, see CLAUDE.md.
 
@@ -6,9 +6,9 @@ This document explains **why** ProductionOS is built the way it is. For setup an
 
 | Capability | Status | Notes |
 |------------|--------|-------|
-| 65 agent definitions | IMPLEMENTED | All with YAML frontmatter, stakes, Red Flags |
-| 35 commands | IMPLEMENTED | All pipeline commands have Step 0 preambles (14 absorbed from gstack/superpowers/ECC) |
-| 9 hook scripts | IMPLEMENTED | SessionStart, PreToolUse, PostToolUse, Stop |
+| 73 agent definitions | IMPLEMENTED | All with YAML frontmatter, stakes, Red Flags |
+| 36 commands | IMPLEMENTED | 6 primary entry points + lifecycle + specialized |
+| 11 hook scripts | IMPLEMENTED | SessionStart, PreToolUse, PostToolUse, Stop |
 | 6 CLI tools | IMPLEMENTED | pos-init, pos-config, pos-analytics, pos-update-check, pos-review-log, pos-telemetry |
 | 4 auto-activating skills | IMPLEMENTED | security-scan (p95), productionos (p90), frontend-audit (p80), continuous-learning (p70) |
 | Self-Eval Protocol | IMPLEMENTED | 7-question evaluation, default-on in all flows |
@@ -18,7 +18,7 @@ This document explains **why** ProductionOS is built the way it is. For setup an
 | Session Context Management | IMPLEMENTED | L0/L1/L2 progressive loading, context rot detection |
 | Convergence engine | IMPLEMENTED | PIVOT/REFINE/PROCEED with tri-tiered judging |
 | Persistent state | IMPLEMENTED | ~/.productionos/ with config, analytics, sessions, instincts |
-| Stakes classification | IMPLEMENTED | LOW/MEDIUM/HIGH on all 65 agents (HumanLayer pattern) |
+| Stakes classification | IMPLEMENTED | LOW/MEDIUM/HIGH on all 73 agents (HumanLayer pattern) |
 
 ## Design Philosophy
 

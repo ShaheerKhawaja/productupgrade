@@ -1,5 +1,5 @@
 {
-  "_meta": "ProductionOS v8.0.0-alpha.2 — 74 agents | 37 commands | 11 hook scripts | repo boundary guard | gitleaks | self-eval default-on",
+  "_meta": "ProductionOS v1.0.0-beta.1 — 75 agents | 39 commands | 11 hooks | 4-layer Production House",
   "SessionStart": [
     {
       "matcher": "startup|resume|clear|compact",
@@ -45,6 +45,17 @@
     }
   ],
   "PostToolUse": [
+    {
+      "matcher": "Edit|Write|Bash",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "python3 ~/.claude/skills/rlm/scripts/rlm_classifier.py",
+          "async": true,
+          "statusMessage": "RLM: Classifying output..."
+        }
+      ]
+    },
     {
       "matcher": "Edit|Write",
       "hooks": [

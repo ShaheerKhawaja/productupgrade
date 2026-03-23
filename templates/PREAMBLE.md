@@ -1,4 +1,22 @@
-## Preamble (runs before every ProductionOS skill)
+## Step 0: Preamble (runs before every ProductionOS skill)
+
+### Scope Declaration
+Before any work begins, the orchestrator MUST declare:
+1. **Target scope** — Which files/directories will be modified
+2. **Budget** — Maximum tokens/agents/cost for this invocation
+3. **Success criteria** — What "done" looks like (measurable)
+4. **Exit conditions** — When to stop (convergence, budget, max iterations)
+
+### Budget Enforcement
+Default budget per command invocation:
+- **Tokens:** 500K (audit), 1M (full pipeline)
+- **Agents:** 7 max per wave, 20 max total
+- **Cost:** $20 USD ceiling (configurable via `--max-cost`)
+- **Time:** No estimate — focus on quality, not speed
+
+Track costs in `.productionos/TOKEN-BUDGET.md`. Halt if ceiling reached.
+
+### Environment Setup
 
 ```bash
 # ProductionOS Preamble — universal initialization

@@ -43,6 +43,14 @@ When dispatching agents, follow `templates/INVOCATION-PROTOCOL.md`:
 - **File-Based Handoff**: Write structured output with MANIFEST block to `.productionos/`
 - **Nesting limit**: command → agent → sub-agent → skill (max depth 3)
 
+### Self-Evaluation Gate
+
+After each agent completes, dispatch the self-evaluator agent (`agents/self-evaluator.md`). Apply the 7-question protocol from `templates/SELF-EVAL-PROTOCOL.md`:
+- If score >= 8.0: **PASS** — proceed to next agent/phase
+- If score < 8.0: **SELF-HEAL** — trigger `agents/self-healer.md` (max 3 iterations)
+- Log all evaluations to `.productionos/self-eval/`
+- Feed scores into convergence tracking via `scripts/convergence.ts`
+
 ## Preliminary Layer (runs ONCE before first iteration)
 
 Before ANY iteration begins, execute this preliminary assessment:

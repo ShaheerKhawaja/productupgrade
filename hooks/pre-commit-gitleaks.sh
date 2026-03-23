@@ -78,6 +78,11 @@ except:
 fi
 
 # Method 2: Fallback regex pattern matching on staged diff
+# CWD guard: ensure we're in the active project directory for git operations
+ACTIVE_PROJECT=$(cat "$STATE_DIR/sessions/active-project" 2>/dev/null || echo "")
+if [ -n "$ACTIVE_PROJECT" ] && [ -d "$ACTIVE_PROJECT" ]; then
+  cd "$ACTIVE_PROJECT"
+fi
 STAGED_DIFF=$(git diff --cached --diff-filter=ACMR 2>/dev/null || echo "")
 
 if [ -z "$STAGED_DIFF" ]; then
