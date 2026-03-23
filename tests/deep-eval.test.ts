@@ -7,9 +7,9 @@
  *
  * Run: bun test tests/deep-eval.test.ts
  */
-import { describe, test, expect, beforeAll } from "bun:test";
+import { describe, test, expect } from "bun:test";
 import { readFileSync, readdirSync, existsSync, statSync } from "fs";
-import { join, relative } from "path";
+import { join } from "path";
 import { execFileSync } from "child_process";
 import { ROOT, parseFrontmatter, readFileOrNull, listMdFiles } from "../scripts/lib/shared";
 
@@ -79,7 +79,6 @@ const commands: CommandMeta[] = commandFiles.map(f => {
 });
 
 const agentNames = new Set(agents.map(a => a.name));
-const commandNames = new Set(commands.map(c => c.name));
 
 // ═══════════════════════════════════════════════════════════════
 // T1: STRUCTURAL INTEGRITY (Deep)
