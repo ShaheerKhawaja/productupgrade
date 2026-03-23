@@ -69,8 +69,14 @@ case "$TOOL_NAME" in
   Agent)
     # Capture agent dispatch — use jq -n for safe JSON construction
     DESC=$(echo "$INPUT" | jq -r '.tool_input.description // "unknown"' 2>/dev/null | head -c 100 || echo "unknown")
-    jq -n --arg ts "$TIMESTAMP" --arg desc "$DESC" \
-      '{ts: $ts, event: "agent_dispatch", description: $desc}' >> "$SESSION_FILE" 2>/dev/null || true
+    AGENT_TYPE=$(echo "$INPUT" | jq -r '.tool_input.subagent_type // "general"' 2>/dev/null | head -c 50 || echo "general")
+    jq -n --arg ts "$TIMESTAMP" --arg desc "$DESC" --arg agent "$AGENT_TYPE" \
+      '{ts: $ts, event: "agent_dispatch", description: $desc, agent_type: $agent}' >> "$SESSION_FILE" 2>/dev/null || true
+
+    # Log to dispatch-log.jsonl for Production House adaptive routing (Layer 3)
+    DISPATCH_LOG="$STATE_DIR/dispatch-log.jsonl"
+    jq -n --arg ts "$TIMESTAMP" --arg goal "$DESC" --arg agent "$AGENT_TYPE" --arg outcome "pending" \
+      '{ts: $ts, goal: $goal, agents: [$agent], outcome: $outcome}' >> "$DISPATCH_LOG" 2>/dev/null || true
     ;;
 esac
 

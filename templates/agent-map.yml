@@ -1,0 +1,75 @@
+# ProductionOS Agent Map — Static intent→agent fallback
+# Used when agent-index.ts returns low confidence or as override
+# Format: intent_category: [list of agent names]
+
+security:
+  - code-reviewer
+  - security-hardener
+  - vulnerability-explorer
+  - semgrep-scanner
+
+code_quality:
+  - code-reviewer
+  - refactoring-agent
+  - naming-enforcer
+  - complexity-analyzer
+
+testing:
+  - test-architect
+  - e2e-architect
+  - regression-detector
+
+architecture:
+  - architecture-designer
+  - database-auditor
+  - infra-setup
+
+frontend:
+  - frontend-designer
+  - ux-auditor
+  - frontend-scraper
+  - asset-generator
+
+ux:
+  - ux-auditor
+  - ux-genie
+  - user-story-mapper
+  - intake-interviewer
+
+performance:
+  - performance-profiler
+  - database-auditor
+  - code-reviewer
+
+research:
+  - deep-researcher
+  - research-pipeline
+  - comparative-analyzer
+  - ecosystem-scanner
+
+planning:
+  - dynamic-planner
+  - prd-generator
+  - requirements-tracer
+
+review:
+  - code-reviewer
+  - adversarial-reviewer
+  - llm-judge
+  - self-evaluator
+
+fix:
+  - refactoring-agent
+  - self-healer
+  - code-reviewer
+  - test-architect
+
+debug:
+  - code-reviewer
+  - stub-detector
+  - regression-detector
+
+documentation:
+  - documentation-auditor
+  - density-summarizer
+  - comms-assistant

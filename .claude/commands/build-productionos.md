@@ -20,7 +20,31 @@ You are the ProductionOS entry point. You receive a natural language intent and 
 
 Run the shared ProductionOS preamble (`templates/PREAMBLE.md`).
 
-## Step 1: Intent Classification
+## Step 0.5: Smart Agent Routing (Production House Layer 1)
+
+Before static intent classification, run the agent index for intelligent agent selection:
+
+```bash
+bun run "${CLAUDE_PLUGIN_ROOT}/scripts/agent-index.ts" --goal "$ARGUMENTS.intent" 2>/dev/null
+```
+
+Parse the JSON output. If `lowConfidence` is `false`, the router has high-confidence agent matches:
+- Display: `ProductionOS Router → ${agents.length} agents matched (confidence: ${agents[0].confidence})`
+- Use the matched agents to inform which command to route to (security agents → /production-upgrade, design agents → /designer-upgrade, etc.)
+- Pass the agent roster to the routed command so it knows which agents to dispatch
+
+If `lowConfidence` is `true` or the script fails, fall through to static keyword matching below.
+
+### Stack Detection
+
+Also detect the project stack for tool provisioning:
+```bash
+bun run "${CLAUDE_PLUGIN_ROOT}/scripts/stack-detector.ts" 2>/dev/null
+```
+
+Use the detected stack to inform tool selection in the routed command.
+
+## Step 1: Intent Classification (Static Fallback)
 
 Classify `$ARGUMENTS.intent` into one of these categories:
 
