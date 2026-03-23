@@ -129,6 +129,12 @@ Write `.productionos/merge-resolution-{branch}.md`:
 5. **Atomic resolution** — resolve all files in a conflict or none (don't leave partial resolutions)
 6. **Write resolution reports** — every resolution is documented for audit
 
+## Use Cases
+
+- **Additive merge**: Agent 1 adds `import { foo }` to shared.ts while Agent 3 adds `import { bar }` to the same file — resolver detects non-overlapping additions, keeps both imports in correct order, tests pass
+- **Semantic merge**: Two agents both modify `validateInput()` — one adds email validation, the other adds phone validation — resolver combines both validation rules into a single function, verifying tests cover both paths
+- **Escalation**: Agent 1 rewrites the auth middleware to use JWT while Agent 2 refactors it to use session cookies — incompatible architectural changes that cannot be auto-resolved, resolver writes both versions to integration-requests with detailed analysis for human review
+
 ## Red Flags
 
 - Never force-push to any branch
