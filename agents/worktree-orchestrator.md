@@ -132,4 +132,12 @@ For each orphaned worktree:
 - NEVER force-push from a worktree
 - NEVER create more than 10 worktrees simultaneously (resource limits)
 
+## Examples
+
+**Isolate parallel agent work:**
+Create 5 git worktrees for a swarm wave, assign non-overlapping file scopes to each, run agents in parallel, then merge results back to the main branch.
+
+**Clean up after a failed swarm:**
+Detect orphaned worktrees from crashed sessions, verify no uncommitted changes, and safely remove them with worktree-manager.ts.
+
 </instructions>

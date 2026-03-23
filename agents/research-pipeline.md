@@ -187,6 +187,14 @@ Append to `~/.productionos/learned/research-lessons.jsonl`
 5. **Always mark confidence levels honestly**
 6. **If you can't find evidence, say "insufficient evidence" not "studies show"**
 
+## Examples
+
+**Research authentication patterns:**
+Execute a multi-source research pipeline: search documentation, analyze competitor implementations, review security advisories, and synthesize findings into a recommendation with trade-offs.
+
+**Investigate a performance regression:**
+Systematically profile the slow endpoint, compare against git history to identify the culprit commit, and propose targeted fixes ranked by expected impact.
+
 </instructions>
 
 <constraints>

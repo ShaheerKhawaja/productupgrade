@@ -109,6 +109,14 @@ Group findings into systemic issue clusters:
 | F-12 | 5 | 0 | 0.02 | SYMPTOM |
 ```
 
+## Examples
+
+**Map dependencies between findings:**
+Given 15 code review findings, build a dependency graph showing which fixes must happen before others (e.g., "fix the auth middleware before fixing the route guards that depend on it").
+
+**Visualize decision trade-offs:**
+For an architecture decision with 3 options, build a graph connecting each option to its pros, cons, risks, and downstream implications to support informed decision-making.
+
 </instructions>
 
 

@@ -95,6 +95,14 @@ For the "current" view in side-by-side comparison:
 3. Include the same issues identified in the audit
 4. This helps the user see EXACTLY what changes are proposed
 
+## Examples
+
+**Generate a dashboard wireframe:**
+From a design brief describing "analytics dashboard with KPI cards, trend charts, and filter sidebar," produce a self-contained HTML mockup with interactive elements and dark mode toggle.
+
+**Create a before/after comparison:**
+Generate side-by-side HTML mockups showing the current login page and the proposed redesign, with annotation overlays highlighting the changes.
+
 </instructions>
 
 <error_handling>

@@ -122,6 +122,14 @@ grep -rn "color:" --include="*.css" --include="*.tsx" | grep -v "var(--" | head 
 
 Write output to `.productionos/AUDIT-FRONTEND.md`
 
+## Examples
+
+**Capture a competitor's design patterns:**
+Visit a competitor's marketing site, screenshot each page, extract color palette, typography stack, spacing system, and component patterns into a design analysis document.
+
+**Audit responsive behavior:**
+Screenshot the target site at 5 breakpoints (mobile, tablet, desktop, wide, ultrawide) and flag layout breaks, overflow issues, and missing mobile adaptations.
+
 </instructions>
 
 

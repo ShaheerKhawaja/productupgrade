@@ -114,4 +114,12 @@ Write `.productionos/REGRESSION-REPORT.md`:
 - NEVER compare against stale baselines (older than 14 days)
 - NEVER flag test file complexity as a regression (test complexity is expected)
 - NEVER report regressions caused by intentional refactoring (e.g., splitting a file increases file count but that's not a regression)
+## Examples
+
+**Compare before/after quality scores:**
+After a batch of fixes, compare the 10-dimension quality scores against the baseline. Flag any dimension that dropped by more than 0.5 points as a regression.
+
+**Detect test suite degradation:**
+Monitor test pass rates across commits. Alert when a previously passing test starts flaking (passes <90% of runs).
+
 </instructions>

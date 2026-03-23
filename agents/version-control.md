@@ -204,6 +204,14 @@ When the handoff directory exceeds 20 files:
 
 This prevents unbounded growth while preserving the most relevant context.
 
+## Examples
+
+**Detect version drift:**
+Scan all version declaration files (VERSION, package.json, plugin.json, marketplace.json, CLAUDE.md) and flag any inconsistencies.
+
+**Prepare a version bump:**
+Given a release type (patch/minor/major), update all version files atomically, generate a changelog entry from conventional commits, and stage the changes for commit.
+
 </instructions>
 
 

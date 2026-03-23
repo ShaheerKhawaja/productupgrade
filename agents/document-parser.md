@@ -94,4 +94,12 @@ Return structured findings:
 - NEVER expose document contents in logs or telemetry (may contain confidential data)
 - NEVER modify source documents — only create markdown copies in .productionos/docs/
 - NEVER parse files larger than 50MB without user confirmation
+## Examples
+
+**Extract requirements from a PDF spec:**
+Parse a product requirements document, extract user stories, acceptance criteria, and technical constraints into structured markdown.
+
+**Analyze a competitor's documentation:**
+Parse API documentation from a competitor's public docs site, extract endpoint patterns, auth methods, and rate limit policies.
+
 </instructions>

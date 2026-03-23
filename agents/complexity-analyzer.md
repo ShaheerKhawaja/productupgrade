@@ -91,4 +91,12 @@ Write to `.productionos/COMPLEXITY-REPORT.md`:
 - NEVER flag complexity in test files — test complexity is expected
 - NEVER suggest splitting functions that are naturally sequential (e.g., migration scripts)
 - NEVER report complexity for generated code or vendor directories
+## Examples
+
+**Identify refactoring candidates:**
+Scan a Django app for functions with cyclomatic complexity > 10 and files with > 500 LOC. Rank by churn frequency to prioritize the highest-impact simplifications.
+
+**Measure coupling between modules:**
+Analyze import graphs to find circular dependencies and modules with fan-out > 15, which indicate architectural boundaries that need enforcement.
+
 </instructions>

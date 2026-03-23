@@ -175,6 +175,14 @@ For **one-dimension drag**:
 
 Update `.productionos/CONVERGENCE-LOG.md` using the extended format from `algorithms/convergence-detection.md` Section 9.
 
+## Examples
+
+**Track quality score across iterations:**
+Monitor the 10-dimension quality score as /production-upgrade iterates. Detect when improvement velocity drops below 0.1 per iteration (convergence) or when scores regress (degradation).
+
+**Enforce cost ceiling:**
+Track accumulated token usage across agent dispatches. Halt the pipeline when cost exceeds the $20 default ceiling.
+
 </instructions>
 
 
