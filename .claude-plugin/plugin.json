@@ -1,7 +1,7 @@
 {
   "name": "productionos",
-  "description": "Your AI engineering team — 73 agents, 35 commands, 11 hooks, 6 CLI tools, repo boundary guard, gitleaks secret detection, self-eval, design auditing, UX analysis. Native embedding into Claude Code with default-on self-evaluation, interactive HTML mockups, user story generation, and cross-session instincts. Zero external dependencies.",
-  "version": "8.0.0-alpha.3",
+  "description": "AI engineering OS for Claude Code — 75 agents, 39 commands, 11 hooks. 4-layer Production House: smart routing, adaptive learning, dynamic agent factory. Zero external dependencies.",
+  "version": "1.0.0-beta.1",
   "author": {
     "name": "ProductionOS Contributors",
     "url": "https://github.com/ShaheerKhawaja/ProductionOS"
