@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "productionos",
-      "description": "AI engineering OS for Claude Code — 75 agents, 39 commands, 11 hooks. Smart routing + adaptive learning + dynamic agent factory.",
+      "description": "AI engineering OS for Claude Code — 76 agents, 39 commands, 12 hooks. Smart routing + adaptive learning + dynamic agent factory.",
       "version": "1.0.0-beta.1",
       "author": {
         "name": "ProductionOS Contributors",
