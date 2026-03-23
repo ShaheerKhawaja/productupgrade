@@ -9,7 +9,8 @@ ProductionOS is a Claude Code plugin with 76 agents, 39 commands, and 12 hooks t
 ## Quick Start
 
 ```bash
-# Install
+# Install (two commands)
+claude plugin marketplace add ShaheerKhawaja/ProductionOS
 claude plugin install productupgrade
 
 # Run on any codebase
@@ -206,20 +207,35 @@ Use `--profile budget` for ~40% savings.
 ## Installation
 
 ```bash
-# Via Claude Code marketplace
+# Recommended: via Claude Code plugin system
+claude plugin marketplace add ShaheerKhawaja/ProductionOS
 claude plugin install productupgrade
 
-# Manual
+# Alternative: manual git clone
 git clone https://github.com/ShaheerKhawaja/ProductionOS.git ~/.claude/plugins/marketplaces/productupgrade
-pos-init  # Initialize state directory
+```
+
+Restart Claude Code after install. Hooks, commands, and agents load on session start.
+
+### Update
+
+```bash
+claude plugin update productupgrade
+```
+
+### Uninstall
+
+```bash
+claude plugin uninstall productupgrade
 ```
 
 ## Validation
 
 ```bash
-bun test              # 589 tests, 0 failures
-bun run validate      # 75/76 agents valid
-bun run skill:check   # Plugin health score
+cd ~/.claude/plugins/marketplaces/productupgrade
+bun install && bun test   # 812 tests, 0 failures
+bun run validate          # 76/76 agents valid
+bun run skill:check       # Plugin health score
 ```
 
 ## What Makes This Different

@@ -81,7 +81,7 @@ case "$TOOL_NAME" in
 esac
 
 # Periodic pattern extraction
-ENTRY_COUNT=$(wc -l < "$SESSION_FILE" 2>/dev/null || echo "0")
+ENTRY_COUNT=$([ -f "$SESSION_FILE" ] && wc -l < "$SESSION_FILE" 2>/dev/null || echo "0")
 ENTRY_COUNT=$(echo "$ENTRY_COUNT" | tr -d ' ')
 
 # Single-session patterns (every 50 entries)
