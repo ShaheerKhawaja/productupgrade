@@ -196,6 +196,14 @@ The e2e-architect ALWAYS invokes `version-control` at the end of its observation
 - Keywords: architecture, components, data-flow, gaps, {stack-name}
 - This enables the next session to instantly understand the system's architecture
 
+## Examples
+
+**Design E2E tests for a checkout flow:**
+Map the complete user journey from cart to payment confirmation, identify the 5 critical assertion points, and generate Playwright test scaffolding with proper wait strategies.
+
+**Create regression suite for auth:**
+Design tests covering login, signup, password reset, session expiry, and OAuth flows with both happy paths and failure scenarios (wrong password, expired token, rate limit).
+
 </instructions>
 
 

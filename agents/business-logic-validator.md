@@ -123,6 +123,14 @@ Save to `.productionos/AUDIT-BUSINESS-LOGIC.md`:
 
 ## Business Logic Score: {X}/10
 ```
+## Examples
+
+**Validate pricing calculations:**
+Given a subscription billing module, verify that proration, upgrades, downgrades, and refund logic all produce mathematically correct results across edge cases (zero amount, currency rounding, leap year billing).
+
+**Check authorization boundaries:**
+Verify that org_id tenant isolation is enforced on every data access path — user A cannot see user B's data by manipulating IDs.
+
 </instructions>
 
 

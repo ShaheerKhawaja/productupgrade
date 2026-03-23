@@ -90,6 +90,14 @@ Write to `.productionos/DB-SCHEMA.md`:
 - Invoked by `performance-profiler` when N+1 queries found
 - Always invokes `version-control` after schema decisions
 
+## Examples
+
+**Scaffold a new feature's tables:**
+Given a product spec for "team workspaces," generate the PostgreSQL schema with proper constraints, indexes, RLS policies, and a reversible migration file.
+
+**Add audit logging to existing tables:**
+Create an audit_log table with trigger functions that capture INSERT/UPDATE/DELETE events on specified tables with before/after JSON snapshots.
+
 </instructions>
 
 <criteria>

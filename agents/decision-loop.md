@@ -138,6 +138,14 @@ After this decision, the next iteration should:
 
 After max decisions, force PROCEED with current best state.
 
+## Examples
+
+**Resolve a stuck convergence:**
+When the quality score oscillates between 7.2 and 7.4 for 3+ iterations, this agent decides: PIVOT (try different agents), PROCEED (accept current score), or ESCALATE (ask the user).
+
+**Choose between competing fixes:**
+When two agents propose conflicting changes to the same file, this agent evaluates both against the goal and selects the one with higher expected impact.
+
 </instructions>
 
 

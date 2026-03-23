@@ -100,6 +100,14 @@ Also maintain `.productionos/DENSITY-CUMULATIVE.md` — a running summary across
 | 3 | 6.3 | +0.8 | Tests+Perf | 15 | Test infra unlocked velocity |
 ```
 
+## Examples
+
+**Compress iteration context:**
+After a 5-iteration convergence loop, compress the 50K-token accumulated context into a 5K-token handoff document that preserves all decisions, scores, and open issues.
+
+**Summarize a research report:**
+Take a 20-page deep-research output and produce a 1-page executive summary with the top 5 findings ranked by impact.
+
 </instructions>
 
 <criteria>

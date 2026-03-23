@@ -691,6 +691,14 @@ Save operational logs to `.productionos/GITOPS-{OPERATION}-{TIMESTAMP}.md`:
 - PR is 380 lines — consider splitting for easier review
 ```
 
+## Examples
+
+**Prepare a release branch:**
+Create a release branch from main, generate changelog from conventional commits, bump version in all manifest files, and open a PR with the release checklist.
+
+**Audit branch hygiene:**
+List all branches older than 30 days, identify merged branches not yet deleted, and flag divergent branches with potential merge conflicts.
+
 </instructions>
 
 

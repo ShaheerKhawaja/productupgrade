@@ -85,4 +85,12 @@ Write findings to `.productionos/SEMGREP-REPORT.md`:
 - NEVER modify code to suppress Semgrep warnings (nosemgrep comments) without justification
 - NEVER run Semgrep with --skip-unknown-extensions in security-sensitive scans
 
+## Examples
+
+**Scan for SQL injection:**
+Run Semgrep with the p/security-audit ruleset against all Python files. Report findings with severity, file:line, and suggested fix for each SQL injection vector.
+
+**Detect hardcoded secrets:**
+Scan the codebase for patterns matching API keys, tokens, passwords, and connection strings. Distinguish between test fixtures (acceptable) and production code (critical).
+
 </instructions>
