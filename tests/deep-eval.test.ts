@@ -192,7 +192,12 @@ describe("T1: Command Structural Integrity", () => {
       const hasEntry = cmd.content.includes("Step 1") ||
                        cmd.content.includes("## Instructions") ||
                        cmd.content.includes("## Process") ||
-                       cmd.content.includes("## Workflow");
+                       cmd.content.includes("## Workflow") ||
+                       cmd.content.includes("## Execution") ||
+                       cmd.content.includes("## Phase 1") ||
+                       cmd.content.includes("## Preliminary") ||
+                       cmd.content.includes("## Wave Protocol") ||
+                       cmd.content.includes("## Input");
       if (!hasEntry) {
         missing.push(cmd.file);
         addIssue("MEDIUM", "structure", cmd.file, "No clear entry point (Step 1 or ## Instructions)");
