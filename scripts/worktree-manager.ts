@@ -20,7 +20,7 @@ import { join, dirname } from "path";
 // ─── Types ─────────────────────────────────────────────────
 type WorktreeStatus =
   | "pending-create" | "active" | "failed" | "stalled"
-  | "orphaned" | "merging" | "merged" | "conflict"
+  | "orphaned" | "merging" | "merged" | "conflict" | "conflict-pending"
   | "recovery-stashed" | "cleaned";
 
 interface WorktreeInfo {
@@ -60,6 +60,21 @@ function runSafe(cmd: string, args: string[], opts?: { cwd?: string; timeout?: n
   } catch (e: any) { return e.stdout?.trim?.() ?? ""; }
 }
 
+interface RunResult { ok: boolean; stdout: string; stderr: string; }
+
+/** Like runSafe but returns a Result type — use for critical paths where silent failure is dangerous */
+function runChecked(cmd: string, args: string[], opts?: { cwd?: string; timeout?: number }): RunResult {
+  try {
+    const stdout = execFileSync(cmd, args, {
+      encoding: "utf-8", timeout: opts?.timeout ?? 30000,
+      cwd: opts?.cwd, stdio: ["pipe", "pipe", "pipe"],
+    }).trim();
+    return { ok: true, stdout, stderr: "" };
+  } catch (e: any) {
+    return { ok: false, stdout: e.stdout?.toString?.().trim?.() ?? "", stderr: e.stderr?.toString?.().trim?.() ?? e.message ?? "" };
+  }
+}
+
 function runSafeThrows(cmd: string, args: string[], opts?: { cwd?: string; timeout?: number }): string {
   return execFileSync(cmd, args, {
     encoding: "utf-8", timeout: opts?.timeout ?? 30000,
@@ -82,6 +97,7 @@ function isPidAlive(pid: number): boolean {
 // ─── Registry (with file-based locking) ────────────────────
 function acquireLock(lockPath: string, timeoutMs = 5000): boolean {
   const start = Date.now();
+  let delay = 50; // Exponential backoff: 50ms → 100ms → 200ms → 400ms → 1000ms
   while (Date.now() - start < timeoutMs) {
     if (!existsSync(lockPath)) {
       try { writeFileSync(lockPath, String(process.pid), { flag: "wx" }); return true; }
@@ -92,7 +108,8 @@ function acquireLock(lockPath: string, timeoutMs = 5000): boolean {
         if (!isPidAlive(lockPid)) { unlinkSync(lockPath); continue; }
       } catch { try { unlinkSync(lockPath); } catch {} continue; }
     }
-    const end = Date.now() + 200; while (Date.now() < end) {}
+    const end = Date.now() + delay; while (Date.now() < end) {}
+    delay = Math.min(delay * 2, 1000);
   }
   return false;
 }
@@ -244,13 +261,33 @@ function mergeWorktree(branch: string, target?: string): void {
       try { runSafeThrows("git", ["checkout", tgt], { cwd: root }); }
       catch { console.error(`ERROR: Could not checkout ${tgt}`); releaseLock(MERGE_LOCK_FILE); return; }
     }
-    const checkpoint = runSafe("git", ["rev-parse", "HEAD"], { cwd: root });
+    const cpResult = runChecked("git", ["rev-parse", "HEAD"], { cwd: root });
+    if (!cpResult.ok) {
+      console.error("ERROR: Could not capture checkpoint — aborting merge for safety.");
+      releaseLock(MERGE_LOCK_FILE);
+      withLockedRegistry((reg) => { const w = reg.find(w => w.branch === branch); if (w) { w.status = "conflict"; w.failureReason = "Checkpoint capture failed"; } });
+      return;
+    }
+    const checkpoint = cpResult.stdout;
 
     try { runSafeThrows("git", ["merge", "--no-ff", branch, "-m", `Merge worktree: ${branch}`], { cwd: root }); }
     catch {
-      runSafe("git", ["merge", "--abort"], { cwd: root });
-      console.error(`MERGE FAILED: ${branch} — conflicts`);
-      withLockedRegistry((reg) => { const w = reg.find(w => w.branch === branch); if (w) { w.status = "conflict"; w.failureReason = "Merge conflicts"; } });
+      // Check if auto-resolution is enabled and conflicts exist
+      const conflictFiles = runSafe("git", ["diff", "--name-only", "--diff-filter=U"], { cwd: root }).split("\n").filter(Boolean);
+      if (conflictFiles.length > 0 && process.env.PRODUCTIONOS_AUTO_RESOLVE !== "false") {
+        console.log(`MERGE CONFLICT: ${branch} — ${conflictFiles.length} files. Queuing auto-resolution...`);
+        const conflictInfo = { branch, target: tgt, files: conflictFiles, timestamp: new Date().toISOString() };
+        const infoPath = join(STATE_DIR, `merge-conflict-${branch.replace(/\//g, "-")}.json`);
+        mkdirSync(dirname(infoPath), { recursive: true });
+        writeFileSync(infoPath, JSON.stringify(conflictInfo, null, 2));
+        runSafe("git", ["merge", "--abort"], { cwd: root });
+        withLockedRegistry((reg) => { const w = reg.find(w => w.branch === branch); if (w) { w.status = "conflict-pending"; w.failureReason = `Auto-resolution queued: ${conflictFiles.join(", ")}`; } });
+        console.log(`Conflict info written to: ${infoPath}`);
+      } else {
+        runSafe("git", ["merge", "--abort"], { cwd: root });
+        console.error(`MERGE FAILED: ${branch} — conflicts`);
+        withLockedRegistry((reg) => { const w = reg.find(w => w.branch === branch); if (w) { w.status = "conflict"; w.failureReason = "Merge conflicts"; } });
+      }
       return;
     }
 
@@ -263,7 +300,8 @@ function mergeWorktree(branch: string, target?: string): void {
       return;
     }
 
-    const sha = runSafe("git", ["rev-parse", "HEAD"], { cwd: root });
+    const shaResult = runChecked("git", ["rev-parse", "HEAD"], { cwd: root });
+    const sha = shaResult.ok ? shaResult.stdout : "unknown";
     withLockedRegistry((reg) => { const w = reg.find(w => w.branch === branch); if (w) { w.status = "merged"; w.mergeCommit = sha; } });
     console.log(`MERGED: ${branch} -> ${tgt} (${sha.slice(0, 8)})`);
   } finally { releaseLock(MERGE_LOCK_FILE); }
@@ -302,7 +340,7 @@ function cleanupWorktree(branch: string): void {
 
 function cleanupAll(): void {
   const reg = loadRegistry();
-  const c = reg.filter(w => ["merged", "orphaned", "failed", "recovery-stashed", "cleaned"].includes(w.status));
+  const c = reg.filter(w => ["merged", "orphaned", "failed", "recovery-stashed", "cleaned", "conflict-pending"].includes(w.status));
   if (c.length === 0) { console.log("No worktrees eligible for cleanup."); return; }
   for (const w of c) cleanupWorktree(w.branch);
   runSafe("git", ["worktree", "prune"]);
