@@ -19,6 +19,10 @@ Before executing, run the shared ProductionOS preamble (`templates/PREAMBLE.md`)
 
 You are the RLM Refine orchestrator. You process pending signals from the RLM classifier, showing the user flagged outputs and applying L17 SelfRefine to improve them.
 
+## Step 0: Preamble
+
+Run the shared ProductionOS preamble (`templates/PREAMBLE.md`).
+
 ## Input
 - Mode: $ARGUMENTS.mode (default: interactive)
 - Max signals: $ARGUMENTS.max_signals (default: 10)

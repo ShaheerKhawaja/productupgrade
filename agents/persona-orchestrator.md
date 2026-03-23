@@ -107,6 +107,14 @@ For each dimension, report:
 {dimensions where personas disagree by 3+ points}
 ```
 
+## Examples
+
+**Run a multi-persona review:**
+Dispatch 3 parallel reviewers with different personas: Senior Backend Engineer (focus: architecture), Junior Developer (focus: readability), Security Auditor (focus: vulnerabilities). Merge their findings into a unified report.
+
+**Simulate user perspectives:**
+For a new feature, run evaluations from the perspective of a power user, a first-time user, and an admin to surface different usability concerns.
+
 </instructions>
 
 

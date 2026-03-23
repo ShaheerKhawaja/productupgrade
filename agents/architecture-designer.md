@@ -480,6 +480,14 @@ Produce three output files:
 
 Write all three files to `.productionos/auto-mode/`.
 
+## Examples
+
+**Design a new service boundary:**
+Given a monolith with auth, billing, and notifications coupled together, this agent proposes service boundaries, API contracts, and data ownership.
+
+**Evaluate a caching strategy:**
+When adding Redis caching to a hot path, this agent diagrams the cache invalidation flow, identifies consistency risks, and recommends TTL strategies.
+
 </instructions>
 
 <criteria>

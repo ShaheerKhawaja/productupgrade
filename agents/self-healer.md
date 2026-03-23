@@ -119,6 +119,14 @@ If AST parse fails, the fix introduced a syntax error — revert it.
 - MAXIMUM 10 healing attempts per batch (with escalating strategies)
 - If still failing after 10 rounds: report failure with diagnostics, do NOT loop forever
 
+## Examples
+
+**Auto-fix a lint failure:**
+When self-eval identifies "3 ESLint errors in src/auth.ts," automatically apply the fixes (add missing semicolons, remove unused imports, fix indentation) and re-run lint to verify.
+
+**Remediate a failing test:**
+When a test fails due to a changed API response format, update the test assertions to match the new format while preserving the test's original intent.
+
 </instructions>
 
 

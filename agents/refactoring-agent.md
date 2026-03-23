@@ -114,6 +114,14 @@ Save to `.productionos/REFACTORING-LOG.md`:
 
 ## Refactoring Quality Score: {X}/10
 ```
+## Examples
+
+**Extract a shared utility:**
+When 3+ files contain duplicated validation logic, extract it into a shared utility module, update all call sites, and verify tests still pass.
+
+**Simplify a complex function:**
+Break a 200-line function with cyclomatic complexity 15 into smaller, named functions with clear single responsibilities. Preserve all behavior and test coverage.
+
 </instructions>
 
 

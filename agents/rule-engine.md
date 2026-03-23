@@ -106,4 +106,12 @@ Write `.productionos/RULE-ENGINE-REPORT.md`:
 - NEVER report findings in vendored/generated code
 - NEVER merge findings that are genuinely different issues at the same location
 - NEVER run scans on files larger than 1MB (skip with warning)
+## Examples
+
+**Enforce coding standards:**
+Apply project-specific rules from quality-gates.yml: max function length 50 lines, no console.log in production code, all API endpoints require auth middleware, all database queries use parameterized inputs.
+
+**Custom lint rules:**
+Define and enforce team conventions that standard linters don't cover: "all React components must have a displayName," "all API responses must include a request_id field."
+
 </instructions>

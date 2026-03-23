@@ -92,6 +92,14 @@ Rate the overall codebase resilience:
 - **Fragile** (3-4): Basic attacks succeed
 - **Paper** (1-2): Trivial to break
 
+## Examples
+
+**Challenge a security claim:**
+When code-reviewer says "auth is handled correctly," dispatch this agent to find counterexamples, edge cases, and hidden assumptions the reviewer missed.
+
+**Stress-test a migration plan:**
+Before approving a database migration, this agent argues against it from data-loss, rollback-failure, and partial-state perspectives.
+
 </instructions>
 
 <constraints>

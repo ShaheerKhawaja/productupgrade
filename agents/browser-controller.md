@@ -145,6 +145,14 @@ echo "Playwright not installed. Install with: npx playwright install chromium"
 5. Report findings with CSS selectors so other agents can locate the elements
 6. Include the full URL (with path, query params) in reports for reproducibility
 
+## Examples
+
+**Verify a login flow:**
+Navigate to /login, fill credentials, submit, verify redirect to /dashboard and presence of user avatar element.
+
+**Screenshot a deployment:**
+After deploy, navigate to the 5 most critical pages, capture screenshots, and compare against baseline for visual regressions.
+
 </instructions>
 
 ## Red Flags — STOP If You See These

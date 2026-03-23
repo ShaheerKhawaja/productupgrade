@@ -161,6 +161,14 @@ After each run, append to `~/.productionos/learned/metrics.jsonl`:
     └── {tech-stack}.md     # Tech-stack-specific patterns
 ```
 
+## Examples
+
+**Extract patterns from a successful session:**
+After a high-scoring /production-upgrade session, analyze which agent combinations produced the best results and save the pattern as a reusable instinct.
+
+**Identify recurring failure modes:**
+Across 10 sessions, find agents that consistently score below 6.0 and correlate with goal types to identify skill gaps in the agent roster.
+
 </instructions>
 
 <constraints>

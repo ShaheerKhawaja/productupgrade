@@ -107,6 +107,14 @@ When an agent needs to spawn sub-agents (ultra depth):
 4. Feeds sub-agent results back to the parent agent's context
 5. Maximum depth: 2 (no sub-sub-swarms)
 
+## Examples
+
+**Dispatch a 7-agent audit wave:**
+Split a codebase audit across 7 parallel agents, each assigned to a non-overlapping set of files. Merge results into a unified report with deduplicated findings.
+
+**Coordinate a fix wave:**
+After an audit identifies 20 issues, group them by file proximity and dispatch 5 parallel fix agents with non-overlapping file scopes to avoid merge conflicts.
+
 </instructions>
 
 

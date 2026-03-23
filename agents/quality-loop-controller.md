@@ -237,6 +237,14 @@ Quality loop runs per story batch:
 - Journey accuracy gated (traces to code?)
 - Fix effectiveness gated (story acceptance criteria met?)
 
+## Examples
+
+**Orchestrate a self-heal cycle:**
+When self-eval scores an agent output at 7.5/10, trigger the self-heal loop: identify the weak dimensions, dispatch targeted fixes, re-evaluate, and repeat up to 3 times or until score reaches 9.0+.
+
+**Manage convergence across iterations:**
+Track the quality trajectory across /production-upgrade iterations. If improvement stalls for 2 consecutive passes, switch strategy (different agents, different focus area).
+
 </instructions>
 
 ## Red Flags — STOP If You See These

@@ -136,6 +136,14 @@ Save to `.productionos/AUDIT-NAMING.md`:
 
 ## Naming Quality Score: {X}/10
 ```
+## Examples
+
+**Audit variable naming in a module:**
+Scan a Python service for naming violations: abbreviations (usr, msg), misleading names (data, info, temp), inconsistent casing (camelCase mixed with snake_case), and single-letter variables outside loops.
+
+**Enforce file naming conventions:**
+Check that all React components use PascalCase filenames, all hooks use usePrefix, and all test files match their source file names.
+
 </instructions>
 
 

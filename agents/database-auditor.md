@@ -136,6 +136,14 @@ Save to `.productionos/AUDIT-DATABASE.md`:
 
 ## Schema Quality Score: {X}/10
 ```
+## Examples
+
+**Find N+1 query patterns:**
+Scan Django ORM usage for queryset evaluations inside loops. Flag missing select_related/prefetch_related calls with the exact file and line.
+
+**Audit migration safety:**
+Review pending migrations for table locks, missing indexes on foreign keys, and backward-incompatible column drops that would break rolling deploys.
+
 </instructions>
 
 

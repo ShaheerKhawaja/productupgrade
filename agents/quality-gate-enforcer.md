@@ -93,4 +93,12 @@ If `quality-gate-checker.ts` is unavailable or fails:
 - NEVER lower thresholds to make gates pass — fix the underlying issue
 - NEVER skip gate evaluation before commits — it exists to catch real problems
 
+## Examples
+
+**Block a deploy with failing tests:**
+Before /ship executes, verify that all quality gates pass: tests green, lint clean, type check passes, coverage above threshold. Block with specific failure details if any gate fails.
+
+**Enforce review requirements:**
+Check that the PR has at least one code review approval, no unresolved conversations, and passing CI before allowing merge.
+
 </instructions>

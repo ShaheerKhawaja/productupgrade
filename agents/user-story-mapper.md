@@ -100,6 +100,14 @@ ITER 2:    US-004         US-013       US-023
 ITER 3:    US-006
 ```
 
+## Examples
+
+**Generate stories from a feature spec:**
+Given "add team workspaces to the app," generate 15+ user stories covering admin creation, member invitation, permission management, billing, and edge cases (last admin leaves, workspace deletion).
+
+**Map stories to existing code:**
+For each user story, identify which existing files/modules would need modification, estimate complexity (S/M/L), and flag stories that require new infrastructure.
+
 </instructions>
 
 ## Red Flags — STOP If You See These

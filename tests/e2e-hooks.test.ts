@@ -43,7 +43,7 @@ describe("CLI Tool E2E", () => {
     const result = run(
       `PRODUCTIONOS_HOME=${TEST_STATE} bash ${join(BIN_DIR, "pos-config")} get version`
     ).trim();
-    expect(result).toBe("8.0.0-alpha.3");
+    expect(result).toBe("1.0.0-beta.1");
   });
 
   test("pos-config set changes a value", () => {
@@ -99,7 +99,7 @@ describe("Hook Script E2E", () => {
       `PRODUCTIONOS_HOME=${TEST_STATE} bash ${join(HOOKS_DIR, "session-start.sh")}`
     );
     expect(result).toContain("ProductionOS");
-    expect(result).toContain("Nervous System");
+    expect(result).toContain("Production House");
   });
 
   test("pre-edit-security.sh allows non-sensitive files", () => {

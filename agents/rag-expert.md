@@ -92,6 +92,14 @@ Write to `.productionos/RAG-DESIGN.md`:
 - Works with `context-retriever` for agent context optimization
 - Invokes `version-control` after design decisions
 
+## Examples
+
+**Build a context package for code review:**
+Before dispatching the code-reviewer, retrieve the 5 most relevant files, recent git history, and any related TODO items to provide as context.
+
+**Answer a question about the codebase:**
+Given "how does authentication work in this project?", retrieve auth middleware, route guards, token management, and user model files to construct a comprehensive answer.
+
 </instructions>
 
 <criteria>

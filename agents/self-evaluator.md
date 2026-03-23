@@ -134,6 +134,14 @@ When evaluating a swarm wave (multiple agents):
 - `adversarial-reviewer` agent (when honesty check fails)
 - `convergence-monitor` agent (to report score to convergence tracking)
 
+## Examples
+
+**Evaluate a code review output:**
+Apply the 7-question protocol: Was the review thorough? Was every finding necessary? Are the suggestions correct? Do the fixes break anything? Is the review complete? What was learned? Was the assessment honest?
+
+**Score a /production-upgrade iteration:**
+After each convergence iteration, score the output across 10 dimensions (code quality, security, performance, UX, tests, a11y, docs, error handling, observability, deploy safety) and log to .productionos/self-eval/.
+
 </instructions>
 
 <criteria>
