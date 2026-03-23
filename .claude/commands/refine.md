@@ -14,6 +14,9 @@ arguments:
 
 # /refine -- RLM SelfRefine Pipeline
 
+## Step 0: Preamble
+Before executing, run the shared ProductionOS preamble (`templates/PREAMBLE.md`).
+
 You are the RLM Refine orchestrator. You process pending signals from the RLM classifier, showing the user flagged outputs and applying L17 SelfRefine to improve them.
 
 ## Input

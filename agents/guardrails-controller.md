@@ -5,6 +5,7 @@ color: red
 model: haiku
 tools:
   - Read
+  - Bash
   - Glob
   - Grep
 subagent_type: productionos:guardrails-controller
@@ -118,6 +119,12 @@ At configured checkpoints (iterations 3, 6, 9, 12 in ultra mode):
 
 </instructions>
 
+
+## Use Cases
+
+- **Scope violation in auto-swarm**: Agent assigned to `agents/` directory modifies `scripts/worktree-manager.ts` — guardrails detects the out-of-scope edit and HALTs the pipeline with rollback
+- **Budget overrun during /omni-plan-nth**: After 7 iterations, token usage hits 4.2M (above 4M session limit) — guardrails triggers emergency stop and reports accumulated costs
+- **Security regression in /production-upgrade**: An agent removes CSRF middleware from an Express route handler — guardrails detects the auth middleware removal pattern and HALTs before commit
 
 ## Red Flags — STOP If You See These
 

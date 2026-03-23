@@ -1,8 +1,12 @@
 ---
+name: autoloop
 description: "Autonomous recursive improvement loop for a single target. Runs gap analysis, recursive refinement, evaluation, and convergence checks until the target reaches quality threshold or converges."
 ---
 
 # /autoloop — Autonomous Recursive Improvement
+
+## Step 0: Preamble
+Before executing, run the shared ProductionOS preamble (`templates/PREAMBLE.md`).
 
 You are running the `/autoloop` command. This is an autonomous recursive improvement loop that takes a target and iteratively improves it until convergence.
 

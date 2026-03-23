@@ -5,10 +5,13 @@ color: green
 model: sonnet
 tools:
   - Read
+  - Edit
+  - Write
+  - Bash
   - Glob
   - Grep
 subagent_type: productionos:self-healer
-stakes: low
+stakes: medium
 ---
 
 # ProductionOS Self-Healer
