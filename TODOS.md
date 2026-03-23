@@ -108,8 +108,8 @@ Items marked ~~strikethrough~~ are DONE.
 
 ### P3 — Low
 
-#### Git worktree isolation per batch
-**What:** Each execution batch runs in an isolated worktree.
+#### ~~Git worktree isolation per batch~~ DONE (Sprint 5+7)
+**Status:** Worktree manager (370 lines, 7 commands), file ownership protocol (422 lines), scope enforcement hook (215 lines), wave state machine (244 lines). 42 gaps found and addressed by dual adversarial review.
 **Effort:** M
 
 #### 3-tier automated testing
@@ -161,5 +161,5 @@ Items marked ~~strikethrough~~ are DONE.
 
 ## Score
 
-**Done:** 27 items (ALL P0+P1+P2 closed: 3 agents, rollback, cost ceiling L-14, wire orphans L-21, schema validation L-15, context overflow L-16, batch limit L-09, pre-commit diff L-10 + scratchpad, generated knowledge, convergence wired, cost wired, security hook, distractor prompting, ES-CoT, DOWN gate, confidence calibration, cross-session learning, doc-release, convergence loop, discuss-phase enforcement, claim analysis, Nyquist filler, pause/resume, model profile, per-agent cost tracking, DRY export)
-**Remaining:** 0 P0, 0 P1, 0 P2, 6 P3, 7 P4 = 13 items (all nice-to-have)
+**Done:** 28 items (ALL P0+P1+P2 closed + 1 P3: 3 agents, rollback, cost ceiling L-14, wire orphans L-21, schema validation L-15, context overflow L-16, batch limit L-09, pre-commit diff L-10 + scratchpad, generated knowledge, convergence wired, cost wired, security hook, distractor prompting, ES-CoT, DOWN gate, confidence calibration, cross-session learning, doc-release, convergence loop, discuss-phase enforcement, claim analysis, Nyquist filler, pause/resume, model profile, per-agent cost tracking, DRY export)
+**Remaining:** 0 P0, 0 P1, 0 P2, 5 P3, 7 P4 = 12 items (all nice-to-have)
