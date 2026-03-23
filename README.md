@@ -84,7 +84,7 @@ You work across many codebases and need fast, repeatable quality audits:
 #### AI Engineers
 You're building AI-powered products and need agent orchestration patterns:
 
-- **74 agent definitions** with YAML frontmatter (model routing, tool constraints, stakes classification)
+- **75 agent definitions** with YAML frontmatter (model routing, tool constraints, stakes classification)
 - **10-layer prompt composition** (Emotion → Meta → Context → CoT → ToT → GoT → CoD → Generated Knowledge → Distractor-Augmented)
 - **Tri-tiered judging** (3 independent judges with debate on disagreement)
 - **Convergence engine** (recursive improvement with regression detection)
@@ -156,7 +156,7 @@ You're building AI-powered products and need agent orchestration patterns:
 ## Architecture
 
 ```
-74 agents (declarative YAML frontmatter, 3-tier model routing)
+75 agents (declarative YAML frontmatter, 3-tier model routing)
 37 commands (orchestrate agents, loop until convergence)
 11 hooks (SessionStart, PreToolUse security, PostToolUse telemetry, Stop handoff)
  8 templates (PREAMBLE, SELF-EVAL, INVOCATION, PROMPT-COMPOSITION, MODEL-ROUTING, etc.)
@@ -218,7 +218,7 @@ pos-init  # Initialize state directory
 
 ```bash
 bun test              # 589 tests, 0 failures
-bun run validate      # 74/74 agents valid
+bun run validate      # 75/75 agents valid
 bun run skill:check   # Plugin health score
 ```
 
@@ -293,7 +293,7 @@ pos-telemetry       # Log skill usage events
 
 ## Tech
 
-- 74 agent definitions with YAML frontmatter (model routing, tool constraints, stakes classification)
+- 75 agent definitions with YAML frontmatter (model routing, tool constraints, stakes classification)
 - 37 commands (14 absorbed from gstack/superpowers/ECC, 4 recursive orchestrators)
 - 10-layer prompt architecture (Emotion → Meta → Scratchpad → Context → CoT → ToT → GoT → CoD → Generated Knowledge → Distractor-Augmented)
 - Default-on self-evaluation protocol (7-question quality gate on all outputs)

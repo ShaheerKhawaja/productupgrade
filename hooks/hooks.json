@@ -1,5 +1,5 @@
 {
-  "_meta": "ProductionOS v1.0.0-beta.1 — 75 agents | 39 commands | 11 hooks | 4-layer Production House",
+  "_meta": "ProductionOS v1.0.0-beta.1 — 75 agents | 39 commands | 12 hooks | 4-layer Production House | scope enforcement",
   "SessionStart": [
     {
       "matcher": "startup|resume|clear|compact",
@@ -13,6 +13,16 @@
     }
   ],
   "PreToolUse": [
+    {
+      "matcher": "Edit|Write|Bash|NotebookEdit|mcp__filesystem__write_file|mcp__filesystem__edit_file|mcp__filesystem__move_file",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scope-enforcement.sh\"",
+          "statusMessage": "ProductionOS: Scope check..."
+        }
+      ]
+    },
     {
       "matcher": "Edit|Write|Bash",
       "hooks": [

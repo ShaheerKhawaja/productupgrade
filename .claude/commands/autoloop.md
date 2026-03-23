@@ -5,6 +5,9 @@ description: "Autonomous recursive improvement loop for a single target. Runs ga
 
 # /autoloop — Autonomous Recursive Improvement
 
+## Step 0: Preamble
+Before executing, run the shared ProductionOS preamble (`templates/PREAMBLE.md`).
+
 You are running the `/autoloop` command. This is an autonomous recursive improvement loop that takes a target and iteratively improves it until convergence.
 
 ## Input
