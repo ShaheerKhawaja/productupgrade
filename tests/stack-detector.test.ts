@@ -1,6 +1,5 @@
 import { describe, test, expect } from "bun:test";
 import { detectStack } from "../scripts/stack-detector";
-import { join } from "path";
 
 const ROOT = new URL("../", import.meta.url).pathname.replace(/\/$/, "");
 

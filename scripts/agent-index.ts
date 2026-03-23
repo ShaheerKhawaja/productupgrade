@@ -17,7 +17,7 @@
 
 import { readFileSync, writeFileSync, existsSync, statSync, readdirSync, mkdirSync } from "fs";
 import { join } from "path";
-import { ROOT, parseFrontmatter, readFileOrNull } from "./lib/shared";
+import { ROOT, parseFrontmatter } from "./lib/shared";
 
 // ─── Types ──────────────────────────────────────────────────
 

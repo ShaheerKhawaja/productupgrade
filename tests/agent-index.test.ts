@@ -1,5 +1,5 @@
 import { describe, test, expect } from "bun:test";
-import { scanAgents, classifyIntent, getAgentIndex } from "../scripts/agent-index";
+import { classifyIntent, getAgentIndex } from "../scripts/agent-index";
 
 describe("agent-index", () => {
   const { agents } = getAgentIndex();
