@@ -1,12 +1,12 @@
 {
-  "name": "productionos",
+  "name": "productupgrade",
   "owner": {
     "name": "ProductionOS Contributors",
     "url": "https://github.com/ShaheerKhawaja/ProductionOS"
   },
   "plugins": [
     {
-      "name": "productionos",
+      "name": "productupgrade",
       "description": "AI engineering OS for Claude Code — 76 agents, 39 commands, 12 hooks. Smart routing + adaptive learning + dynamic agent factory.",
       "version": "1.0.0-beta.1",
       "author": {

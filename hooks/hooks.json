@@ -56,17 +56,6 @@
   ],
   "PostToolUse": [
     {
-      "matcher": "Edit|Write|Bash",
-      "hooks": [
-        {
-          "type": "command",
-          "command": "python3 ~/.claude/skills/rlm/scripts/rlm_classifier.py",
-          "async": true,
-          "statusMessage": "RLM: Classifying output..."
-        }
-      ]
-    },
-    {
       "matcher": "Edit|Write",
       "hooks": [
         {
