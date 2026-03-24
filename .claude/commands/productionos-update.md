@@ -57,7 +57,7 @@ If no git repo found, inform user:
 ```
 ProductionOS is not installed from git.
 To install the updatable version:
-  git clone https://github.com/ShaheerKhawaja/productupgrade.git ~/productupgrade
+  git clone https://github.com/ShaheerKhawaja/ProductionOS.git ~/productupgrade
   claude plugins add ~/productupgrade
 ```
 
