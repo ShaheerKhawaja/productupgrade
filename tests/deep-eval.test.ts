@@ -258,7 +258,8 @@ describe("T2: Cross-Reference Integrity", () => {
   });
 
   test("hook scripts referenced in hooks.json exist", () => {
-    const config = JSON.parse(readFileSync(join(HOOKS_DIR, "hooks.json"), "utf-8"));
+    const raw = JSON.parse(readFileSync(join(HOOKS_DIR, "hooks.json"), "utf-8"));
+    const config = raw.hooks || raw;
     const broken: string[] = [];
     for (const phase of ["SessionStart", "PreToolUse", "PostToolUse", "Stop"]) {
       const entries = config[phase];

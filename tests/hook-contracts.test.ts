@@ -17,7 +17,8 @@ describe("hooks.json structural validation", () => {
   });
 
   test("has all required lifecycle phases", () => {
-    const config = JSON.parse(readFileSync(HOOKS_JSON, "utf-8"));
+    const raw = JSON.parse(readFileSync(HOOKS_JSON, "utf-8"));
+    const config = raw.hooks || raw;
     expect(config.SessionStart).toBeDefined();
     expect(config.PreToolUse).toBeDefined();
     expect(config.PostToolUse).toBeDefined();
@@ -25,7 +26,8 @@ describe("hooks.json structural validation", () => {
   });
 
   test("every hook references an existing script", () => {
-    const config = JSON.parse(readFileSync(HOOKS_JSON, "utf-8"));
+    const raw = JSON.parse(readFileSync(HOOKS_JSON, "utf-8"));
+    const config = raw.hooks || raw;
     const allHooks: string[] = [];
 
     for (const phase of ["SessionStart", "PreToolUse", "PostToolUse", "Stop"]) {
@@ -47,7 +49,8 @@ describe("hooks.json structural validation", () => {
   });
 
   test("PreToolUse hooks have matchers", () => {
-    const config = JSON.parse(readFileSync(HOOKS_JSON, "utf-8"));
+    const raw = JSON.parse(readFileSync(HOOKS_JSON, "utf-8"));
+    const config = raw.hooks || raw;
     for (const entry of config.PreToolUse) {
       expect(entry.matcher).toBeTruthy();
     }

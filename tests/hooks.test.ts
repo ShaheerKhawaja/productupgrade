@@ -15,19 +15,21 @@ describe("Hook Infrastructure", () => {
     const path = join(HOOKS_DIR, "hooks.json");
     expect(existsSync(path)).toBe(true);
     const content = JSON.parse(readFileSync(path, "utf-8"));
-    expect(content).toHaveProperty("SessionStart");
-    expect(content).toHaveProperty("PreToolUse");
-    expect(content).toHaveProperty("PostToolUse");
-    expect(content).toHaveProperty("Stop");
+    const hooks = content.hooks || content;
+    expect(hooks).toHaveProperty("SessionStart");
+    expect(hooks).toHaveProperty("PreToolUse");
+    expect(hooks).toHaveProperty("PostToolUse");
+    expect(hooks).toHaveProperty("Stop");
   });
 
   test("all hook scripts referenced in hooks.json exist", () => {
     const hooksJson = JSON.parse(
       readFileSync(join(HOOKS_DIR, "hooks.json"), "utf-8")
     );
+    const hooksConfig = hooksJson.hooks || hooksJson;
     const scriptRefs: string[] = [];
 
-    for (const entries of Object.values(hooksJson) as any[]) {
+    for (const entries of Object.values(hooksConfig) as any[]) {
       if (Array.isArray(entries)) {
         for (const entry of entries) {
           for (const hook of entry.hooks || []) {
