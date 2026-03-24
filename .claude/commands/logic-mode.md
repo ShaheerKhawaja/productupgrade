@@ -145,9 +145,9 @@ If the user wants to proceed to implementation:
 
 Logic Mode calls these agents/commands as needed:
 - `research-pipeline` — market and competitive research
-- `agentic-evaluator` — CLEAR framework assessment of the plan
+- `/agentic-eval` — CLEAR framework assessment of the plan
 - `decision-loop` — PIVOT/REFINE/PROCEED at Phase 3
-- `context-engineer` — build context for downstream agents
+- `/context-engineer` — build context for downstream agents
 - `/deep-research` — fill knowledge gaps
 - `/omni-plan` — handoff to execution
 

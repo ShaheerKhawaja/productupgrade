@@ -57,16 +57,16 @@ After each agent completes, dispatch the self-evaluator agent (`agents/self-eval
 - Log all evaluations to `.productionos/self-eval/`
 - Feed scores into convergence tracking via `scripts/convergence.ts`
 
-## RLM Auto-Detection (transparent)
+## Large File Handling (transparent)
 
 Before processing any file, check if it exceeds 50K characters.
-If yes, invoke the rlm-auto-activator agent to chunk and pre-process.
-This is transparent -- the command continues with pre-processed chunks.
+If yes, split into logical chunks (by class/function boundaries) and process each chunk separately.
+This is transparent -- the command continues with chunked results.
 
-During audit phases, agents call rlm-auto-activator before reading source files:
-- Code reviewer calls it before analyzing large source files
-- Database auditor calls it before reading migration files
-- Dependency scanner calls it before parsing lock files
+During audit phases, agents handle large files by:
+- Code reviewer splits large source files by top-level declarations
+- Database auditor processes migration files individually
+- Dependency scanner reads lock file sections incrementally
 
 ## Pre-Execution Checks
 

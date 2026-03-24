@@ -131,20 +131,21 @@ If any item uncovered OR any deliverable < 10: continue swarming.
 
 ---
 
-## RLM Auto-Detection (transparent)
+## Large File Handling (transparent)
 
 Before processing any file, check if it exceeds 50K characters.
-If yes, invoke the rlm-auto-activator agent to chunk and pre-process.
-This is transparent -- the command continues with pre-processed chunks.
+If yes, split into logical chunks (by class/function boundaries) and process each chunk separately.
+This is transparent -- the command continues with chunked results.
 
-Each swarm agent calls the rlm-auto-activator before processing any file in its work queue:
+Each swarm agent handles large files before processing its work queue:
 ```
 for file in work_queue:
-    result = rlm-auto-activator(file_path=file, session_id=f"swarm-nth-{wave}-{agent}")
-    if result.action == "passthrough":
+    if file_size(file) > 50_000:
+        chunks = split_by_declarations(file)
+        for chunk in chunks:
+            process_chunk(chunk)
+    else:
         process_file_directly(file)
-    elif result.action == "chunked":
-        process_via_rlm_pipeline(result.chunk_paths, query)
 ```
 
 ---
