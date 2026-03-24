@@ -37,7 +37,8 @@
     "worktree:cleanup": "bun run scripts/worktree-manager.ts cleanup",
     "worktree:preflight": "bun run scripts/worktree-manager.ts preflight",
     "worktree:assign": "bun run scripts/worktree-manager.ts assign",
-    "stats": "bun run scripts/stats-dashboard.ts"
+    "stats": "bun run scripts/stats-dashboard.ts",
+    "eval:gate": "bash hooks/pre-push-gate.sh"
   },
   "engines": {
     "node": ">=18"
