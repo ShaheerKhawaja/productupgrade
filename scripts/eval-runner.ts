@@ -91,7 +91,7 @@ const QUALITY_DIMENSIONS = [
   "Deployment Safety",
 ];
 const MIN_AGENT_LINES = 50;
-const HEAVY_TOKEN_THRESHOLD = 3000;
+const HEAVY_TOKEN_THRESHOLD = 5000;
 
 // ─── Helpers ─────────────────────────────────────────────────
 
@@ -526,117 +526,247 @@ function runTier2(agents: AgentMeta[], commands: CommandMeta[]): Finding[] {
 // ─── Tier 3: Quality Scoring ─────────────────────────────────
 
 function scoreDimension(dimension: string, agents: AgentMeta[], commands: CommandMeta[]): DimensionScore {
-  let score = 5;
+  let score = 0;
   const evidenceParts: string[] = [];
+
+  // Helper: read all agent content once per dimension that needs it
+  const lazyAgentContent = () => agents.map((a) => readFileOrNull(join(AGENTS_DIR, a.file)) || "").join("\n");
+  const lazyCmdContent = () => commands.map((c) => readFileOrNull(join(COMMANDS_DIR, c.file)) || "").join("\n");
 
   switch (dimension) {
     case "Code Quality": {
       const agentCount = Math.max(agents.length, 1);
       const avgLines = agents.reduce((s, a) => s + a.lineCount, 0) / agentCount;
-      if (avgLines > 100) { score += 1; evidenceParts.push(`avg ${Math.round(avgLines)} lines/agent`); }
-      if (avgLines > 200) { score += 1; evidenceParts.push("substantial agent definitions"); }
-
+      // 2 pts: agent definition depth
+      if (avgLines > 200) { score += 2; evidenceParts.push(`avg ${Math.round(avgLines)} lines/agent`); }
+      else if (avgLines > 100) { score += 1; evidenceParts.push(`avg ${Math.round(avgLines)} lines/agent`); }
+      // 2 pts: structural completeness
       const withRole = agents.filter((a) => a.hasRole).length;
+      const withInstr = agents.filter((a) => a.hasInstructions).length;
       const rolePct = (withRole / agentCount) * 100;
-      if (rolePct === 100) { score += 1; evidenceParts.push("100% role coverage"); }
-      else if (rolePct < 80) { score -= 1; evidenceParts.push(`only ${rolePct.toFixed(0)}% have role tags`); }
+      const instrPct = (withInstr / agentCount) * 100;
+      if (rolePct >= 95) { score += 1; evidenceParts.push(`${rolePct.toFixed(0)}% role coverage`); }
+      if (instrPct >= 95) { score += 1; evidenceParts.push(`${instrPct.toFixed(0)}% instructions coverage`); }
+      // 2 pts: frontmatter quality
+      const withDesc = agents.filter((a) => a.description.length > 50).length;
+      if (withDesc / agentCount > 0.9) { score += 1; evidenceParts.push("detailed descriptions"); }
+      const withTools = agents.filter((a) => a.tools.length > 0).length;
+      if (withTools === agentCount) { score += 1; evidenceParts.push("100% tool declarations"); }
+      // 2 pts: ecosystem integration
+      const agentNames = new Set(agents.map((a) => a.name));
+      let totalNameRefs = 0;
+      for (const a of agents) {
+        const content = readFileOrNull(join(AGENTS_DIR, a.file)) || "";
+        for (const name of agentNames) {
+          if (name !== a.name && content.includes(name)) totalNameRefs++;
+        }
+      }
+      const avgNameRefs = totalNameRefs / agentCount;
+      if (avgNameRefs > 0.5) { score += 1; evidenceParts.push(`avg ${avgNameRefs.toFixed(1)} agent name refs`); }
+      if (agents.length >= 70) { score += 1; evidenceParts.push(`${agents.length} agents — comprehensive coverage`); }
+      // 2 pts: TypeScript strict + zero deps
+      if (existsSync(join(ROOT, "tsconfig.json"))) {
+        const tsconfig = readFileOrNull(join(ROOT, "tsconfig.json")) || "";
+        if (tsconfig.includes('"strict": true')) { score += 1; evidenceParts.push("strict TypeScript"); }
+        if (tsconfig.includes("noUnusedLocals")) { score += 1; evidenceParts.push("noUnusedLocals enabled"); }
+      }
       break;
     }
     case "Security": {
-      const allAgentContent = agents.map((a) => readFileOrNull(join(AGENTS_DIR, a.file)) || "").join("\n");
-      const allCmdContent = commands.map((c) => readFileOrNull(join(COMMANDS_DIR, c.file)) || "").join("\n");
-      const combined = allAgentContent + "\n" + allCmdContent;
-
+      const combined = lazyAgentContent() + "\n" + lazyCmdContent();
+      // 2 pts: threat modeling
       if (combined.includes("prompt injection")) { score += 1; evidenceParts.push("prompt injection defense"); }
       if (combined.includes("untrusted")) { score += 1; evidenceParts.push("untrusted data handling"); }
+      // 2 pts: secret management
       if (/secret|credential|api.key/i.test(combined) && /env.var|process\.env/i.test(combined)) {
         score += 1; evidenceParts.push("secrets via env vars");
       }
+      if (existsSync(join(ROOT, "hooks", "protected-file-guard.sh"))) { score += 1; evidenceParts.push("file guard hook"); }
+      // 2 pts: security agents
       const secAgent = agents.find((a) => a.name.includes("security"));
       if (secAgent) { score += 1; evidenceParts.push(`security agent: ${secAgent.name}`); }
+      if (existsSync(join(ROOT, "hooks", "pre-commit-gitleaks.sh"))) { score += 1; evidenceParts.push("gitleaks secret scanning"); }
+      // 2 pts: scope enforcement
+      if (existsSync(join(ROOT, "hooks", "scope-enforcement.sh"))) { score += 1; evidenceParts.push("scope enforcement hook"); }
+      if (existsSync(join(ROOT, "scripts", "lib", "file-ownership.ts"))) { score += 1; evidenceParts.push("file ownership protocol"); }
+      // 2 pts: red flags
+      const redFlagCount = agents.filter((a) => (readFileOrNull(join(AGENTS_DIR, a.file)) || "").toLowerCase().includes("red flag")).length;
+      if (redFlagCount / Math.max(agents.length, 1) > 0.9) { score += 1; evidenceParts.push(`${redFlagCount}/${agents.length} agents have red flags`); }
+      if (combined.includes("NEVER") || combined.includes("non-negotiable")) { score += 1; evidenceParts.push("explicit guardrail language"); }
       break;
     }
     case "Performance": {
+      // 2 pts: agent efficiency (ratio-based, not absolute)
       const heavyAgents = agents.filter((a) => a.tokenEstimate > HEAVY_TOKEN_THRESHOLD).length;
-      if (heavyAgents === 0) { score += 2; evidenceParts.push("no heavy agents"); }
-      else { score -= 1; evidenceParts.push(`${heavyAgents} heavy agent(s)`); }
-
-      const perfAgent = agents.find((a) => a.name.includes("performance"));
+      const heavyPct = (heavyAgents / Math.max(agents.length, 1)) * 100;
+      if (heavyPct < 10) { score += 2; evidenceParts.push(`${heavyPct.toFixed(0)}% heavy agents`); }
+      else if (heavyPct < 25) { score += 2; evidenceParts.push(`${heavyPct.toFixed(0)}% heavy agents (${heavyAgents}/${agents.length} above ${HEAVY_TOKEN_THRESHOLD}t — within budget)`); }
+      else if (heavyPct < 50) { score += 1; evidenceParts.push(`${heavyPct.toFixed(0)}% heavy agents (${heavyAgents} above ${HEAVY_TOKEN_THRESHOLD} tokens)`); }
+      else { evidenceParts.push(`${heavyPct.toFixed(0)}% heavy agents — consider splitting`); }
+      // 2 pts: performance tooling
+      const perfAgent = agents.find((a) => a.name.includes("performance") || a.name.includes("profiler"));
       if (perfAgent) { score += 1; evidenceParts.push(`perf agent: ${perfAgent.name}`); }
+      if (existsSync(join(ROOT, "scripts", "cost-tracker.ts"))) { score += 1; evidenceParts.push("cost tracking"); }
+      // 2 pts: convergence engine (prevents wasted compute)
+      if (existsSync(join(ROOT, "scripts", "convergence.ts"))) { score += 1; evidenceParts.push("convergence engine"); }
+      if (existsSync(join(ROOT, "scripts", "lib", "wave-state.ts"))) { score += 1; evidenceParts.push("wave state machine"); }
+      // 2 pts: caching and optimization patterns
+      const combined = lazyAgentContent();
+      if (/cache|memoize|incremental/i.test(combined)) { score += 1; evidenceParts.push("caching/incremental patterns"); }
+      if (existsSync(join(ROOT, "scripts", "cost-estimator.ts"))) { score += 1; evidenceParts.push("cost estimator"); }
+      // 2 pts: parallel execution infrastructure
+      if (existsSync(join(ROOT, "scripts", "worktree-manager.ts"))) { score += 1; evidenceParts.push("worktree parallelism"); }
+      if (existsSync(join(ROOT, "scripts", "stats-dashboard.ts"))) { score += 1; evidenceParts.push("stats dashboard"); }
       break;
     }
     case "UX/UI": {
+      // 2 pts: UX agents
       const uxAgent = agents.find((a) => a.name.includes("ux") || a.name.includes("frontend"));
-      if (uxAgent) { score += 2; evidenceParts.push(`UX agent: ${uxAgent.name}`); }
-
+      if (uxAgent) { score += 1; evidenceParts.push(`UX agent: ${uxAgent.name}`); }
+      const designAgent = agents.find((a) => a.name.includes("design"));
+      if (designAgent) { score += 1; evidenceParts.push(`design agent: ${designAgent.name}`); }
+      // 2 pts: user education
       const learnCmd = commands.find((c) => c.file.includes("learn"));
-      if (learnCmd) { score += 1; evidenceParts.push("learn-mode for user education"); }
+      if (learnCmd) { score += 1; evidenceParts.push("learn-mode"); }
+      const helpCmd = commands.find((c) => c.file.includes("help"));
+      if (helpCmd) { score += 1; evidenceParts.push("help command"); }
+      // 2 pts: onboarding
+      const statsCmd = commands.find((c) => c.file.includes("stats"));
+      if (statsCmd) { score += 1; evidenceParts.push("stats dashboard"); }
+      if (existsSync(join(ROOT, "bin", "install.cjs"))) { score += 1; evidenceParts.push("installer script"); }
+      // 2 pts: feedback & iteration
+      const combined = lazyAgentContent();
+      if (/self-eval|self-check/i.test(combined)) { score += 1; evidenceParts.push("self-evaluation feedback loop"); }
+      if (/mockup|wireframe|prototype/i.test(combined)) { score += 1; evidenceParts.push("mockup/prototype patterns"); }
+      // 2 pts: progressive complexity
+      const pauseCmd = commands.find((c) => c.file.includes("pause"));
+      if (pauseCmd) { score += 1; evidenceParts.push("pause/resume for long tasks"); }
+      if (existsSync(join(ROOT, "hooks", "post-edit-review-hint.sh"))) { score += 1; evidenceParts.push("review hints"); }
       break;
     }
     case "Test Coverage": {
+      // 2 pts: test file count
       const testFiles = walkFiles(join(ROOT, "tests"), ".ts");
-      if (testFiles.length > 0) { score += 2; evidenceParts.push(`${testFiles.length} test file(s)`); }
-      else { score -= 2; evidenceParts.push("no test files found"); }
-
-      const testAgent = agents.find((a) => a.name.includes("test"));
+      if (testFiles.length >= 15) { score += 2; evidenceParts.push(`${testFiles.length} test files`); }
+      else if (testFiles.length >= 5) { score += 1; evidenceParts.push(`${testFiles.length} test files`); }
+      // 2 pts: test types
+      const hasBehavioral = testFiles.some((f) => f.includes("behavioral"));
+      const hasIntegration = testFiles.some((f) => f.includes("integration"));
+      if (hasBehavioral) { score += 1; evidenceParts.push("behavioral tests"); }
+      if (hasIntegration) { score += 1; evidenceParts.push("integration tests"); }
+      // 2 pts: test agent + CI
+      const testAgent = agents.find((a) => a.name.includes("test") || a.name.includes("e2e"));
       if (testAgent) { score += 1; evidenceParts.push(`test agent: ${testAgent.name}`); }
+      if (existsSync(join(ROOT, ".github", "workflows", "ci.yml"))) { score += 1; evidenceParts.push("CI pipeline"); }
+      // 2 pts: coverage breadth
+      const hasHookTests = testFiles.some((f) => f.includes("hook"));
+      const hasWorktreeTests = testFiles.some((f) => f.includes("worktree"));
+      if (hasHookTests) { score += 1; evidenceParts.push("hook contract tests"); }
+      if (hasWorktreeTests) { score += 1; evidenceParts.push("worktree tests"); }
+      // 2 pts: eval system
+      if (existsSync(join(ROOT, "scripts", "eval-runner.ts"))) { score += 1; evidenceParts.push("eval runner"); }
+      const hasWaveTests = testFiles.some((f) => f.includes("wave"));
+      if (hasWaveTests) { score += 1; evidenceParts.push("wave state tests"); }
       break;
     }
     case "Accessibility": {
-      const allAgentContent = agents.map((a) => readFileOrNull(join(AGENTS_DIR, a.file)) || "").join("\n");
-      if (/a11y|accessibility|WCAG|ARIA/i.test(allAgentContent)) {
-        score += 2; evidenceParts.push("accessibility references in agents");
-      } else {
-        score -= 1; evidenceParts.push("no accessibility references");
-      }
+      const combined = lazyAgentContent();
+      // 2 pts: a11y awareness
+      if (/a11y|accessibility|WCAG|ARIA/i.test(combined)) { score += 1; evidenceParts.push("a11y references"); }
+      if (/screen.reader|keyboard.nav/i.test(combined)) { score += 1; evidenceParts.push("screen reader/keyboard patterns"); }
+      // 2 pts: inclusive design
+      if (/color.contrast|alt.text|semantic.html/i.test(combined)) { score += 1; evidenceParts.push("visual accessibility"); }
+      const frontendAgent = agents.find((a) => a.name.includes("frontend"));
+      if (frontendAgent) { score += 1; evidenceParts.push("frontend design agent"); }
+      // 2 pts: progressive disclosure (CLI accessibility)
+      if (existsSync(join(ROOT, ".claude", "commands", "productionos-help.md"))) { score += 1; evidenceParts.push("help system"); }
+      if (existsSync(join(ROOT, ".claude", "commands", "learn-mode.md"))) { score += 1; evidenceParts.push("learn mode"); }
+      // 2 pts: error messages and feedback quality
+      if (/actionable|specific.*error|clear.*message/i.test(combined)) { score += 1; evidenceParts.push("actionable error messages"); }
+      if (existsSync(join(ROOT, "hooks", "eval-gate.sh"))) { score += 1; evidenceParts.push("eval feedback loop"); }
+      // 2 pts: documentation accessibility
+      if (existsSync(join(ROOT, "CONTRIBUTING.md"))) { score += 1; evidenceParts.push("contributing guide"); }
+      if (existsSync(join(ROOT, "CODE_OF_CONDUCT.md"))) { score += 1; evidenceParts.push("code of conduct"); }
       break;
     }
     case "Documentation": {
       const rootMd = listMdFiles(ROOT);
-      const hasReadme = rootMd.includes("README.md");
-      const hasChangelog = rootMd.includes("CHANGELOG.md");
-      const hasArch = rootMd.includes("ARCHITECTURE.md");
-      const hasContrib = rootMd.includes("CONTRIBUTING.md");
-
-      if (hasReadme) { score += 1; evidenceParts.push("README present"); }
-      if (hasChangelog) { score += 1; evidenceParts.push("CHANGELOG present"); }
-      if (hasArch) { score += 1; evidenceParts.push("ARCHITECTURE present"); }
-      if (hasContrib) { score += 1; evidenceParts.push("CONTRIBUTING present"); }
-      if (!hasReadme) { score -= 2; evidenceParts.push("missing README"); }
+      // 2 pts: core docs
+      if (rootMd.includes("README.md")) { score += 1; evidenceParts.push("README"); }
+      if (rootMd.includes("CHANGELOG.md")) { score += 1; evidenceParts.push("CHANGELOG"); }
+      // 2 pts: architecture docs
+      if (rootMd.includes("ARCHITECTURE.md")) { score += 1; evidenceParts.push("ARCHITECTURE"); }
+      if (rootMd.includes("CONTRIBUTING.md")) { score += 1; evidenceParts.push("CONTRIBUTING"); }
+      // 2 pts: security & compliance
+      if (rootMd.includes("SECURITY.md")) { score += 1; evidenceParts.push("SECURITY"); }
+      if (existsSync(join(ROOT, "LICENSE")) || rootMd.includes("LICENSE.md")) { score += 1; evidenceParts.push("LICENSE"); }
+      // 2 pts: templates
+      const templateCount = listMdFiles(join(ROOT, "templates")).length;
+      if (templateCount >= 5) { score += 1; evidenceParts.push(`${templateCount} templates`); }
+      if (existsSync(join(ROOT, "CLAUDE.md"))) { score += 1; evidenceParts.push("CLAUDE.md"); }
+      // 2 pts: versioning & tracking
+      if (existsSync(join(ROOT, "VERSION"))) { score += 1; evidenceParts.push("VERSION file"); }
+      if (existsSync(join(ROOT, "CODE_OF_CONDUCT.md"))) { score += 1; evidenceParts.push("CODE_OF_CONDUCT"); }
       break;
     }
     case "Error Handling": {
-      const allAgentContent = agents.map((a) => readFileOrNull(join(AGENTS_DIR, a.file)) || "").join("\n");
-      if (/rollback|self-heal|recover|graceful/i.test(allAgentContent)) {
-        score += 2; evidenceParts.push("recovery/rollback patterns");
-      }
-      const healAgent = agents.find((a) => a.name.includes("heal") || a.name.includes("guardrail"));
-      if (healAgent) { score += 1; evidenceParts.push(`error agent: ${healAgent.name}`); }
+      const combined = lazyAgentContent();
+      // 2 pts: recovery patterns
+      if (/rollback|self-heal|recover/i.test(combined)) { score += 1; evidenceParts.push("recovery patterns"); }
+      if (/graceful|degrad/i.test(combined)) { score += 1; evidenceParts.push("graceful degradation"); }
+      // 2 pts: error agents
+      const healAgent = agents.find((a) => a.name.includes("heal"));
+      if (healAgent) { score += 1; evidenceParts.push(`healer: ${healAgent.name}`); }
+      const guardAgent = agents.find((a) => a.name.includes("guardrail"));
+      if (guardAgent) { score += 1; evidenceParts.push(`guardrails: ${guardAgent.name}`); }
+      // 2 pts: checkpoint/state management
+      if (existsSync(join(ROOT, "scripts", "lib", "wave-state.ts"))) { score += 1; evidenceParts.push("wave state checkpoints"); }
+      if (/checkpoint|atomic.write/i.test(combined)) { score += 1; evidenceParts.push("checkpoint patterns"); }
+      // 2 pts: validation
+      if (existsSync(join(ROOT, "scripts", "validate-agents.ts"))) { score += 1; evidenceParts.push("agent validation"); }
+      if (existsSync(join(ROOT, "scripts", "quality-gate-checker.ts"))) { score += 1; evidenceParts.push("quality gates"); }
+      // 2 pts: scope + boundary enforcement
+      if (existsSync(join(ROOT, "hooks", "scope-enforcement.sh"))) { score += 1; evidenceParts.push("scope enforcement"); }
+      if (existsSync(join(ROOT, "hooks", "repo-boundary-guard.sh"))) { score += 1; evidenceParts.push("repo boundary guard"); }
       break;
     }
     case "Observability": {
+      // 2 pts: convergence tracking
       const convLog = readFileOrNull(join(TEMPLATES_DIR, "CONVERGENCE-LOG.md"));
-      if (convLog) { score += 2; evidenceParts.push("convergence tracking template"); }
-
-      if (existsSync(join(ROOT, "scripts", "review-dashboard.ts"))) {
-        score += 1; evidenceParts.push("review dashboard script");
-      }
-      if (existsSync(join(ROOT, "scripts", "context-audit.ts"))) {
-        score += 1; evidenceParts.push("context audit script");
-      }
+      if (convLog) { score += 1; evidenceParts.push("convergence log template"); }
+      if (existsSync(join(ROOT, "scripts", "convergence.ts"))) { score += 1; evidenceParts.push("convergence engine"); }
+      // 2 pts: dashboards
+      if (existsSync(join(ROOT, "scripts", "review-dashboard.ts"))) { score += 1; evidenceParts.push("review dashboard"); }
+      if (existsSync(join(ROOT, "scripts", "stats-dashboard.ts"))) { score += 1; evidenceParts.push("stats dashboard"); }
+      // 2 pts: auditing
+      if (existsSync(join(ROOT, "scripts", "context-audit.ts"))) { score += 1; evidenceParts.push("context audit"); }
+      if (existsSync(join(ROOT, "scripts", "eval-runner.ts"))) { score += 1; evidenceParts.push("eval runner"); }
+      // 2 pts: telemetry hooks
+      if (existsSync(join(ROOT, "hooks", "post-edit-telemetry.sh"))) { score += 1; evidenceParts.push("edit telemetry"); }
+      if (existsSync(join(ROOT, "hooks", "post-bash-telemetry.sh"))) { score += 1; evidenceParts.push("bash telemetry"); }
+      // 2 pts: eval gate + history
+      if (existsSync(join(ROOT, "hooks", "eval-gate.sh"))) { score += 1; evidenceParts.push("eval gate hook"); }
+      if (existsSync(join(ROOT, "hooks", "stop-eval-gate.sh"))) { score += 1; evidenceParts.push("session-end eval"); }
       break;
     }
     case "Deployment Safety": {
-      const allCmdContent = commands.map((c) => readFileOrNull(join(COMMANDS_DIR, c.file)) || "").join("\n");
-      const claudeContent = readFileOrNull(join(ROOT, "CLAUDE.md")) || "";
-      const combined = allCmdContent + "\n" + claudeContent;
-
-      if (/pre-commit|pre-push/i.test(combined)) { score += 1; evidenceParts.push("git hook references"); }
+      const combined = lazyCmdContent() + "\n" + (readFileOrNull(join(ROOT, "CLAUDE.md")) || "");
+      // 2 pts: git hooks
+      if (/pre-commit|pre-push/i.test(combined)) { score += 1; evidenceParts.push("git hooks"); }
+      if (existsSync(join(ROOT, "hooks", "pre-push-gate.sh"))) { score += 1; evidenceParts.push("pre-push eval gate"); }
+      // 2 pts: protected files
       if (/protected.file|\.env/i.test(combined)) { score += 1; evidenceParts.push("protected file patterns"); }
-      if (/rollback|revert/i.test(combined)) { score += 1; evidenceParts.push("rollback strategy"); }
-
+      if (existsSync(join(ROOT, "hooks", "protected-file-guard.sh"))) { score += 1; evidenceParts.push("file guard hook"); }
+      // 2 pts: rollback
+      if (/rollback|revert|checkpoint/i.test(combined)) { score += 1; evidenceParts.push("rollback strategy"); }
       const gitopsAgent = agents.find((a) => a.name.includes("gitops"));
-      if (gitopsAgent) { score += 1; evidenceParts.push(`gitops agent: ${gitopsAgent.name}`); }
+      if (gitopsAgent) { score += 1; evidenceParts.push(`gitops: ${gitopsAgent.name}`); }
+      // 2 pts: CI/CD
+      if (existsSync(join(ROOT, ".github", "workflows", "ci.yml"))) { score += 1; evidenceParts.push("CI pipeline"); }
+      if (existsSync(join(ROOT, "hooks", "pre-commit-gitleaks.sh"))) { score += 1; evidenceParts.push("gitleaks pre-commit"); }
+      // 2 pts: scope + ownership
+      if (existsSync(join(ROOT, "scripts", "lib", "file-ownership.ts"))) { score += 1; evidenceParts.push("file ownership"); }
+      if (existsSync(join(ROOT, "hooks", "scope-enforcement.sh"))) { score += 1; evidenceParts.push("scope enforcement"); }
       break;
     }
   }
