@@ -36,7 +36,8 @@
     "worktree:merge": "bun run scripts/worktree-manager.ts merge",
     "worktree:cleanup": "bun run scripts/worktree-manager.ts cleanup",
     "worktree:preflight": "bun run scripts/worktree-manager.ts preflight",
-    "worktree:assign": "bun run scripts/worktree-manager.ts assign"
+    "worktree:assign": "bun run scripts/worktree-manager.ts assign",
+    "stats": "bun run scripts/stats-dashboard.ts"
   },
   "engines": {
     "node": ">=18"

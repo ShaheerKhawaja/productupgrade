@@ -125,6 +125,14 @@ For each hypothesis, create a modified version of the target:
 - Same agent, different convergence parameters
 - Test: EMA alpha (0.1-0.5), convergence threshold (0.01-0.1), max iterations (3-10)
 
+### Mode: rubric
+- Same evaluation dimensions, different scoring rubric
+- Dispatch `rubric-evolver` agent (OPRO pattern)
+- Generate 5 rubric variants with different anchor points, weights, and criteria
+- Score each variant against calibration set in `.productionos/calibration/`
+- Promote the variant with highest ground-truth correlation
+- See `templates/calibration-set.md` for calibration sample format
+
 ## Phase 4: Benchmark Execution
 
 Run baseline and all challengers against the same benchmark. The benchmark MUST be identical for fair comparison.

@@ -4,7 +4,7 @@
 
 **One command. Your entire codebase reviewed, scored, and improved.**
 
-ProductionOS is a Claude Code plugin with 76 agents, 39 commands, and 12 hooks that turns AI into a full engineering team. It deploys specialized agents that review your code, find issues, fix them, and keep improving until every quality dimension hits the target. Smart routing dispatches the right agents for your goal automatically.
+ProductionOS is a Claude Code plugin with 77 agents, 39 commands, and 12 hooks that turns AI into a full engineering team. It deploys specialized agents that review your code, find issues, fix them, and keep improving until every quality dimension hits the target. Smart routing dispatches the right agents for your goal automatically.
 
 ## Quick Start
 
@@ -85,7 +85,7 @@ You work across many codebases and need fast, repeatable quality audits:
 #### AI Engineers
 You're building AI-powered products and need agent orchestration patterns:
 
-- **76 agent definitions** with YAML frontmatter (model routing, tool constraints, stakes classification)
+- **77 agent definitions** with YAML frontmatter (model routing, tool constraints, stakes classification)
 - **10-layer prompt composition** (Emotion → Meta → Context → CoT → ToT → GoT → CoD → Generated Knowledge → Distractor-Augmented)
 - **Tri-tiered judging** (3 independent judges with debate on disagreement)
 - **Convergence engine** (recursive improvement with regression detection)
@@ -157,7 +157,7 @@ You're building AI-powered products and need agent orchestration patterns:
 ## Architecture
 
 ```
-76 agents (declarative YAML frontmatter, 3-tier model routing)
+77 agents (declarative YAML frontmatter, 3-tier model routing)
 39 commands (orchestrate agents, loop until convergence)
 12 hooks (SessionStart, PreToolUse security, PostToolUse telemetry, Stop handoff)
  8 templates (PREAMBLE, SELF-EVAL, INVOCATION, PROMPT-COMPOSITION, MODEL-ROUTING, etc.)
@@ -234,7 +234,7 @@ claude plugin uninstall productupgrade
 ```bash
 cd ~/.claude/plugins/marketplaces/productupgrade
 bun install && bun test   # 812 tests, 0 failures
-bun run validate          # 76/76 agents valid
+bun run validate          # 76/77 agents valid
 bun run skill:check       # Plugin health score
 ```
 
@@ -309,7 +309,7 @@ pos-telemetry       # Log skill usage events
 
 ## Tech
 
-- 76 agent definitions with YAML frontmatter (model routing, tool constraints, stakes classification)
+- 77 agent definitions with YAML frontmatter (model routing, tool constraints, stakes classification)
 - 39 commands (14 absorbed from gstack/superpowers/ECC, 4 recursive orchestrators)
 - 10-layer prompt architecture (Emotion → Meta → Scratchpad → Context → CoT → ToT → GoT → CoD → Generated Knowledge → Distractor-Augmented)
 - Default-on self-evaluation protocol (7-question quality gate on all outputs)
