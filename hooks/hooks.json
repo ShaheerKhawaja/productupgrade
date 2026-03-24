@@ -1,119 +1,118 @@
 {
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "startup|resume|clear|compact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh\"",
-            "async": false
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Edit|Write|Bash|NotebookEdit|mcp__filesystem__write_file|mcp__filesystem__edit_file|mcp__filesystem__move_file",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scope-enforcement.sh\"",
-            "statusMessage": "ProductionOS: Scope check..."
-          }
-        ]
-      },
-      {
-        "matcher": "Edit|Write|Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/repo-boundary-guard.sh\"",
-            "statusMessage": "ProductionOS: Repo boundary..."
-          },
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/protected-file-guard.sh\"",
-            "statusMessage": "ProductionOS: File guard..."
-          },
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/pre-edit-security.sh\"",
-            "statusMessage": "ProductionOS: Security scan..."
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/pre-commit-gitleaks.sh\"",
-            "statusMessage": "ProductionOS: Secret scan..."
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/self-learn.sh\"",
-            "async": true
-          },
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/post-edit-telemetry.sh\"",
-            "async": true
-          },
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/post-edit-review-hint.sh\"",
-            "async": true
-          },
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/eval-gate.sh\"",
-            "async": true,
-            "statusMessage": "ProductionOS: Eval gate..."
-          }
-        ]
-      },
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/post-bash-telemetry.sh\"",
-            "async": true
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/stop-session-handoff.sh\"",
-            "async": true
-          },
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/stop-extract-instincts.sh\"",
-            "async": true
-          },
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/stop-eval-gate.sh\"",
-            "async": true,
-            "statusMessage": "ProductionOS: Session-end eval..."
-          }
-        ]
-      }
-    ]
-  }
+  "_meta": "ProductionOS v1.0.0-beta.1 — 78 agents | 40 commands | 15 hooks | 4-layer Production House | scope enforcement | eval gates",
+  "SessionStart": [
+    {
+      "matcher": "startup|resume|clear|compact",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh\"",
+          "async": false
+        }
+      ]
+    }
+  ],
+  "PreToolUse": [
+    {
+      "matcher": "Edit|Write|Bash|NotebookEdit|mcp__filesystem__write_file|mcp__filesystem__edit_file|mcp__filesystem__move_file",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/scope-enforcement.sh\"",
+          "statusMessage": "ProductionOS: Scope check..."
+        }
+      ]
+    },
+    {
+      "matcher": "Edit|Write|Bash",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/repo-boundary-guard.sh\"",
+          "statusMessage": "ProductionOS: Repo boundary..."
+        },
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/protected-file-guard.sh\"",
+          "statusMessage": "ProductionOS: File guard..."
+        },
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/pre-edit-security.sh\"",
+          "statusMessage": "ProductionOS: Security scan..."
+        }
+      ]
+    },
+    {
+      "matcher": "Bash",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/pre-commit-gitleaks.sh\"",
+          "statusMessage": "ProductionOS: Secret scan..."
+        }
+      ]
+    }
+  ],
+  "PostToolUse": [
+    {
+      "matcher": "Edit|Write",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/self-learn.sh\"",
+          "async": true
+        },
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/post-edit-telemetry.sh\"",
+          "async": true
+        },
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/post-edit-review-hint.sh\"",
+          "async": true
+        },
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/eval-gate.sh\"",
+          "async": true,
+          "statusMessage": "ProductionOS: Eval gate..."
+        }
+      ]
+    },
+    {
+      "matcher": "Bash",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/post-bash-telemetry.sh\"",
+          "async": true
+        }
+      ]
+    }
+  ],
+  "Stop": [
+    {
+      "matcher": "",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/stop-session-handoff.sh\"",
+          "async": true
+        },
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/stop-extract-instincts.sh\"",
+          "async": true
+        },
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/stop-eval-gate.sh\"",
+          "async": true,
+          "statusMessage": "ProductionOS: Session-end eval..."
+        }
+      ]
+    }
+  ]
 }

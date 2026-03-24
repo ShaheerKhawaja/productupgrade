@@ -4,7 +4,7 @@
 
 **One command. Your entire codebase reviewed, scored, and improved.**
 
-ProductionOS is a Claude Code plugin with 77 agents, 40 commands, and 15 hooks that turns AI into a full engineering team. It deploys specialized agents that review your code, find issues, fix them, and keep improving until every quality dimension hits the target. Smart routing dispatches the right agents for your goal automatically.
+ProductionOS is a Claude Code plugin with 78 agents, 40 commands, and 15 hooks that turns AI into a full engineering team. It deploys specialized agents that review your code, find issues, fix them, and keep improving until every quality dimension hits the target. Smart routing dispatches the right agents for your goal automatically.
 
 ## Quick Start
 
@@ -179,7 +179,7 @@ You're building AI-powered products and need agent orchestration patterns:
 ## Architecture
 
 ```
-77 agents (declarative YAML frontmatter, 3-tier model routing)
+78 agents (declarative YAML frontmatter, 3-tier model routing)
 39 commands (orchestrate agents, loop until convergence)
 12 hooks (SessionStart, PreToolUse security, PostToolUse telemetry, Stop handoff)
  8 templates (PREAMBLE, SELF-EVAL, INVOCATION, PROMPT-COMPOSITION, MODEL-ROUTING, etc.)
@@ -276,7 +276,7 @@ claude plugin uninstall productupgrade
 ```bash
 cd ~/.claude/plugins/marketplaces/productupgrade
 bun install && bun test   # 812 tests, 0 failures
-bun run validate          # 76/77 agents valid
+bun run validate          # 76/78 agents valid
 bun run skill:check       # Plugin health score
 ```
 
