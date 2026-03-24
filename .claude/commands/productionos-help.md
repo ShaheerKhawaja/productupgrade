@@ -7,9 +7,9 @@ description: "Show how to use ProductionOS — explains commands, recommended wo
 
 ## Getting Started
 
-ProductionOS v6.0 is your AI engineering team — 55 agents, 18 commands, 15+ hooks, 6 CLI tools, always present. Here's how to use it effectively.
+ProductionOS v1.0.0-beta.1 is your AI engineering team — 76 agents, 39 commands, 12 hooks, 6 CLI tools, 4 auto-activating skills. Here's how to use it effectively.
 
-## What's New in v6.0
+## What's New in v1.0
 
 - **Always-present hooks** — Security scan on auth/payment files, telemetry on every edit, review hints after 10+ changes, session handoff on exit
 - **CLI tools** — `pos-init`, `pos-config`, `pos-analytics`, `pos-update-check`
@@ -44,7 +44,7 @@ COMMAND                          WHEN TO USE
 /productionos-help               This guide
 ```
 
-### CLI Tools (v6.0)
+### CLI Tools
 
 ```
 pos-init                         Initialize ~/.productionos/ state

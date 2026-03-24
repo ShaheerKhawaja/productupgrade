@@ -16,10 +16,6 @@ The user provides:
 - **Target**: A file path, directory, or description of what to improve
 - **Goal**: What "good" looks like (optional -- defaults to "maximize quality score")
 
-## Step 0: Preamble
-
-Run the shared ProductionOS preamble (`templates/PREAMBLE.md`).
-
 ## Execution Protocol
 
 ### Step 1: Understand the Target
