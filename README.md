@@ -4,17 +4,39 @@
 
 **One command. Your entire codebase reviewed, scored, and improved.**
 
-ProductionOS is a Claude Code plugin with 77 agents, 39 commands, and 12 hooks that turns AI into a full engineering team. It deploys specialized agents that review your code, find issues, fix them, and keep improving until every quality dimension hits the target. Smart routing dispatches the right agents for your goal automatically.
+ProductionOS is a Claude Code plugin with 77 agents, 40 commands, and 15 hooks that turns AI into a full engineering team. It deploys specialized agents that review your code, find issues, fix them, and keep improving until every quality dimension hits the target. Smart routing dispatches the right agents for your goal automatically.
 
 ## Quick Start
 
 ```bash
-# Install (two commands)
+# Step 1: Add the marketplace (one time)
 claude plugin marketplace add ShaheerKhawaja/ProductionOS
+
+# Step 2: Install the plugin
 claude plugin install productupgrade
 
-# Run on any codebase
+# Step 3: Restart Claude Code, then run on any codebase
 /production-upgrade
+```
+
+**Alternative: Manual install (if marketplace commands fail)**
+
+```bash
+# Clone directly into the plugins directory
+git clone https://github.com/ShaheerKhawaja/ProductionOS.git \
+  ~/.claude/plugins/marketplaces/productupgrade
+
+# Restart Claude Code — hooks, commands, and agents load automatically
+```
+
+**Verify installation:**
+
+```bash
+# Check the plugin is recognized
+claude plugin list
+
+# Validate the plugin schema
+claude plugin validate ~/.claude/plugins/marketplaces/productupgrade/.claude-plugin/marketplace.json
 ```
 
 That's it. ProductionOS discovers your stack, deploys 7 review agents in parallel, scores your code across 10 dimensions, and generates a fix plan. Run it again — the score goes up.
@@ -206,13 +228,33 @@ Use `--profile budget` for ~40% savings.
 
 ## Installation
 
+### Recommended: via Claude Code marketplace
+
 ```bash
-# Recommended: via Claude Code plugin system
+# 1. Add the marketplace
 claude plugin marketplace add ShaheerKhawaja/ProductionOS
+
+# 2. Install the plugin from the marketplace
 claude plugin install productupgrade
 
-# Alternative: manual git clone
-git clone https://github.com/ShaheerKhawaja/ProductionOS.git ~/.claude/plugins/marketplaces/productupgrade
+# 3. Restart Claude Code
+```
+
+### Alternative: manual git clone
+
+```bash
+git clone https://github.com/ShaheerKhawaja/ProductionOS.git \
+  ~/.claude/plugins/marketplaces/productupgrade
+```
+
+### Verify
+
+```bash
+# Confirm plugin is loaded
+claude plugin list
+
+# Validate schema (should show 0 errors)
+claude plugin validate ~/.claude/plugins/marketplaces/productupgrade/.claude-plugin/marketplace.json
 ```
 
 Restart Claude Code after install. Hooks, commands, and agents load on session start.

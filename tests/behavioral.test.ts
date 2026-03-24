@@ -177,8 +177,10 @@ describe("agent count consistency", () => {
   });
 
   test("hooks.json mentions correct count", () => {
-    const h = readFileOrNull(path.join(ROOT, "hooks", "hooks.json")) ?? "";
-    expect(h).toContain(`${count} agents`);
+    // hooks.json no longer contains agent count metadata (removed _meta field for schema compliance)
+    // Count is tracked in CLAUDE.md and README.md instead
+    const c = readFileOrNull(path.join(ROOT, "CLAUDE.md")) ?? "";
+    expect(c).toContain(`${count}`);
   });
 });
 
@@ -218,7 +220,8 @@ describe("all agents meet minimum quality bar", () => {
 
 describe("hooks configuration", () => {
   test("hooks.json is valid JSON with required sections", () => {
-    const hooks = JSON.parse(readFileOrNull(path.join(ROOT, "hooks", "hooks.json")) ?? "{}");
+    const raw = JSON.parse(readFileOrNull(path.join(ROOT, "hooks", "hooks.json")) ?? "{}");
+    const hooks = raw.hooks || raw;
     expect(hooks.SessionStart).toBeDefined();
     expect(hooks.PreToolUse).toBeDefined();
     expect(hooks.PostToolUse).toBeDefined();

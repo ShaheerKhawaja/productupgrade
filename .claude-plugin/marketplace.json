@@ -1,22 +1,30 @@
 {
   "name": "productupgrade",
   "owner": {
-    "name": "ProductionOS Contributors",
-    "url": "https://github.com/ShaheerKhawaja/ProductionOS"
+    "name": "Shaheer Khawaja",
+    "url": "https://github.com/ShaheerKhawaja"
+  },
+  "metadata": {
+    "description": "ProductionOS — AI engineering OS for Claude Code. 77 agents, 40 commands, 15 hooks. One command to audit, score, and improve any codebase.",
+    "version": "1.0.0-beta.1",
+    "homepage": "https://github.com/ShaheerKhawaja/ProductionOS",
+    "repository": "https://github.com/ShaheerKhawaja/ProductionOS",
+    "license": "MIT"
   },
   "plugins": [
     {
       "name": "productupgrade",
-      "description": "AI engineering OS for Claude Code — 76 agents, 39 commands, 12 hooks. Smart routing + adaptive learning + dynamic agent factory.",
+      "source": "./",
+      "description": "AI engineering OS for Claude Code — 77 agents, 40 commands, 15 hooks. 4-layer Production House: smart routing, adaptive learning, dynamic agent factory. Zero external dependencies.",
       "version": "1.0.0-beta.1",
       "author": {
-        "name": "ProductionOS Contributors",
-        "url": "https://github.com/ShaheerKhawaja/ProductionOS"
+        "name": "Shaheer Khawaja",
+        "url": "https://github.com/ShaheerKhawaja"
       },
-      "source": ".",
-      "category": "development",
-      "strict": false,
-      "tags": [
+      "homepage": "https://github.com/ShaheerKhawaja/ProductionOS",
+      "repository": "https://github.com/ShaheerKhawaja/ProductionOS",
+      "license": "MIT",
+      "keywords": [
         "productionos",
         "production-upgrade",
         "omni-plan",
@@ -31,7 +39,17 @@
         "convergence-engine",
         "cost-tracking",
         "session-learning"
-      ]
+      ],
+      "category": "workflow",
+      "tags": [
+        "productionos",
+        "claude-code-plugin",
+        "agentic-dev",
+        "multi-agent",
+        "recursive-improvement",
+        "self-evaluation"
+      ],
+      "strict": false
     }
   ]
 }

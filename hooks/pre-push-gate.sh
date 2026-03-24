@@ -25,9 +25,9 @@ cd "$PLUGIN_ROOT"
 
 # ─── Gate 1: TypeScript Type Check ──────────────────────────
 echo -n "  [1/4] TypeScript type check... "
-TSC_OUTPUT=$(./node_modules/.bin/tsc --noEmit 2>&1)
-if [ $? -ne 0 ]; then
-  TSC_ERRORS=$(echo "$TSC_OUTPUT" | grep -c "error TS" || echo "0")
+TSC_OUTPUT=$(./node_modules/.bin/tsc --noEmit 2>&1) || true
+if echo "$TSC_OUTPUT" | grep -q "error TS"; then
+  TSC_ERRORS=$(echo "$TSC_OUTPUT" | grep -c "error TS" || true)
   echo -e "${RED}FAIL${NC} ($TSC_ERRORS errors)"
   echo "$TSC_OUTPUT" | head -10
   echo ""
@@ -38,11 +38,11 @@ echo -e "${GREEN}PASS${NC}"
 
 # ─── Gate 2: Test Suite ─────────────────────────────────────
 echo -n "  [2/4] Test suite... "
-TEST_OUTPUT=$(bun test 2>&1)
-PASS_COUNT=$(echo "$TEST_OUTPUT" | grep -oE '[0-9]+ pass' | grep -oE '[0-9]+' || echo "0")
-FAIL_COUNT=$(echo "$TEST_OUTPUT" | grep -oE '[0-9]+ fail' | grep -oE '[0-9]+' || echo "0")
+TEST_OUTPUT=$(bun test 2>&1) || true
+PASS_COUNT=$(echo "$TEST_OUTPUT" | grep -oE '[0-9]+ pass' | head -1 | grep -oE '[0-9]+' || echo "0")
+FAIL_COUNT=$(echo "$TEST_OUTPUT" | grep -oE '[0-9]+ fail' | head -1 | grep -oE '[0-9]+' || echo "0")
 
-if [ "$FAIL_COUNT" -gt 0 ]; then
+if [ "${FAIL_COUNT:-0}" -gt 0 ]; then
   echo -e "${RED}FAIL${NC} ($FAIL_COUNT failures, $PASS_COUNT passes)"
   echo "$TEST_OUTPUT" | grep "fail" | head -10
   echo ""
@@ -53,10 +53,10 @@ echo -e "${GREEN}PASS${NC} ($PASS_COUNT tests)"
 
 # ─── Gate 3: Agent Validation ───────────────────────────────
 echo -n "  [3/4] Agent validation... "
-VALIDATE_OUTPUT=$(bun run validate 2>&1)
-INVALID=$(echo "$VALIDATE_OUTPUT" | grep -c "INVALID" || echo "0")
+VALIDATE_OUTPUT=$(bun run validate 2>&1) || true
+INVALID=$(echo "$VALIDATE_OUTPUT" | grep -c "INVALID" || true)
 
-if [ "$INVALID" -gt 0 ]; then
+if [ "${INVALID:-0}" -gt 0 ]; then
   echo -e "${RED}FAIL${NC} ($INVALID invalid agents)"
   echo "$VALIDATE_OUTPUT" | grep "INVALID" | head -5
   echo ""
@@ -67,15 +67,15 @@ echo -e "${GREEN}PASS${NC}"
 
 # ─── Gate 4: Eval Score ─────────────────────────────────────
 echo -n "  [4/4] Eval score (target: 10/10)... "
-EVAL_OUTPUT=$(bun run eval 2>&1)
-EVAL_SCORE=$(echo "$EVAL_OUTPUT" | grep "OVERALL" | grep -oE '[0-9]+\.[0-9]+' || echo "0")
-CRITICAL_COUNT=$(echo "$EVAL_OUTPUT" | grep "Total:" | grep -oE '[0-9]+ critical' | grep -oE '[0-9]+' || echo "0")
+EVAL_OUTPUT=$(bun run eval 2>&1) || true
+EVAL_SCORE=$(echo "$EVAL_OUTPUT" | grep "OVERALL" | grep -oE '[0-9]+\.[0-9]+' | head -1 || echo "0")
+CRITICAL_COUNT=$(echo "$EVAL_OUTPUT" | grep "Total:" | grep -oE '[0-9]+ critical' | head -1 | grep -oE '[0-9]+' || echo "0")
 
-if [ -n "$EVAL_SCORE" ]; then
+if [ -n "$EVAL_SCORE" ] && [ "$EVAL_SCORE" != "0" ]; then
   SCORE_INT=$(echo "$EVAL_SCORE" | cut -d. -f1)
   if [ "$SCORE_INT" -lt 10 ]; then
     echo -e "${YELLOW}${EVAL_SCORE}/10${NC}"
-    if [ "$CRITICAL_COUNT" -gt 0 ]; then
+    if [ "${CRITICAL_COUNT:-0}" -gt 0 ]; then
       echo -e "  ${RED}$CRITICAL_COUNT critical finding(s) — PUSH BLOCKED${NC}"
       echo "  See .productionos/EVAL-REPORT.md for details"
       exit 1
