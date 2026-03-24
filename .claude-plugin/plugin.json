@@ -1,6 +1,6 @@
 {
   "name": "productupgrade",
-  "description": "AI engineering OS for Claude Code — 77 agents, 40 commands, 15 hooks. 4-layer Production House: smart routing, adaptive learning, dynamic agent factory.",
+  "description": "AI engineering OS for Claude Code — 78 agents, 40 commands, 15 hooks. 4-layer Production House: smart routing, adaptive learning, dynamic agent factory.",
   "version": "1.0.0-beta.1",
   "author": {
     "name": "Shaheer Khawaja",
@@ -88,6 +88,7 @@
     "./agents/stub-detector.md",
     "./agents/swarm-orchestrator.md",
     "./agents/test-architect.md",
+    "./agents/textgrad-optimizer.md",
     "./agents/thought-graph-builder.md",
     "./agents/user-story-mapper.md",
     "./agents/ux-auditor.md",
