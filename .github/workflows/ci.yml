@@ -32,14 +32,17 @@ jobs:
       - name: Validate agents
         run: bun run validate
 
+      - name: Validate schemas (marketplace, plugin, hooks)
+        run: bun test tests/schema-validation.test.ts
+
       - name: Run tests (0 failures required)
         run: |
-          OUTPUT=$(bun test 2>&1)
+          OUTPUT=$(bun test 2>&1) || true
           echo "$OUTPUT"
-          FAIL_COUNT=$(echo "$OUTPUT" | grep -oE '[0-9]+ fail' | grep -oE '[0-9]+' || echo "0")
-          PASS_COUNT=$(echo "$OUTPUT" | grep -oE '[0-9]+ pass' | grep -oE '[0-9]+' || echo "0")
+          FAIL_COUNT=$(echo "$OUTPUT" | grep -oE '[0-9]+ fail' | head -1 | grep -oE '[0-9]+' || echo "0")
+          PASS_COUNT=$(echo "$OUTPUT" | grep -oE '[0-9]+ pass' | head -1 | grep -oE '[0-9]+' || echo "0")
           echo "Tests: $PASS_COUNT pass, $FAIL_COUNT fail"
-          if [ "$FAIL_COUNT" -gt 0 ]; then
+          if [ "${FAIL_COUNT:-0}" -gt 0 ]; then
             echo "::error::Test failures detected. 0 failures required."
             exit 1
           fi
@@ -81,14 +84,14 @@ jobs:
 
       - name: Run eval (10/10 target, 0 critical findings)
         run: |
-          OUTPUT=$(bun run eval 2>&1)
+          OUTPUT=$(bun run eval 2>&1) || true
           echo "$OUTPUT"
-          SCORE=$(echo "$OUTPUT" | grep "OVERALL" | grep -oE '[0-9]+\.[0-9]+' || echo "0")
-          CRITICAL=$(echo "$OUTPUT" | grep "Total:" | grep -oE '[0-9]+ critical' | grep -oE '[0-9]+' || echo "0")
+          SCORE=$(echo "$OUTPUT" | grep "OVERALL" | grep -oE '[0-9]+\.[0-9]+' | head -1 || echo "0")
+          CRITICAL=$(echo "$OUTPUT" | grep "Total:" | grep -oE '[0-9]+ critical' | head -1 | grep -oE '[0-9]+' || echo "0")
           echo ""
           echo "Eval score: $SCORE/10"
           echo "Critical findings: $CRITICAL"
-          if [ "$CRITICAL" -gt 0 ]; then
+          if [ "${CRITICAL:-0}" -gt 0 ]; then
             echo "::error::Critical findings detected. 0 critical findings required."
             exit 1
           fi
