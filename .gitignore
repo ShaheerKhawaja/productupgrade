@@ -1,8 +1,8 @@
-# Handoff files contain internal paths and session state — never push to public repo
+# Internal session artifacts — never push to public repo
 HANDOFF*.md
 HANDOVER*.md
-
-# Session and learned data
+TODOS.md
+.context/
 .productionos/
 .productupgrade/
 ~/.productionos/
