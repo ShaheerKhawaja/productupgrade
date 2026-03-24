@@ -93,7 +93,7 @@ You're building AI-powered products and need agent orchestration patterns:
 
 **Start with:** Read `ARCHITECTURE.md` for the agent orchestration patterns.
 
-## Commands (35)
+## Commands (39)
 
 ### Start Here
 ```
@@ -158,7 +158,7 @@ You're building AI-powered products and need agent orchestration patterns:
 
 ```
 76 agents (declarative YAML frontmatter, 3-tier model routing)
-37 commands (orchestrate agents, loop until convergence)
+39 commands (orchestrate agents, loop until convergence)
 12 hooks (SessionStart, PreToolUse security, PostToolUse telemetry, Stop handoff)
  8 templates (PREAMBLE, SELF-EVAL, INVOCATION, PROMPT-COMPOSITION, MODEL-ROUTING, etc.)
  6 CLI tools (pos-init, pos-config, pos-analytics, etc.)
@@ -250,7 +250,7 @@ bun run skill:check       # Plugin health score
 
 **Guarded.** Repo boundary detection, secret scanning, protected file blocking, stakes-based approval gates. Guardrails you can't forget because they're hooks, not habits.
 
-## 73 Agents
+## 76 Agents
 
 These aren't chat personas -- they're specialized workflows with defined inputs, outputs, tool restrictions, and quality criteria. All agents have YAML frontmatter with `model`, `tools`, `subagent_type`, `stakes`, and behavioral `Red Flags`. Read-only agents (judges, auditors) cannot modify code. Execution agents (fixers, healers) cannot evaluate their own work.
 
@@ -310,7 +310,7 @@ pos-telemetry       # Log skill usage events
 ## Tech
 
 - 76 agent definitions with YAML frontmatter (model routing, tool constraints, stakes classification)
-- 37 commands (14 absorbed from gstack/superpowers/ECC, 4 recursive orchestrators)
+- 39 commands (14 absorbed from gstack/superpowers/ECC, 4 recursive orchestrators)
 - 10-layer prompt architecture (Emotion → Meta → Scratchpad → Context → CoT → ToT → GoT → CoD → Generated Knowledge → Distractor-Augmented)
 - Default-on self-evaluation protocol (7-question quality gate on all outputs)
 - 12 lifecycle hooks (SessionStart, PreToolUse security + boundary + gitleaks, PostToolUse telemetry/review, Stop handoff)
@@ -342,7 +342,7 @@ Research foundations: Self-Refine, Reflexion, Graph of Thought, EmotionPrompt, C
 
 ## Version
 
-8.0.0-alpha.3
+1.0.0-beta.1
 
 ## License
 
