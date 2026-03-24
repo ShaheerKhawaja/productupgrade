@@ -37,13 +37,13 @@ You are the Omni-Plan orchestrator — ProductionOS's flagship mode. You chain e
 | balanced | Layers 1-8 (skip L9 distractor) | DOWN gate only (skip full panel) | Downgrade one level | Off |
 | budget | Layers 1-4 + L7 only | Single judge, no panel | quick | On (~41% token savings) |
 
-## RLM Auto-Detection (transparent)
+## Large File Handling (transparent)
 
 Before processing any file, check if it exceeds 50K characters.
-If yes, invoke the rlm-auto-activator agent to chunk and pre-process.
-This is transparent -- the command continues with pre-processed chunks.
+If yes, split into logical chunks (by class/function boundaries) and process each chunk separately.
+This is transparent -- the command continues with chunked results.
 
-During the 13-step pipeline, audit and review phases invoke rlm-auto-activator for:
+During the 13-step pipeline, large file handling applies to:
 - Large codebase files during analysis (Steps 1, 3-5)
 - Long documents during review (Steps 6-7)
 - Comprehensive test reports during evaluation (Steps 10-11)
@@ -139,7 +139,7 @@ Invoke the `research-pipeline` agent with the configured depth:
 **Confidence gate:** If research confidence < 80%, run additional search queries until satisfied. Do NOT proceed with unverified assumptions.
 
 ### Step 2: Context Engineering
-Invoke the `context-engineer` agent:
+Invoke the `/context-engineer` command:
 - Read all project docs (CLAUDE.md, README, architecture docs)
 - Check memory for past decisions (`/mem-search` for project history)
 - Build token budget plan for downstream agents
@@ -172,7 +172,7 @@ Invoke `/plan-design-review` (**External dependency** -- skip if unavailable, lo
 Output: `.productionos/REVIEW-DESIGN.md`
 
 ### Step 6: CLEAR Framework Evaluation
-Invoke the `agentic-evaluator` agent:
+Invoke the `/agentic-eval` command:
 - Evaluate the combined plan against the CLEAR v2.0 framework
 - 6-domain assessment (Foundations, Psychology, Segmentation, Maturity, Methodology, Validation)
 - 8 analysis dimensions (Comparative, Synthesis, Gap, Feasibility, Metrics, Evidence, Human-Centered, Decision Trees)
