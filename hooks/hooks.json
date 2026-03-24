@@ -1,5 +1,5 @@
 {
-  "_meta": "ProductionOS v1.0.0-beta.1 — 77 agents | 40 commands | 12 hooks | 4-layer Production House | scope enforcement",
+  "_meta": "ProductionOS v1.0.0-beta.1 — 77 agents | 40 commands | 15 hooks | 4-layer Production House | scope enforcement | eval gates",
   "SessionStart": [
     {
       "matcher": "startup|resume|clear|compact",
@@ -72,6 +72,12 @@
           "type": "command",
           "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/post-edit-review-hint.sh\"",
           "async": true
+        },
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/eval-gate.sh\"",
+          "async": true,
+          "statusMessage": "ProductionOS: Eval gate..."
         }
       ]
     },
@@ -99,6 +105,12 @@
           "type": "command",
           "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/stop-extract-instincts.sh\"",
           "async": true
+        },
+        {
+          "type": "command",
+          "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/stop-eval-gate.sh\"",
+          "async": true,
+          "statusMessage": "ProductionOS: Session-end eval..."
         }
       ]
     }
