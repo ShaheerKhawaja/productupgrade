@@ -71,16 +71,49 @@ else
   printf '{"event":"session_start","ts":"%s","pid":%d,"sessions":%d,"project":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" $$ "$SESSIONS" "$SAFE_PROJ" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
 fi
 
+# DevTools auto-launch + status
+DEVTOOLS_STATUS="off"
+DEVTOOLS_APP="/Applications/claude-devtools.app"
+if [ -d "$DEVTOOLS_APP" ]; then
+  # Check if autolaunch is enabled (default: true)
+  DEVTOOLS_AUTOLAUNCH="true"
+  if [ -f "$STATE_DIR/config/settings.json" ]; then
+    DEVTOOLS_AUTOLAUNCH=$(python3 -c "import json, sys; print(json.load(open(sys.argv[1])).get('devtools_autolaunch', True))" "$STATE_DIR/config/settings.json" 2>/dev/null || echo "true")
+  fi
+
+  if pgrep -f "claude-devtools" >/dev/null 2>&1; then
+    DEVTOOLS_STATUS="live"
+  else
+    DEVTOOLS_STATUS="ready"
+    # Auto-launch if enabled
+    if [ "$DEVTOOLS_AUTOLAUNCH" = "true" ] || [ "$DEVTOOLS_AUTOLAUNCH" = "True" ]; then
+      open "$DEVTOOLS_APP" 2>/dev/null &
+      DEVTOOLS_STATUS="live"
+    fi
+  fi
+fi
+
+# Snapshot cost baseline for session delta tracking
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
+python3 "$PLUGIN_ROOT/hooks/devtools-dashboard.py" --snapshot 2>/dev/null || true
+
+# Get dashboard metrics for banner
+DASHBOARD_METRICS=$(python3 "$PLUGIN_ROOT/hooks/devtools-dashboard.py" --banner 2>/dev/null || echo "")
+
 cat << 'BANNER'
 
   ╔═══════════════════════════════════════════════════╗
   ║  ProductionOS v1.0.0-beta.1 — Production House   ║
-  ║  76 agents | 39 commands | 12 hooks               ║
+  ║  76 agents | 41 commands | 14 hooks               ║
   ╠═══════════════════════════════════════════════════╣
 BANNER
 printf "  ║  Sessions: %-3s | Auto-Review: %-5s | Learn: %-4s ║\n" "$SESSIONS" "$AUTO_REVIEW" "$PROACTIVE"
 if [ -n "$PROJECT_NAME" ]; then
   printf "  ║  Project: %-40s ║\n" "$PROJECT_NAME"
+fi
+printf "  ║  DevTools: %-39s ║\n" "$DEVTOOLS_STATUS"
+if [ -n "$DASHBOARD_METRICS" ]; then
+  printf "  ║  Metrics: %-39s ║\n" "$DASHBOARD_METRICS"
 fi
 echo "  ╚═══════════════════════════════════════════════════╝"
 

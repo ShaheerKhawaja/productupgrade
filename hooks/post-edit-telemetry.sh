@@ -62,3 +62,29 @@ else
     printf '{"event":"edit","ts":"%s","file":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$SAFE_FILE" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
   fi
 fi
+
+# Churn warning: check if this file is a hot file from cross-session patterns
+# Only for files within the active project (scope guard)
+HOT_FILES_CACHE="$STATE_DIR/instincts/learned/hot-files-cache.json"
+if [ -n "$FILE_PATH" ] && [ -n "$ACTIVE_PROJECT" ] && \
+   [[ "$FILE_PATH" == "$ACTIVE_PROJECT"/* ]] && \
+   [ -f "$HOT_FILES_CACHE" ] && command -v python3 >/dev/null 2>&1; then
+  # Emit JSON via json.dumps from Python to prevent shell injection
+  python3 -c "
+import json, sys, os
+try:
+    with open(sys.argv[1]) as f:
+        cache = json.load(f)
+    hot = cache.get('hot_files', {})
+    if not isinstance(hot, dict):
+        sys.exit(0)
+    fp = sys.argv[2]
+    count = hot.get(fp, 0)
+    if isinstance(count, (int, float)) and count >= 5:
+        name = os.path.basename(fp)
+        msg = f'High-churn file: {name} ({int(count)} modifications across sessions). Consider refactoring.'
+        print(json.dumps({'additionalContext': msg}))
+except Exception:
+    pass
+" "$HOT_FILES_CACHE" "$FILE_PATH" 2>/dev/null || true
+fi

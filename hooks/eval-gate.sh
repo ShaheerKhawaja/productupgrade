@@ -40,7 +40,18 @@ if [ "$CURRENT_COUNT" -gt 0 ] && [ $((CURRENT_COUNT % EVAL_INTERVAL)) -eq 0 ]; t
   # Run full eval (slower, only at 20+ edits)
   if [ "$CURRENT_COUNT" -ge 20 ]; then
     EVAL_SCORE=$(bun run eval 2>&1 | grep "OVERALL" | grep -oE '[0-9]+\.[0-9]+' || echo "0")
-    if [ -n "$EVAL_SCORE" ]; then
+    # Validate EVAL_SCORE is a plain decimal number before use
+    if [[ "$EVAL_SCORE" =~ ^[0-9]+\.[0-9]+$ ]]; then
+      # Persist score to convergence log for DevTools dashboard
+      CONVERGENCE_FILE="$STATE_DIR/analytics/eval-convergence.jsonl"
+      mkdir -p "$(dirname "$CONVERGENCE_FILE")"
+      if command -v jq >/dev/null 2>&1; then
+        jq -n --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson score "$EVAL_SCORE" --argjson edits "$CURRENT_COUNT" \
+          '{ts: $ts, score: $score, edits: $edits}' >> "$CONVERGENCE_FILE" 2>/dev/null || true
+      else
+        printf '{"ts":"%s","score":%s,"edits":%d}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$EVAL_SCORE" "$CURRENT_COUNT" >> "$CONVERGENCE_FILE" 2>/dev/null || true
+      fi
+
       SCORE_INT=$(echo "$EVAL_SCORE" | cut -d. -f1)
       if [ "$SCORE_INT" -lt "$EVAL_THRESHOLD" ]; then
         echo "{\"additionalContext\":\"EVAL GATE: Score $EVAL_SCORE/10 (threshold: $EVAL_THRESHOLD/10) after $CURRENT_COUNT edits. Address findings in .productionos/EVAL-REPORT.md before pushing.\"}"

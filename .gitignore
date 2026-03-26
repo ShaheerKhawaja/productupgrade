@@ -27,3 +27,4 @@ Thumbs.db
 
 # Local settings (contains project-specific plugin suppression)
 .claude/settings.local.json
+__pycache__/
