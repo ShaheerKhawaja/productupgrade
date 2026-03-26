@@ -49,12 +49,7 @@ If not installed, tell the user to run `brew install --cask claude-devtools` and
 **status**:
 1. Run the dashboard script for the full report:
    ```bash
-   PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
-   python3 "$PLUGIN_ROOT/hooks/devtools-dashboard.py" --full 2>/dev/null || echo "Dashboard script not found"
-   ```
-   But since the PLUGIN_ROOT may not resolve from a command context, use this instead:
-   ```bash
-   python3 ~/.claude/plugins/marketplaces/productupgrade/hooks/devtools-dashboard.py --full
+   python3 "${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/productupgrade}/hooks/devtools-dashboard.py" --full
    ```
 2. Display the output to the user as-is (it's already formatted)
 
@@ -74,7 +69,7 @@ If not installed, tell the user to run `brew install --cask claude-devtools` and
 
 Run the dashboard script:
 ```bash
-python3 ~/.claude/plugins/marketplaces/productupgrade/hooks/devtools-dashboard.py --full
+python3 "${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/productupgrade}/hooks/devtools-dashboard.py" --full
 ```
 
 This shows:

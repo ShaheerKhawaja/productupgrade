@@ -6,6 +6,9 @@ Usage:
     python3 devtools-dashboard.py --full      # Full report for /devtools status command
     python3 devtools-dashboard.py --snapshot  # Record cost baseline at session start
 """
+from __future__ import annotations
+
+import argparse
 import json
 import os
 import sys
@@ -14,7 +17,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 STATE_DIR = Path(os.environ.get("PRODUCTIONOS_HOME", os.path.expanduser("~/.productionos")))
-COSTS_FILE = Path(os.path.expanduser("~/.claude/metrics/costs.jsonl"))
+_CLAUDE_HOME = Path(os.environ.get("CLAUDE_HOME", os.path.expanduser("~/.claude")))
+COSTS_FILE = _CLAUDE_HOME / "metrics" / "costs.jsonl"
 ANALYTICS_FILE = STATE_DIR / "analytics" / "skill-usage.jsonl"
 DISPATCH_LOG = STATE_DIR / "dispatch-log.jsonl"
 EVAL_CONVERGENCE = STATE_DIR / "analytics" / "eval-convergence.jsonl"
@@ -90,16 +94,19 @@ def get_eval_scores() -> list[dict]:
 
 
 def get_hot_files() -> dict[str, int]:
-    """Get hot files from cache."""
+    """Get hot files from cache with safe type coercion."""
     cache = read_json(HOT_FILES_CACHE)
-    return cache.get("hot_files", {})
+    raw = cache.get("hot_files", {})
+    if not isinstance(raw, dict):
+        return {}
+    return {k: int(v) for k, v in raw.items() if isinstance(v, (int, float))}
 
 
 def sparkline(values: list[float]) -> str:
     """Render values as ASCII sparkline."""
     if not values:
         return ""
-    chars = "▁▂▃▄▅▆▇█"
+    chars = "\u2581\u2582\u2583\u2584\u2585\u2586\u2587\u2588"
     mn, mx = min(values), max(values)
     rng = mx - mn if mx != mn else 1
     return "".join(chars[min(int((v - mn) / rng * 7), 7)] for v in values)
@@ -140,12 +147,10 @@ def full_mode():
     cost = get_session_cost()
     total_cost = get_total_cost()
 
-    # Header
     print("ProductionOS DevTools Dashboard")
     print("=" * 50)
     print()
 
-    # Session metrics
     edits = len([e for e in events if e.get("event") == "edit"])
     sessions = len([e for e in events if e.get("event") == "session_start"])
     security = len([e for e in events if e.get("event") == "security_edit"])
@@ -155,14 +160,12 @@ def full_mode():
     print(f"  Agent dispatches:  {len(agents)}")
     print()
 
-    # Cost
     print("Cost")
     print("-" * 50)
     print(f"  This session:      ${cost:.2f}")
     print(f"  All time:          ${total_cost:.2f}")
     print()
 
-    # Eval convergence
     print("Eval Convergence")
     print("-" * 50)
     if scores:
@@ -174,7 +177,6 @@ def full_mode():
         print("  No eval data yet (runs every 10 edits)")
     print()
 
-    # Agent dispatches
     print("Agent Dispatches")
     print("-" * 50)
     if agents:
@@ -185,19 +187,17 @@ def full_mode():
         print("  No agents dispatched today")
     print()
 
-    # Hot files (churn)
     print("Hot Files (cross-session churn)")
     print("-" * 50)
     if hot_files:
         for filepath, count in sorted(hot_files.items(), key=lambda x: -x[1])[:10]:
-            name = os.path.basename(filepath)
+            name = Path(filepath).name
             bar = "#" * min(count, 20)
             print(f"  {name:40s} {bar} ({count})")
     else:
         print("  No churn data yet (aggregates every 100 events)")
     print()
 
-    # Event breakdown
     print("Event Breakdown")
     print("-" * 50)
     event_counts = Counter(e.get("event", "unknown") for e in events)
@@ -211,26 +211,36 @@ def snapshot_mode():
     snapshot = {
         "cumulative_cost": total,
         "snapshot_ts": datetime.now(timezone.utc).isoformat(),
-        "pid": os.getpid(),
     }
     snapshot_path = COST_SNAPSHOT
     snapshot_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(snapshot_path, "w") as f:
+    tmp = snapshot_path.with_suffix(".tmp")
+    with open(tmp, "w") as f:
         json.dump(snapshot, f, indent=2)
+    tmp.replace(snapshot_path)
     print(f"Cost snapshot: ${total:.2f}")
 
 
 def main():
-    mode = sys.argv[1] if len(sys.argv) > 1 else "--banner"
-    if mode == "--banner":
-        banner_mode()
-    elif mode == "--full":
-        full_mode()
-    elif mode == "--snapshot":
+    """Parse CLI arguments and dispatch to the appropriate mode."""
+    parser = argparse.ArgumentParser(description="ProductionOS DevTools Dashboard")
+    parser.add_argument(
+        "--banner", action="store_true", help="One-liner for session banner",
+    )
+    parser.add_argument(
+        "--full", action="store_true", help="Full dashboard report",
+    )
+    parser.add_argument(
+        "--snapshot", action="store_true", help="Record cost baseline",
+    )
+    args = parser.parse_args()
+
+    if args.snapshot:
         snapshot_mode()
+    elif args.full:
+        full_mode()
     else:
-        print(f"Unknown mode: {mode}", file=sys.stderr)
-        sys.exit(1)
+        banner_mode()
 
 
 if __name__ == "__main__":

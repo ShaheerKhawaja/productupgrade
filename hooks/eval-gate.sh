@@ -40,7 +40,8 @@ if [ "$CURRENT_COUNT" -gt 0 ] && [ $((CURRENT_COUNT % EVAL_INTERVAL)) -eq 0 ]; t
   # Run full eval (slower, only at 20+ edits)
   if [ "$CURRENT_COUNT" -ge 20 ]; then
     EVAL_SCORE=$(bun run eval 2>&1 | grep "OVERALL" | grep -oE '[0-9]+\.[0-9]+' || echo "0")
-    if [ -n "$EVAL_SCORE" ]; then
+    # Validate EVAL_SCORE is a plain decimal number before use
+    if [[ "$EVAL_SCORE" =~ ^[0-9]+\.[0-9]+$ ]]; then
       # Persist score to convergence log for DevTools dashboard
       CONVERGENCE_FILE="$STATE_DIR/analytics/eval-convergence.jsonl"
       mkdir -p "$(dirname "$CONVERGENCE_FILE")"
