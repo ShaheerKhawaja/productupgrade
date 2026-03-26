@@ -62,3 +62,24 @@ else
     printf '{"event":"edit","ts":"%s","file":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$SAFE_FILE" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
   fi
 fi
+
+# Churn warning: check if this file is a hot file from cross-session patterns
+HOT_FILES_CACHE="$STATE_DIR/instincts/learned/hot-files-cache.json"
+if [ -n "$FILE_PATH" ] && [ -f "$HOT_FILES_CACHE" ] && command -v python3 >/dev/null 2>&1; then
+  CHURN_WARNING=$(python3 -c "
+import json, sys, os
+try:
+    cache = json.load(open(sys.argv[1]))
+    hot = cache.get('hot_files', {})
+    fp = sys.argv[2]
+    count = hot.get(fp, 0)
+    if count >= 5:
+        name = os.path.basename(fp)
+        print(f'High-churn file: {name} ({count} modifications across sessions). Consider refactoring.')
+except:
+    pass
+" "$HOT_FILES_CACHE" "$FILE_PATH" 2>/dev/null || true)
+  if [ -n "$CHURN_WARNING" ]; then
+    echo "{\"additionalContext\":\"$CHURN_WARNING\"}"
+  fi
+fi

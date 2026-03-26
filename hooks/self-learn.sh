@@ -154,4 +154,14 @@ if [ "$ENTRY_COUNT" -ge 100 ] && [ $((ENTRY_COUNT % 100)) -eq 0 ]; then
     echo "- Total events: ${TOTAL_EVENTS}"
 
   } > "$CROSS_SESSION_FILE" 2>/dev/null || true
+
+  # Write hot-files-cache.json for churn warnings (O(1) lookup by post-edit-telemetry.sh)
+  HOT_FILES_CACHE="${LEARN_DIR}/hot-files-cache.json"
+  cat "${LEARN_DIR}"/session-*.jsonl 2>/dev/null \
+    | jq -r 'select(.event == "file_modified") | .file' 2>/dev/null \
+    | sort | uniq -c | sort -rn \
+    | awk '$1 >= 5 {printf "%s\t%d\n", $2, $1}' \
+    | head -20 \
+    | jq -Rn '[inputs | split("\t") | {(.[0]): (.[1] | tonumber)}] | add // {}' \
+    | jq '{hot_files: ., updated: now | todate}' > "$HOT_FILES_CACHE" 2>/dev/null || true
 fi
