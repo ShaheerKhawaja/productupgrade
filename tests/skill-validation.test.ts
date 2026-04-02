@@ -80,6 +80,28 @@ describe('plugin.json', () => {
   });
 });
 
+describe('Codex skill packaging', () => {
+  test('root SKILL.md exists and has valid frontmatter', () => {
+    const content = readFileOrNull(path.join(ROOT, 'SKILL.md'));
+    expect(content).not.toBeNull();
+
+    const fm = parseFrontmatter(content!);
+    expect(fm).not.toBeNull();
+    expect(fm!.name).toBe('productionos');
+    expect(typeof fm!.description).toBe('string');
+    expect(String(fm!.description).length).toBeGreaterThan(0);
+  });
+
+  test('agents/openai.yaml exists and includes required interface fields', () => {
+    const content = readFileOrNull(path.join(ROOT, 'agents', 'openai.yaml'));
+    expect(content).not.toBeNull();
+    expect(content).toContain('display_name:');
+    expect(content).toContain('short_description:');
+    expect(content).toContain('default_prompt:');
+    expect(content).toContain('$productionos');
+  });
+});
+
 describe('Agent frontmatter validation', () => {
   const agentsDir = path.join(ROOT, 'agents');
   const agentFiles = listMdFiles(agentsDir);

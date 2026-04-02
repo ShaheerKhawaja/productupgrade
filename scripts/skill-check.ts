@@ -98,6 +98,43 @@ runCheck('SKILL.md has valid frontmatter', () => {
   return { pass: hasName && hasDesc, details };
 });
 
+// 4b. Root Codex SKILL.md exists and has valid frontmatter
+runCheck('Root Codex SKILL.md has valid frontmatter', () => {
+  const content = readFileOrNull(path.join(ROOT, 'SKILL.md'));
+  if (!content) return { pass: false, details: ['Root SKILL.md not found'] };
+  const fm = parseFrontmatter(content);
+  if (!fm) return { pass: false, details: ['No YAML frontmatter found'] };
+  const hasName = typeof fm.name === 'string' && fm.name.length > 0;
+  const hasDesc = typeof fm.description === 'string' && fm.description.length > 0;
+  const details: string[] = [];
+  if (!hasName) details.push('Missing "name" field');
+  if (!hasDesc) details.push('Missing "description" field');
+  if (details.length === 0) details.push(`name="${fm.name}"`);
+  return { pass: hasName && hasDesc, details };
+});
+
+// 4c. Codex UI metadata exists
+runCheck('agents/openai.yaml has required interface fields', () => {
+  const content = readFileOrNull(path.join(ROOT, 'agents', 'openai.yaml'));
+  if (!content) return { pass: false, details: ['agents/openai.yaml not found'] };
+
+  const required = ['display_name:', 'short_description:', 'default_prompt:'];
+  const missing = required.filter(field => !content.includes(field));
+  const mentionsSkill = content.includes('$productionos');
+
+  const details: string[] = [];
+  if (missing.length > 0) {
+    details.push(`Missing fields: ${missing.join(', ')}`);
+  }
+  if (!mentionsSkill) {
+    details.push('default_prompt should mention $productionos');
+  }
+  if (details.length === 0) {
+    details.push('display_name, short_description, and default_prompt are present');
+  }
+  return { pass: missing.length === 0 && mentionsSkill, details };
+});
+
 // 5. All agent .md files have valid YAML frontmatter (name, description, color, tools)
 runCheck('All agents have valid frontmatter', () => {
   const agentFiles = listMdFiles(path.join(ROOT, 'agents'));

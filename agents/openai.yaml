@@ -1,0 +1,4 @@
+interface:
+  display_name: "ProductionOS"
+  short_description: "Repo audits and upgrade workflows"
+  default_prompt: "Use $productionos to audit this repo, prioritize the highest-leverage fixes, and execute a validated upgrade plan."

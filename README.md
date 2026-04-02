@@ -41,6 +41,17 @@ claude plugin validate ~/.claude/plugins/marketplaces/productupgrade/.claude-plu
 
 That's it. ProductionOS discovers your stack, deploys 7 review agents in parallel, scores your code across 10 dimensions, and generates a fix plan. Run it again — the score goes up.
 
+### Codex Skill Install
+
+```bash
+python ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
+  --repo ShaheerKhawaja/ProductionOS \
+  --path . \
+  --name productionos
+```
+
+Restart Codex to pick up the new skill.
+
 ## What It Does
 
 ### The Core Loop

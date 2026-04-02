@@ -9,6 +9,7 @@
   },
   "files": [
     "bin/",
+    "SKILL.md",
     ".claude/commands/",
     ".claude/skills/",
     "agents/",
