@@ -2,6 +2,7 @@ import { describe, test, expect } from "bun:test";
 import { execFileSync } from "child_process";
 import { join } from "path";
 import { ROOT } from "../scripts/lib/shared";
+import { getBunRunCommand } from "../scripts/lib/runtime";
 
 /**
  * Behavioral tests — actually execute ProductionOS scripts and hooks,
@@ -12,9 +13,11 @@ import { ROOT } from "../scripts/lib/shared";
 // ─── Helpers ───────────────────────────────────────────────
 
 const runScript = (script: string, args: string[] = []): string => {
+  const bun = getBunRunCommand([join(ROOT, "scripts", script), ...args]);
   try {
-    return execFileSync("bun", ["run", join(ROOT, "scripts", script), ...args], {
+    return execFileSync(bun.command, bun.args, {
       cwd: ROOT, encoding: "utf-8", timeout: 30_000,
+      env: bun.env,
       stdio: ["pipe", "pipe", "pipe"],
     }).trim();
   } catch (e: unknown) {
@@ -160,8 +163,10 @@ describe("scope-enforcement hook", () => {
 
 describe("package.json scripts", () => {
   test("bun run stats produces dashboard", () => {
-    const out = execFileSync("bun", ["run", "stats"], {
+    const bun = getBunRunCommand(["stats"]);
+    const out = execFileSync(bun.command, bun.args, {
       cwd: ROOT, encoding: "utf-8", timeout: 15_000,
+      env: bun.env,
       stdio: ["pipe", "pipe", "pipe"],
     }).trim();
     expect(out).toContain("ProductionOS Stats");

@@ -17,6 +17,7 @@ import { join } from "path";
 import { ROOT } from "../scripts/lib/shared";
 
 const PLUGIN_DIR = join(ROOT, ".claude-plugin");
+const CODEX_PLUGIN_DIR = join(ROOT, ".codex-plugin");
 const HOOKS_DIR = join(ROOT, "hooks");
 const AGENTS_DIR = join(ROOT, "agents");
 
@@ -116,6 +117,31 @@ describe("plugin.json schema compliance", () => {
   test("does NOT have explicit hooks field (auto-loaded by convention)", () => {
     // See PLUGIN_SCHEMA_NOTES.md — adding hooks causes duplicate error in Claude Code v2.1+
     expect(raw.hooks).toBeUndefined();
+  });
+});
+
+// ─── Codex Plugin Schema ────────────────────────────────────
+
+describe(".codex-plugin/plugin.json schema compliance", () => {
+  const raw = JSON.parse(readFileSync(join(CODEX_PLUGIN_DIR, "plugin.json"), "utf-8"));
+
+  test("has required fields: name, version, description, interface", () => {
+    expect(raw.name).toBeDefined();
+    expect(raw.version).toBeDefined();
+    expect(raw.description).toBeDefined();
+    expect(raw.interface).toBeDefined();
+  });
+
+  test("points skills at the repo skills directory", () => {
+    expect(raw.skills).toBe("./skills/");
+  });
+
+  test("interface has required Codex presentation fields", () => {
+    expect(raw.interface.displayName).toBeDefined();
+    expect(raw.interface.shortDescription).toBeDefined();
+    expect(raw.interface.longDescription).toBeDefined();
+    expect(Array.isArray(raw.interface.defaultPrompt)).toBe(true);
+    expect(raw.interface.defaultPrompt.length).toBeGreaterThan(0);
   });
 });
 

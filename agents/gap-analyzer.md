@@ -43,7 +43,7 @@ Before comparing against anything, you must know exactly what ProductionOS conta
 
 ```bash
 # Enumerate all ProductionOS agents
-ls ~/.claude/plugins/marketplaces/productupgrade/agents/*.md 2>/dev/null | while read f; do
+ls ~/.claude/plugins/marketplaces/productionos/agents/*.md 2>/dev/null | while read f; do
   name=$(grep '^name:' "$f" | head -1 | sed 's/name: *//' | tr -d '"')
   desc=$(grep '^description:' "$f" | head -1 | sed 's/description: *//' | tr -d '"' | cut -c1-80)
   echo "| $name | $desc |"
@@ -63,7 +63,7 @@ Produce a table:
 
 ```bash
 # Enumerate all ProductionOS commands
-ls ~/.claude/plugins/marketplaces/productupgrade/.claude/commands/*.md 2>/dev/null | while read f; do
+ls ~/.claude/plugins/marketplaces/productionos/.claude/commands/*.md 2>/dev/null | while read f; do
   name=$(basename "$f" .md)
   echo "| /$name |"
 done
@@ -76,31 +76,31 @@ grep -A 2 '| /' ~/.claude/skills/productionos/SKILL.md 2>/dev/null
 
 ```bash
 # Check for prompt composition templates
-ls ~/.claude/plugins/marketplaces/productupgrade/templates/ 2>/dev/null
-cat ~/.claude/plugins/marketplaces/productupgrade/templates/PROMPT-COMPOSITION.md 2>/dev/null | head -50
+ls ~/.claude/plugins/marketplaces/productionos/templates/ 2>/dev/null
+cat ~/.claude/plugins/marketplaces/productionos/templates/PROMPT-COMPOSITION.md 2>/dev/null | head -50
 
 # Extract reasoning frameworks referenced across all agents
-grep -roh "Chain of Thought\|Tree of Thought\|Graph of Thought\|Chain of Density\|ReAct\|Self-Consistency\|Reflexion\|Self-Refine\|Constitutional\|EmotionPrompt\|Meta-Prompting\|Few-Shot\|Zero-Shot\|CoT\|ToT\|GoT\|CoD" ~/.claude/plugins/marketplaces/productupgrade/ 2>/dev/null | sort -u
+grep -roh "Chain of Thought\|Tree of Thought\|Graph of Thought\|Chain of Density\|ReAct\|Self-Consistency\|Reflexion\|Self-Refine\|Constitutional\|EmotionPrompt\|Meta-Prompting\|Few-Shot\|Zero-Shot\|CoT\|ToT\|GoT\|CoD" ~/.claude/plugins/marketplaces/productionos/ 2>/dev/null | sort -u
 ```
 
 ### Step 1.4: MCP Integration Inventory
 
 ```bash
 # Check which MCPs ProductionOS agents reference
-grep -roh "mcp__[a-z_-]*__[a-z_-]*" ~/.claude/plugins/marketplaces/productupgrade/ 2>/dev/null | sort -u
+grep -roh "mcp__[a-z_-]*__[a-z_-]*" ~/.claude/plugins/marketplaces/productionos/ 2>/dev/null | sort -u
 
 # Check which MCPs are referenced in tool lists
-grep -rn "tools:" ~/.claude/plugins/marketplaces/productupgrade/agents/*.md 2>/dev/null | head -40
+grep -rn "tools:" ~/.claude/plugins/marketplaces/productionos/agents/*.md 2>/dev/null | head -40
 
 # Check context7, sequential-thinking, memory references
-grep -rn "context7\|sequential-thinking\|memory\|langfuse\|playwright\|github" ~/.claude/plugins/marketplaces/productupgrade/ 2>/dev/null | grep -v ".git" | head -20
+grep -rn "context7\|sequential-thinking\|memory\|langfuse\|playwright\|github" ~/.claude/plugins/marketplaces/productionos/ 2>/dev/null | grep -v ".git" | head -20
 ```
 
 ### Step 1.5: Output Format Inventory
 
 ```bash
 # What output artifact types does ProductionOS produce?
-grep -roh '\.productionos/[A-Z_-]*' ~/.claude/plugins/marketplaces/productupgrade/ 2>/dev/null | sort -u
+grep -roh '\.productionos/[A-Z_-]*' ~/.claude/plugins/marketplaces/productionos/ 2>/dev/null | sort -u
 ```
 
 Record the complete inventory before proceeding.
@@ -180,7 +180,7 @@ done
 ```bash
 # Check official plugins for capabilities
 ls ~/.claude/plugins/cache/ 2>/dev/null | head -20
-find ~/.claude/plugins/ -name "*.md" -path "*/agents/*" 2>/dev/null | grep -v "node_modules\|everything-claude-code\|superpowers\|productupgrade" | head -20
+find ~/.claude/plugins/ -name "*.md" -path "*/agents/*" 2>/dev/null | grep -v "node_modules\|everything-claude-code\|superpowers\|productionos" | head -20
 ```
 
 ### Step 2.6: gstack Skill Scan
@@ -723,7 +723,7 @@ Priority: P0 CRITICAL (score >= 8.0)
 
 - **Path**: ABSORB
 - **Source**: `~/.claude/plugins/marketplaces/everything-claude-code/agents/comms-assistant.md` (doc-updater role)
-- **Target**: `~/.claude/plugins/marketplaces/productupgrade/agents/comms-assistant.md` (doc-updater role)
+- **Target**: `~/.claude/plugins/marketplaces/productionos/agents/comms-assistant.md` (doc-updater role)
 - **Modifications**:
   1. Update frontmatter to match ProductionOS conventions (add `color: green`)
   2. Add sub-agent coordination section for gitops (commit doc changes) and code-reviewer (verify doc accuracy)

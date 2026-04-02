@@ -10,6 +10,10 @@ arguments:
 
 # ProductionOS DevTools — Mission Control
 
+## Step 0: Preamble
+
+Before executing, run the shared ProductionOS preamble (`templates/PREAMBLE.md`) to confirm the active install root and session context.
+
 Execute the requested action for Claude DevTools within the ProductionOS ecosystem.
 
 ## Action: $ARGUMENTS.action
@@ -49,7 +53,7 @@ If not installed, tell the user to run `brew install --cask claude-devtools` and
 **status**:
 1. Run the dashboard script for the full report:
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/productupgrade}/hooks/devtools-dashboard.py" --full
+   python3 "${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/productionos}/hooks/devtools-dashboard.py" --full
    ```
 2. Display the output to the user as-is (it's already formatted)
 
@@ -69,7 +73,7 @@ If not installed, tell the user to run `brew install --cask claude-devtools` and
 
 Run the dashboard script:
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/productupgrade}/hooks/devtools-dashboard.py" --full
+python3 "${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/productionos}/hooks/devtools-dashboard.py" --full
 ```
 
 This shows:

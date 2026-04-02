@@ -1,7 +1,7 @@
 {
   "name": "productionos",
   "version": "1.0.0-beta.1",
-  "description": "ProductionOS — AI engineering OS for Claude Code. 76 agents, 39 commands, 12 hooks. Smart routing + adaptive learning + dynamic agent factory.",
+  "description": "ProductionOS — dual-target AI engineering OS for Claude Code and Codex. 78 agents, 41 commands, 17 hooks.",
   "license": "MIT",
   "type": "module",
   "bin": {
@@ -9,15 +9,18 @@
   },
   "files": [
     "bin/",
+    ".codex-plugin/",
     "SKILL.md",
     ".claude/commands/",
     ".claude/skills/",
+    "skills/",
     "agents/",
     "VERSION",
     "CLAUDE.md"
   ],
   "scripts": {
-    "build": "bun run gen:skill-docs",
+    "build": "bun run gen:targets && bun run gen:skill-docs",
+    "gen:targets": "bun run scripts/gen-targets.ts",
     "gen:skill-docs": "bun run scripts/gen-skill-docs.ts",
     "skill:check": "bun run scripts/skill-check.ts",
     "test": "bun test tests/",

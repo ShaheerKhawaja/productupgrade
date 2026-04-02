@@ -1,0 +1,42 @@
+{
+  "name": "productionos",
+  "version": "1.0.0-beta.1",
+  "description": "Dual-target AI engineering operating system for Codex and Claude parity workflows.",
+  "author": {
+    "name": "Shaheer Khawaja",
+    "url": "https://github.com/ShaheerKhawaja",
+    "email": "ShaheerKhawaja@users.noreply.github.com"
+  },
+  "homepage": "https://github.com/ShaheerKhawaja/ProductionOS",
+  "repository": "https://github.com/ShaheerKhawaja/ProductionOS",
+  "license": "MIT",
+  "keywords": [
+    "productionos",
+    "codex-plugin",
+    "agentic-dev",
+    "code-review",
+    "upgrade-plan",
+    "security-audit"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "ProductionOS",
+    "shortDescription": "Repo audits and upgrade workflows",
+    "longDescription": "Production-grade audit, review, planning, and upgrade workflows with shared Claude/Codex parity metadata.",
+    "developerName": "Shaheer Khawaja",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/ShaheerKhawaja/ProductionOS",
+    "privacyPolicyURL": "https://github.com/ShaheerKhawaja/ProductionOS",
+    "termsOfServiceURL": "https://github.com/ShaheerKhawaja/ProductionOS",
+    "defaultPrompt": [
+      "Audit this repo and prioritize the highest-leverage fixes.",
+      "Run the ProductionOS review workflow on this diff.",
+      "Map this Claude workflow to Codex-native execution."
+    ],
+    "brandColor": "#0F766E"
+  }
+}

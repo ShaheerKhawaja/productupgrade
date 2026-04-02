@@ -20,20 +20,21 @@ Before executing, run the shared ProductionOS preamble (`templates/PREAMBLE.md`)
 ```bash
 # Find where ProductionOS is installed
 INSTALL_DIR=""
+CODEX_PLUGIN_DIR=""
 
 # Check marketplace installation
-if [ -d "$HOME/.claude/plugins/marketplaces/productupgrade" ]; then
-  INSTALL_DIR="$HOME/.claude/plugins/marketplaces/productupgrade"
+if [ -d "$HOME/.claude/plugins/marketplaces/productionos" ]; then
+  INSTALL_DIR="$HOME/.claude/plugins/marketplaces/productionos"
 fi
 
-# Check skill installation
-if [ -d "$HOME/.claude/skills/productupgrade" ]; then
-  SKILL_DIR="$HOME/.claude/skills/productupgrade"
+# Check Codex plugin installation
+if [ -d "$HOME/.codex/plugins/productionos" ]; then
+  CODEX_PLUGIN_DIR="$HOME/.codex/plugins/productionos"
 fi
 
 # Check local repo
-if [ -d "$HOME/productupgrade" ]; then
-  REPO_DIR="$HOME/productupgrade"
+if [ -d "$HOME/ProductionOS" ]; then
+  REPO_DIR="$HOME/ProductionOS"
 fi
 ```
 
@@ -57,8 +58,8 @@ If no git repo found, inform user:
 ```
 ProductionOS is not installed from git.
 To install the updatable version:
-  git clone https://github.com/ShaheerKhawaja/ProductionOS.git ~/productupgrade
-  claude plugins add ~/productupgrade
+  git clone https://github.com/ShaheerKhawaja/ProductionOS.git ~/ProductionOS
+  claude plugin install productionos
 ```
 
 ### Step 3: Show Changelog
@@ -93,19 +94,19 @@ git pull origin main
 After pulling, sync to all installation locations:
 ```bash
 # Sync to marketplace plugin directory
-if [ -d "$HOME/.claude/plugins/marketplaces/productupgrade" ]; then
+if [ -d "$HOME/.claude/plugins/marketplaces/productionos" ]; then
   rsync -av --update \
     --exclude='.git' \
-    --exclude='.productupgrade' \
-    "$REPO_DIR/" "$HOME/.claude/plugins/marketplaces/productupgrade/"
+    "$REPO_DIR/" "$HOME/.claude/plugins/marketplaces/productionos/"
   echo "Synced to marketplace installation"
 fi
 
-# Sync SKILL.md to skills directory
-if [ -d "$HOME/.claude/skills/productupgrade" ]; then
-  cp "$REPO_DIR/.claude/skills/productupgrade/SKILL.md" \
-     "$HOME/.claude/skills/productupgrade/SKILL.md"
-  echo "Synced SKILL.md to skills directory"
+# Sync Codex plugin installation
+if [ -d "$HOME/.codex/plugins/productionos" ]; then
+  rsync -av --update \
+    --exclude='.git' \
+    "$REPO_DIR/" "$HOME/.codex/plugins/productionos/"
+  echo "Synced Codex plugin installation"
 fi
 
 # Sync command files
@@ -129,13 +130,13 @@ ProductionOS Updated Successfully
 ────────────────────────────────────
 Previous: vX.Y.Z
 Current:  vA.B.C
-Files synced: marketplace, skills, commands
+Files synced: marketplace, Codex plugin, commands
 ```
 
 ## Rollback
 If update breaks something:
 ```bash
-cd ~/productupgrade
+cd ~/ProductionOS
 git log --oneline -5  # Find the commit to roll back to
 git reset --hard <commit>  # Roll back
 # Then re-run sync steps

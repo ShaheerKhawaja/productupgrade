@@ -13,6 +13,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { readFileOrNull, listMdFiles, ROOT } from './lib/shared';
+import { getGeneratedTargetFiles } from './lib/runtime-targets';
 
 const DRY_RUN = process.argv.includes('--dry-run');
 
@@ -115,6 +116,21 @@ if (skillMdContent) {
   }
 } else {
   check('SKILL.md', 'warn', 'SKILL.md not found');
+}
+
+// 6b. Generated target parity
+const mismatchedTargets = getGeneratedTargetFiles()
+  .map((file) => ({
+    path: file.path,
+    matches: readFileOrNull(path.join(ROOT, file.path)) === file.content,
+  }))
+  .filter((file) => !file.matches)
+  .map((file) => file.path);
+
+if (mismatchedTargets.length === 0) {
+  check('Generated targets', 'pass', 'Claude and Codex target files are in sync');
+} else {
+  check('Generated targets', 'fail', `Out of sync: ${mismatchedTargets.join(', ')}`);
 }
 
 // 7. CLAUDE.md command list vs actual files

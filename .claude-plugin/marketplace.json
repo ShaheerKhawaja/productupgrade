@@ -1,11 +1,11 @@
 {
-  "name": "productupgrade",
+  "name": "productionos",
   "owner": {
     "name": "Shaheer Khawaja",
     "url": "https://github.com/ShaheerKhawaja"
   },
   "metadata": {
-    "description": "ProductionOS — AI engineering OS for Claude Code. 77 agents, 40 commands, 15 hooks. One command to audit, score, and improve any codebase.",
+    "description": "ProductionOS — AI engineering OS for Claude Code and Codex. 78 agents, 41 commands, 17 hooks.",
     "version": "1.0.0-beta.1",
     "homepage": "https://github.com/ShaheerKhawaja/ProductionOS",
     "repository": "https://github.com/ShaheerKhawaja/ProductionOS",
@@ -13,9 +13,9 @@
   },
   "plugins": [
     {
-      "name": "productupgrade",
+      "name": "productionos",
       "source": "./",
-      "description": "AI engineering OS for Claude Code — 77 agents, 40 commands, 15 hooks. 4-layer Production House: smart routing, adaptive learning, dynamic agent factory. Zero external dependencies.",
+      "description": "Dual-target AI engineering OS — 78 agents, 41 commands, 17 hooks, one shared workflow registry.",
       "version": "1.0.0-beta.1",
       "author": {
         "name": "Shaheer Khawaja",
@@ -29,22 +29,16 @@
         "production-upgrade",
         "omni-plan",
         "auto-swarm",
-        "deep-research",
-        "agentic-eval",
         "code-review",
-        "llm-judge",
-        "ux-audit",
         "security-audit",
-        "max-research",
-        "convergence-engine",
-        "cost-tracking",
-        "session-learning"
+        "codex",
+        "claude-code"
       ],
       "category": "workflow",
       "tags": [
         "productionos",
         "claude-code-plugin",
-        "agentic-dev",
+        "codex-plugin",
         "multi-agent",
         "recursive-improvement",
         "self-evaluation"

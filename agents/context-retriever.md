@@ -45,7 +45,7 @@ Check for past decisions and learnings:
 ```bash
 # Check Claude memory
 ls ~/.claude/projects/*/memory/*.md 2>/dev/null
-# Check .productupgrade history
+# Check ProductionOS history
 ls .productionos/DENSITY-CUMULATIVE.md 2>/dev/null
 ls .productionos/REFLEXION-LOG.md 2>/dev/null
 ```
