@@ -92,6 +92,14 @@ describe("runtime target generation", () => {
       "security-audit",
       "qa",
       "ship",
+      "deep-research",
+      "debug",
+      "auto-swarm",
+      "omni-plan",
+      "designer-upgrade",
+      "ux-genie",
+      "document-release",
+      "productionos-update",
     ];
 
     for (const skillName of coreSkills) {

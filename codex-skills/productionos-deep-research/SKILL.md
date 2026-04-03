@@ -1,7 +1,7 @@
 ---
 name: productionos-deep-research
 description: "8-phase autonomous research pipeline with multi-source discovery, 4-layer citation verification, hypothesis generation, and PIVOT/REFINE/PROCEED decision loops. Confidence-gated — loops until 95%+ confidence."
-argument-hint: "[repo path, target, or task context]"
+argument-hint: "[topic, depth, or source mix]"
 ---
 
 # productionos-deep-research
@@ -10,49 +10,43 @@ argument-hint: "[repo path, target, or task context]"
 Use this alias when you want the same workflow through a top-level Codex-safe name without the `productionos:` namespace.
 ## Overview
 
-This is the Codex-native workflow wrapper for [.claude/commands/deep-research.md](../../.claude/commands/deep-research.md).
+Use this as the Codex-first research workflow for ProductionOS. It should take a topic, break it into concrete research questions, gather and verify sources, synthesize competing hypotheses, and only deliver claims that are evidence-backed.
 
-Use it when the user wants this exact ProductionOS workflow, not just the umbrella `productionos` router.
-
-## Source of Truth
-
-1. Read the source command spec at [.claude/commands/deep-research.md](../../.claude/commands/deep-research.md).
-2. Use [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md) to confirm runtime support and parity expectations.
-3. Preserve the source workflow's guardrails, scope, artifacts, and verification intent.
-4. Translate Claude-only slash-command and hook semantics into Codex-native execution instead of copying them literally.
-
-## Codex Behavior
-
-- Summary: 8-phase autonomous research pipeline with multi-source discovery, 4-layer citation verification, hypothesis generation, and PIVOT/REFINE/PROCEED decision loops. Confidence-gated — loops until 95%+ confidence.
-- Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.
+Source references:
+- `.claude/commands/deep-research.md`
+- `scripts/arxiv-scraper.sh`
 
 ## Inputs
 
-- `topic` — Research topic or question Required.
-- `depth` — quick (10 sources) | standard (50) | deep (500) | exhaustive (2000) Default: `deep` Optional.
-- `sources` — arxiv | web | docs | all (default: all) Default: `all` Optional.
+- `topic`: required research question or area
+- `depth`: `quick`, `standard`, `deep`, or `exhaustive`
+- `sources`: `arxiv`, `web`, `docs`, or `all`
 
-## Execution Outline
+## Codex Workflow
 
-1. Follow the source command sections in order and preserve its exit criteria.
+1. Scope the topic into 3-5 specific research questions.
+2. Discover sources appropriate to the selected depth.
+3. Verify sources before trusting them.
+   - title and author sanity
+   - direct relevance
+   - source quality
+4. Synthesize the evidence.
+   - consensus
+   - contradictions
+   - missing information
+5. Generate competing hypotheses and select the best-supported one.
+6. If confidence is still low, refine the search instead of bluffing.
 
-## Agents And Assets
+## Expected Output
 
-- Agents: no explicit agent references in the source command.
-- Templates: no explicit shared templates beyond general repo conventions.
-- Artifacts: `.productionos/RESEARCH-{topic-slug}.md`, `.productionos/learned/research-lessons.jsonl`
-
-## Workflow
-
-1. Load only the agents, templates, prompts, and docs referenced by the source command.
-2. Execute the workflow intent with Codex-native tools.
-3. If the source command implies parallel agent work, only delegate when the user explicitly wants that overhead.
-4. Verify with the smallest relevant checks before concluding.
-5. Summarize what changed, what was verified, and what still needs human approval.
+- research questions
+- verified source set
+- synthesis with contradictions called out
+- selected hypothesis with confidence
+- explicit unknowns
 
 ## Guardrails
 
-- Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
-- Keep the scope faithful to the source command rather than broadening into a generic repo audit.
-- Prefer concrete outputs and validation over describing the workflow abstractly.
-- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.
+- do not present weakly supported claims as facts
+- prefer primary sources when available
+- if confidence stays low, say so and stop rather than pretending certainty

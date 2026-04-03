@@ -1,7 +1,7 @@
 ---
 name: productionos-ux-genie
 description: "UX improvement pipeline — creates user stories from UI guidelines, maps user journeys, identifies friction, dispatches fix agents. The user-experience equivalent of /production-upgrade."
-argument-hint: "[repo path, target, or task context]"
+argument-hint: "[target, focus, or persona count]"
 ---
 
 # productionos-ux-genie
@@ -10,52 +10,39 @@ argument-hint: "[repo path, target, or task context]"
 Use this alias when you want the same workflow through a top-level Codex-safe name without the `productionos:` namespace.
 ## Overview
 
-This is the Codex-native workflow wrapper for [.claude/commands/ux-genie.md](../../.claude/commands/ux-genie.md).
+Use this as the Codex-first UX analysis workflow. It should derive personas, build user stories, map journeys, find friction, and optionally turn those friction points into a prioritized improvement plan or fix set.
 
-Use it when the user wants this exact ProductionOS workflow, not just the umbrella `productionos` router.
-
-## Source of Truth
-
-1. Read the source command spec at [.claude/commands/ux-genie.md](../../.claude/commands/ux-genie.md).
-2. Use [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md) to confirm runtime support and parity expectations.
-3. Preserve the source workflow's guardrails, scope, artifacts, and verification intent.
-4. Translate Claude-only slash-command and hook semantics into Codex-native execution instead of copying them literally.
-
-## Codex Behavior
-
-- Summary: User-story, journey, and friction mapping workflow.
-- Expected behavior: Map user flows, identify friction, and translate findings into concrete improvements.
-- Validation: tests/runtime-targets.test.ts
+Source references:
+- `.claude/commands/ux-genie.md`
+- `agents/ux-genie.md`
+- `agents/user-story-mapper.md`
+- `agents/ux-auditor.md`
 
 ## Inputs
 
-- `target` — Target directory or repo (default: current directory) Optional.
-- `personas` — Number of user personas to derive (default: auto, min 3) Default: `auto` Optional.
-- `focus` — Focus areas: stories | journeys | friction | full (default: full) Default: `full` Optional.
-- `fix` — Auto-fix friction points: on | off (default: off — analyze only) Default: `off` Optional.
-- `grade` — Target UX score (default: 10.0) Default: `10.0` Optional.
+- target repo or frontend area
+- optional `personas`
+- optional `focus`
+- optional `fix`
 
-## Execution Outline
+## Codex Workflow
 
-1. Preamble
+1. Read the current UX context and any design artifacts.
+2. Derive personas from the actual product surface.
+3. Generate stories with testable acceptance criteria.
+4. Build journey maps and identify friction.
+5. If `fix=on`, convert the biggest friction points into a bounded fix plan and execute carefully.
 
-## Agents And Assets
+## Expected Output
 
-- Agents: `ux-genie`
-- Templates: `PREAMBLE.md`, `SELF-EVAL-PROTOCOL.md`
-- Artifacts: `.productionos/designer-upgrade/DESIGN-SYSTEM.md`, `.productionos/ux-genie/`, `.productionos/ux-genie/self-eval`
-
-## Workflow
-
-1. Load only the agents, templates, prompts, and docs referenced by the source command.
-2. Execute the workflow intent with Codex-native tools.
-3. If the source command implies parallel agent work, only delegate when the user explicitly wants that overhead.
-4. Verify with the smallest relevant checks before concluding.
-5. Summarize what changed, what was verified, and what still needs human approval.
+- personas
+- user stories
+- journey map
+- friction report
+- improvement or fix plan
 
 ## Guardrails
 
-- Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
-- Keep the scope faithful to the source command rather than broadening into a generic repo audit.
-- Prefer concrete outputs and validation over describing the workflow abstractly.
-- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.
+- keep stories user-centered, not system-centered
+- every friction point should map back to a real screen, flow, or code path
+- if visual context is missing, say that instead of inventing journeys
