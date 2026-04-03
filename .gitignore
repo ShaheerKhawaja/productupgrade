@@ -1,7 +1,6 @@
 # Internal session artifacts — never push to public repo
 HANDOFF*.md
 HANDOVER*.md
-TODOS.md
 .context/
 .productionos/
 .productupgrade/

@@ -302,7 +302,7 @@ claude plugin uninstall productionos
 
 ```bash
 cd ~/.claude/plugins/marketplaces/productionos
-bun install && bun test   # 932 pass, 1 skip, 0 unexpected failures
+bun install && bun test   # 953 pass, 0 unexpected failures
 bun run validate          # 78/78 agents valid
 bun run skill:check       # Health dashboard (100%)
 ```

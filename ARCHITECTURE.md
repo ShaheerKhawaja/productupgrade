@@ -469,7 +469,7 @@ bash bin/pos-init
 # Verify installation
 bun run skill:check    # Should show 100%
 bun run validate       # Should show 78/78 valid
-bun test               # Should show 932+ pass
+bun test               # Should show 953+ pass
 ```
 
 Minimum requirements: Claude Code or Codex, Bun 1.0+, macOS or Linux.

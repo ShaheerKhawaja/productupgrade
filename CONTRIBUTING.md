@@ -6,7 +6,7 @@
 git clone https://github.com/ShaheerKhawaja/ProductionOS.git
 cd ProductionOS
 bun install
-bun run skill:check    # Must pass 10/10
+bun run skill:check    # Must report 100%
 bun run validate       # Must show all agents valid
 bun test               # Must pass all tests
 ```
@@ -14,11 +14,14 @@ bun test               # Must pass all tests
 ## Project Structure
 
 ```
-productupgrade/
+ProductionOS/
+├── .codex-plugin/            # Codex plugin manifest
 ├── .claude-plugin/           # Plugin manifest + marketplace listing
-├── .claude/commands/         # 36 command definitions (.md)
-├── .claude/skills/           # 4 auto-activating skills with file patterns
-├── agents/                   # 73 agent definitions (.md)
+├── .claude/commands/         # 41 command definitions (.md)
+├── .claude/skills/           # Claude auto-activating skills
+├── codex-skills/             # Top-level Codex workflow aliases
+├── skills/                   # Plugin-local Codex skills + wrappers
+├── agents/                   # 78 agent definitions (.md/.yaml)
 ├── templates/                # Shared templates (preamble, rubric, convergence)
 ├── prompts/                  # Prompt engineering technique files
 ├── scripts/                  # TypeScript infrastructure (Bun)
