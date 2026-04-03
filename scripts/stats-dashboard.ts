@@ -7,14 +7,11 @@ import { existsSync, readFileSync, readdirSync } from "fs";
 import { join } from "path";
 import { execFileSync } from "child_process";
 import { ROOT, walkFiles, listMdFiles, readVersion, parseFrontmatter } from "./lib/shared";
+import { collectRepoCounts } from "./lib/runtime-targets";
 
 const STATE_DIR = join(process.env.HOME || "/tmp", ".productionos");
 
 // ─── Helpers ───────────────────────────────────────────────
-
-function countFiles(dir: string, ext: string): number {
-  try { return readdirSync(dir).filter(f => f.endsWith(ext)).length; } catch { return 0; }
-}
 
 function countLines(path: string): number {
   try { return readFileSync(path, "utf-8").split("\n").length; } catch { return 0; }
@@ -30,12 +27,13 @@ function safeExec(cmd: string, args: string[], cwd?: string): string {
 
 // System
 const version = readVersion() || "unknown";
+const repoCounts = collectRepoCounts();
 const agentFiles = listMdFiles(join(ROOT, "agents"));
-const agentCount = agentFiles.length;
-const commandCount = listMdFiles(join(ROOT, ".claude", "commands")).length;
-const templateCount = listMdFiles(join(ROOT, "templates")).length;
-const scriptCount = countFiles(join(ROOT, "scripts"), ".ts");
-const testFileCount = countFiles(join(ROOT, "tests"), ".ts");
+const agentCount = repoCounts.agents;
+const commandCount = repoCounts.commands;
+const templateCount = repoCounts.templates;
+const scriptCount = repoCounts.scripts;
+const testFileCount = repoCounts.tests;
 
 // Stakes breakdown
 let highStakes = 0, medStakes = 0, lowStakes = 0;
@@ -49,24 +47,7 @@ for (const file of agentFiles) {
 }
 
 // Hooks
-let hookCount = 0;
-try {
-  const hooksJson = JSON.parse(readFileSync(join(ROOT, "hooks", "hooks.json"), "utf-8"));
-  const hookFiles = new Set<string>();
-  for (const event of Object.values(hooksJson) as Array<{ hooks?: Array<{ command?: string }> }[]>) {
-    if (!Array.isArray(event)) continue;
-    for (const matcher of event) {
-      if (!matcher.hooks) continue;
-      for (const hook of matcher.hooks) {
-        if (hook.command) {
-          const match = hook.command.match(/hooks\/([^"]+)/);
-          if (match) hookFiles.add(match[1]);
-        }
-      }
-    }
-  }
-  hookCount = hookFiles.size;
-} catch { hookCount = countFiles(join(ROOT, "hooks"), ".sh"); }
+const hookCount = repoCounts.hooks;
 
 // Learning
 const projectInstincts = existsSync(join(STATE_DIR, "instincts", "project"))
@@ -80,7 +61,7 @@ const usageEvents = existsSync(join(STATE_DIR, "analytics", "skill-usage.jsonl")
 
 // Git activity
 const commitsToday = safeExec("git", ["log", "--oneline", "--since=midnight"], ROOT).split("\n").filter(Boolean).length;
-const totalCommits = safeExec("git", ["rev-list", "--count", "HEAD"], ROOT);
+const totalCommits = safeExec("git", ["rev-list", "--count", "--all"], ROOT);
 
 // Last handoff
 let lastHandoff = "N/A";
@@ -99,7 +80,7 @@ console.log(`## ProductionOS Stats
 | Version | ${version} |
 | Agents | ${agentCount} (${highStakes} HIGH / ${medStakes} MEDIUM / ${lowStakes} LOW) |
 | Commands | ${commandCount} |
-| Hooks | ${hookCount} scripts |
+| Hooks | ${hookCount} files |
 | Templates | ${templateCount} |
 | Scripts | ${scriptCount} |
 | Test files | ${testFileCount} |

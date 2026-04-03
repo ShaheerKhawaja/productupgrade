@@ -6,9 +6,9 @@ This document explains **why** ProductionOS is built the way it is. For setup an
 
 | Capability | Status | Notes |
 |------------|--------|-------|
-| 73 agent definitions | IMPLEMENTED | All with YAML frontmatter, stakes, Red Flags |
-| 36 commands | IMPLEMENTED | 6 primary entry points + lifecycle + specialized |
-| 11 hook scripts | IMPLEMENTED | SessionStart, PreToolUse, PostToolUse, Stop |
+| 78 agent definitions | IMPLEMENTED | All with YAML frontmatter, stakes, Red Flags |
+| 41 commands | IMPLEMENTED | 6 primary entry points + lifecycle + specialized |
+| 17 hook files | IMPLEMENTED | SessionStart, PreToolUse, PostToolUse, Stop, and dashboard support |
 | 6 CLI tools | IMPLEMENTED | pos-init, pos-config, pos-analytics, pos-update-check, pos-review-log, pos-telemetry |
 | 4 auto-activating skills | IMPLEMENTED | security-scan (p95), productionos (p90), frontend-audit (p80), continuous-learning (p70) |
 | Self-Eval Protocol | IMPLEMENTED | 7-question evaluation, default-on in all flows |
@@ -18,7 +18,7 @@ This document explains **why** ProductionOS is built the way it is. For setup an
 | Session Context Management | IMPLEMENTED | L0/L1/L2 progressive loading, context rot detection |
 | Convergence engine | IMPLEMENTED | PIVOT/REFINE/PROCEED with tri-tiered judging |
 | Persistent state | IMPLEMENTED | ~/.productionos/ with config, analytics, sessions, instincts |
-| Stakes classification | IMPLEMENTED | LOW/MEDIUM/HIGH on all 73 agents (HumanLayer pattern) |
+| Stakes classification | IMPLEMENTED | LOW/MEDIUM/HIGH on all 78 agents (HumanLayer pattern) |
 
 ## Design Philosophy
 
@@ -32,7 +32,7 @@ This document explains **why** ProductionOS is built the way it is. For setup an
 
 ## The Core Idea
 
-ProductionOS gives Claude Code a recursive self-improvement engine. Most code review tools run once and produce a report. ProductionOS runs in a **convergence loop** — it audits, fixes, re-evaluates, and repeats until the codebase reaches a target quality grade.
+ProductionOS gives Claude Code and Codex a shared recursive self-improvement engine. Most code review tools run once and produce a report. ProductionOS runs in a **convergence loop** — it audits, fixes, re-evaluates, and repeats until the codebase reaches a target quality grade.
 
 The key insight: a single review pass catches ~60% of issues. A second pass catches another ~20%. By the third pass, you're finding systemic patterns that no single-pass tool ever surfaces. The recursive loop is the product.
 
@@ -58,7 +58,7 @@ Codebase (grade: 9.7)
 
 ## The 4 Primary Commands
 
-ProductionOS has 35 commands, but users need to know only 4:
+ProductionOS has 41 commands, but users need to know only 4:
 
 ```
 /omni-plan-nth     THE orchestrator. Chains ALL skills. Loops until 10/10.
@@ -75,9 +75,9 @@ These 4 can invoke ANY other command or agent. They are the entry points. All ot
 PREAMBLE (templates/PREAMBLE.md — runs before every skill)
     |
     v
-COMMAND (21 available, 4 primary)
+COMMAND (41 available, 4 primary)
     |
-    +-- resolves relevant AGENTS from agents/ (64 total)
+    +-- resolves relevant AGENTS from agents/ (78 total)
     |
     +-- produces ARTIFACTS to .productionos/
     |
@@ -447,7 +447,7 @@ Commands reference external skills (/plan-ceo-review, /qa, /browse from gstack).
 | Script | Purpose | Lines |
 |--------|---------|-------|
 | `gen-skill-docs.ts` | Validate version/agent/command consistency | ~230 |
-| `skill-check.ts` | 10-check health dashboard | ~360 |
+| `skill-check.ts` | Health dashboard for generated runtime targets and repo integrity | ~360 |
 | `validate-agents.ts` | Frontmatter validation for all agents | ~250 |
 | `context-audit.ts` | Token budget tracking | ~190 |
 | `review-dashboard.ts` | Review readiness dashboard | ~160 |
@@ -458,21 +458,21 @@ Commands reference external skills (/plan-ceo-review, /qa, /browse from gstack).
 ```bash
 # Option 1: Clone to Claude Code plugins directory
 git clone https://github.com/ShaheerKhawaja/ProductionOS.git \
-  ~/.claude/plugins/marketplaces/productupgrade
+  ~/.claude/plugins/marketplaces/productionos
 
 # Install TypeScript dependencies
-cd ~/.claude/plugins/marketplaces/productupgrade && bun install
+cd ~/.claude/plugins/marketplaces/productionos && bun install
 
 # Initialize persistent state
 bash bin/pos-init
 
 # Verify installation
-bun run skill:check    # Should show 10/10
-bun run validate       # Should show 64/64 valid
-bun test               # Should show 196+ pass
+bun run skill:check    # Should show 100%
+bun run validate       # Should show 78/78 valid
+bun test               # Should show 932+ pass
 ```
 
-Minimum requirements: Claude Code 2.0+, Bun 1.0+, macOS or Linux.
+Minimum requirements: Claude Code or Codex, Bun 1.0+, macOS or Linux.
 
 ## Comparison with gstack
 

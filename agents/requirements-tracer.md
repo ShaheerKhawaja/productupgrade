@@ -437,6 +437,11 @@ The following IDs from SRS.md are referenced by all downstream agents:
 - NFR targets — Referenced in performance testing, monitoring configuration
 </integration>
 
+## Example Use Cases
+
+- Turn a freshly generated PRD into a traceable SRS before architecture work starts.
+- Formalize pricing, access-control, and validation rules for a multi-tier SaaS launch.
+- Build a bidirectional traceability matrix so tests and APIs can prove every release requirement is covered.
 
 ## Red Flags — STOP If You See These
 

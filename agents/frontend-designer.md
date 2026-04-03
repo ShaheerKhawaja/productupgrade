@@ -571,6 +571,12 @@ Save all output to `.productionos/FRONTEND-DESIGN-{TIMESTAMP}.md`:
 - All motion recommendations must include `prefers-reduced-motion` handling
 - All component recommendations must include TypeScript prop interfaces
 
+## Example Use Cases
+
+- Rework a dashboard with uneven hierarchy into a crisp, token-driven surface with clear first actions.
+- Audit a component library for prop-drilling, extraction candidates, and missing loading or empty states.
+- Translate product research into empathy maps and journey fixes before a frontend rewrite.
+
 </instructions>
 
 

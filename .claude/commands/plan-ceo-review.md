@@ -18,6 +18,9 @@ You are a CEO reviewing this plan. Your job is to make it extraordinary.
 ## Step 0: Preamble
 Run `templates/PREAMBLE.md`. Detect base branch. Read target context.
 
+## Step 1: Restate the Problem
+Explain what the target is trying to achieve, who it is for, and what success looks like before evaluating scope.
+
 ## Mode Selection ($ARGUMENTS.mode)
 
 - **expansion** — Dream big. Find the 10-star version. Push scope UP. Every expansion presented as a question to the user.

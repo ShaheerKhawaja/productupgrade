@@ -7,7 +7,7 @@ description: "Show how to use ProductionOS — explains commands, recommended wo
 
 ## Getting Started
 
-ProductionOS v1.0.0-beta.1 is your AI engineering team — 76 agents, 39 commands, 12 hooks, 6 CLI tools, 4 auto-activating skills. Here's how to use it effectively.
+ProductionOS v1.0.0-beta.1 is your AI engineering team — 78 agents, 41 commands, 17 hooks, 6 CLI tools, and dual Claude/Codex targets. Here's how to use it effectively.
 
 ## What's New in v1.0
 
@@ -138,7 +138,7 @@ Commands produce artifacts in `.productionos/` that downstream commands consume:
 1. **Start with `/production-upgrade`** if you're unsure — it's the lightest pipeline
 2. **Use `/omni-plan-nth`** when you want maximum quality — it runs everything
 3. **Check `.productionos/`** after any command — all findings go there
-4. **Run `bun run skill:check`** to verify ProductionOS itself is healthy (10/10)
+4. **Run `bun run skill:check`** to verify ProductionOS itself is healthy (100%)
 5. **Run `bun run dashboard`** to see which reviews have been completed
 6. **Use `/learn-mode`** to understand unfamiliar code before auditing it
 7. **The `-nth` variants** run until perfect — standard variants run once
@@ -147,8 +147,8 @@ Commands produce artifacts in `.productionos/` that downstream commands consume:
 ## Validation Commands
 
 ```bash
-bun run skill:check      # 10-check health dashboard (should be 10/10)
-bun run validate          # Agent frontmatter validation (55/55)
+bun run skill:check      # Health dashboard (should report 100%)
+bun run validate          # Agent frontmatter validation (78/78)
 bun run audit:context     # Token budget tracking
 bun run dashboard         # Review readiness per branch
 bun test                  # Automated test suite (118 tests)

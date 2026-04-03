@@ -152,11 +152,11 @@ Compare file listings against previous scan to identify new additions.
 #### 1D: Scan ProductionOS's Own State
 ```bash
 # Current agent count
-ls ~/.claude/plugins/marketplaces/productupgrade/agents/*.md | wc -l
+ls ~/.claude/plugins/marketplaces/productionos/agents/*.md | wc -l
 # Current command count (from CLAUDE.md)
-grep -c "^/" ~/.claude/plugins/marketplaces/productupgrade/CLAUDE.md || true
+grep -c "^/" ~/.claude/plugins/marketplaces/productionos/CLAUDE.md || true
 # Current prompt layers
-ls ~/.claude/plugins/marketplaces/productupgrade/prompts/*.md 2>/dev/null | wc -l
+ls ~/.claude/plugins/marketplaces/productionos/prompts/*.md 2>/dev/null | wc -l
 ```
 
 ### Phase 2: Capability Extraction

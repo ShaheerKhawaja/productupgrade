@@ -218,6 +218,12 @@ find ~/.productionos/instincts/ -name "*.md" | head -20
 ```
 Read instincts relevant to the current task. Apply patterns with confidence > 0.8 automatically. Present patterns with confidence 0.5-0.8 as suggestions.
 
+## Example Use Cases
+
+- Resume a long-running audit after context compaction without re-reading the entire repo.
+- Decide which artifacts to reload when a frontend task switches into a backend debugging task mid-session.
+- Reduce context pressure during a recursive multi-agent run by compressing stale L2 artifacts back to L1/L0 summaries.
+
 </instructions>
 
 ## Red Flags — STOP If You See These

@@ -3,6 +3,7 @@ import { execFileSync } from "child_process";
 import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { ROOT } from "../scripts/lib/shared";
+import { getBunRunCommand } from "../scripts/lib/runtime";
 
 /**
  * Tier 1 worktree-manager.ts tests.
@@ -13,9 +14,11 @@ import { ROOT } from "../scripts/lib/shared";
 const WT_SCRIPT = join(ROOT, "scripts", "worktree-manager.ts");
 
 const run = (args: string[]): string => {
+  const bun = getBunRunCommand([WT_SCRIPT, ...args]);
   try {
-    return execFileSync("bun", ["run", WT_SCRIPT, ...args], {
+    return execFileSync(bun.command, bun.args, {
       cwd: ROOT, encoding: "utf-8", timeout: 30_000,
+      env: bun.env,
     }).trim();
   } catch (e: any) {
     // Capture both stdout and stderr for error cases

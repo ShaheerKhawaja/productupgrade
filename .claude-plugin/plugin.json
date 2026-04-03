@@ -1,6 +1,6 @@
 {
-  "name": "productupgrade",
-  "description": "AI engineering OS for Claude Code — 78 agents, 40 commands, 15 hooks. 4-layer Production House: smart routing, adaptive learning, dynamic agent factory.",
+  "name": "productionos",
+  "description": "AI engineering OS for Claude Code and Codex — 78 agents, 41 commands, 17 hooks.",
   "version": "1.0.0-beta.1",
   "author": {
     "name": "Shaheer Khawaja",
@@ -12,11 +12,10 @@
   "keywords": [
     "productionos",
     "claude-code-plugin",
+    "codex-plugin",
     "agentic-dev",
-    "llm-judge",
-    "auto-swarm",
-    "recursive-improvement",
-    "multi-agent"
+    "multi-agent",
+    "recursive-improvement"
   ],
   "agents": [
     "./agents/adversarial-reviewer.md",

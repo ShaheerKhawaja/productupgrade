@@ -4,7 +4,7 @@
 
 **One command. Your entire codebase reviewed, scored, and improved.**
 
-ProductionOS is a Claude Code plugin with 78 agents, 40 commands, and 15 hooks that turns AI into a full engineering team. It deploys specialized agents that review your code, find issues, fix them, and keep improving until every quality dimension hits the target. Smart routing dispatches the right agents for your goal automatically.
+ProductionOS is a dual-target AI engineering OS for Claude Code and Codex with 78 agents, 41 commands, and 17 hooks. It deploys specialized agents that review your code, find issues, fix them, and keep improving until every quality dimension hits the target. Smart routing dispatches the right workflow for your goal automatically.
 
 ## Quick Start
 
@@ -13,7 +13,7 @@ ProductionOS is a Claude Code plugin with 78 agents, 40 commands, and 15 hooks t
 claude plugin marketplace add ShaheerKhawaja/ProductionOS
 
 # Step 2: Install the plugin
-claude plugin install productupgrade
+claude plugin install productionos
 
 # Step 3: Restart Claude Code, then run on any codebase
 /production-upgrade
@@ -24,7 +24,7 @@ claude plugin install productupgrade
 ```bash
 # Clone directly into the plugins directory
 git clone https://github.com/ShaheerKhawaja/ProductionOS.git \
-  ~/.claude/plugins/marketplaces/productupgrade
+  ~/.claude/plugins/marketplaces/productionos
 
 # Restart Claude Code — hooks, commands, and agents load automatically
 ```
@@ -36,10 +36,37 @@ git clone https://github.com/ShaheerKhawaja/ProductionOS.git \
 claude plugin list
 
 # Validate the plugin schema
-claude plugin validate ~/.claude/plugins/marketplaces/productupgrade/.claude-plugin/marketplace.json
+claude plugin validate ~/.claude/plugins/marketplaces/productionos/.claude-plugin/marketplace.json
 ```
 
 That's it. ProductionOS discovers your stack, deploys 7 review agents in parallel, scores your code across 10 dimensions, and generates a fix plan. Run it again — the score goes up.
+
+### Codex CLI Skill Install
+
+```bash
+npx productionos@latest --codex
+```
+
+This installs:
+- `~/.codex/skills/productionos`
+- `~/.codex/plugins/productionos`
+- `~/.codex/skills/productionos-<workflow>` aliases for every ProductionOS workflow
+
+Restart Codex to pick up the new skill and plugin.
+
+### Install For Claude + Codex Together
+
+```bash
+npx productionos@latest --all-targets
+```
+
+### Codex App / Plugin Surface
+
+ProductionOS now ships a native Codex plugin manifest at `.codex-plugin/plugin.json` plus a plugin skill at `skills/productionos/SKILL.md`.
+
+Recommended Codex usage:
+- `$productionos` for the umbrella workflow router
+- `$productionos-review`, `$productionos-plan-eng-review`, `$productionos-production-upgrade`, etc. for direct workflow entrypoints
 
 ## What It Does
 
@@ -107,7 +134,7 @@ You work across many codebases and need fast, repeatable quality audits:
 #### AI Engineers
 You're building AI-powered products and need agent orchestration patterns:
 
-- **77 agent definitions** with YAML frontmatter (model routing, tool constraints, stakes classification)
+- **78 agent definitions** with YAML frontmatter (model routing, tool constraints, stakes classification)
 - **10-layer prompt composition** (Emotion → Meta → Context → CoT → ToT → GoT → CoD → Generated Knowledge → Distractor-Augmented)
 - **Tri-tiered judging** (3 independent judges with debate on disagreement)
 - **Convergence engine** (recursive improvement with regression detection)
@@ -115,7 +142,7 @@ You're building AI-powered products and need agent orchestration patterns:
 
 **Start with:** Read `ARCHITECTURE.md` for the agent orchestration patterns.
 
-## Commands (39)
+## Commands (41)
 
 ### Start Here
 ```
@@ -180,11 +207,11 @@ You're building AI-powered products and need agent orchestration patterns:
 
 ```
 78 agents (declarative YAML frontmatter, 3-tier model routing)
-39 commands (orchestrate agents, loop until convergence)
-12 hooks (SessionStart, PreToolUse security, PostToolUse telemetry, Stop handoff)
- 8 templates (PREAMBLE, SELF-EVAL, INVOCATION, PROMPT-COMPOSITION, MODEL-ROUTING, etc.)
- 6 CLI tools (pos-init, pos-config, pos-analytics, etc.)
- 4 auto-activating skills (security-scan, frontend-audit, continuous-learning)
+41 commands (orchestrate agents, loop until convergence)
+17 hook files (SessionStart, PreToolUse security, PostToolUse telemetry, Stop handoff)
+11 templates (PREAMBLE, SELF-EVAL, INVOCATION, PROMPT-COMPOSITION, MODEL-ROUTING, etc.)
+ 7 CLI tools (pos-init, pos-config, pos-analytics, pos-review-log, etc.)
+47 skills (Claude auto-activation + Codex-native workflow wrappers)
 ```
 
 ### Agent Model
@@ -235,7 +262,7 @@ Use `--profile budget` for ~40% savings.
 claude plugin marketplace add ShaheerKhawaja/ProductionOS
 
 # 2. Install the plugin from the marketplace
-claude plugin install productupgrade
+claude plugin install productionos
 
 # 3. Restart Claude Code
 ```
@@ -244,7 +271,7 @@ claude plugin install productupgrade
 
 ```bash
 git clone https://github.com/ShaheerKhawaja/ProductionOS.git \
-  ~/.claude/plugins/marketplaces/productupgrade
+  ~/.claude/plugins/marketplaces/productionos
 ```
 
 ### Verify
@@ -254,7 +281,7 @@ git clone https://github.com/ShaheerKhawaja/ProductionOS.git \
 claude plugin list
 
 # Validate schema (should show 0 errors)
-claude plugin validate ~/.claude/plugins/marketplaces/productupgrade/.claude-plugin/marketplace.json
+claude plugin validate ~/.claude/plugins/marketplaces/productionos/.claude-plugin/marketplace.json
 ```
 
 Restart Claude Code after install. Hooks, commands, and agents load on session start.
@@ -262,22 +289,22 @@ Restart Claude Code after install. Hooks, commands, and agents load on session s
 ### Update
 
 ```bash
-claude plugin update productupgrade
+claude plugin update productionos
 ```
 
 ### Uninstall
 
 ```bash
-claude plugin uninstall productupgrade
+claude plugin uninstall productionos
 ```
 
 ## Validation
 
 ```bash
-cd ~/.claude/plugins/marketplaces/productupgrade
-bun install && bun test   # 812 tests, 0 failures
-bun run validate          # 76/78 agents valid
-bun run skill:check       # Plugin health score
+cd ~/.claude/plugins/marketplaces/productionos
+bun install && bun test   # 932 pass, 1 skip, 0 unexpected failures
+bun run validate          # 78/78 agents valid
+bun run skill:check       # Health dashboard (100%)
 ```
 
 ## What Makes This Different
@@ -292,21 +319,30 @@ bun run skill:check       # Plugin health score
 
 **Guarded.** Repo boundary detection, secret scanning, protected file blocking, stakes-based approval gates. Guardrails you can't forget because they're hooks, not habits.
 
-## 76 Agents
+## Agent Families
 
-These aren't chat personas -- they're specialized workflows with defined inputs, outputs, tool restrictions, and quality criteria. All agents have YAML frontmatter with `model`, `tools`, `subagent_type`, `stakes`, and behavioral `Red Flags`. Read-only agents (judges, auditors) cannot modify code. Execution agents (fixers, healers) cannot evaluate their own work.
+These aren't chat personas. They're specialized workflows with defined inputs, outputs, tool restrictions, and quality criteria. All agents have YAML frontmatter with `model`, `tools`, `subagent_type`, `stakes`, and behavioral `Red Flags`.
 
-| Generation | Count | Agents |
-|------------|-------|--------|
-| Core Review | 11 | llm-judge, deep-researcher, code-reviewer, ux-auditor, dynamic-planner, business-logic-validator, dependency-scanner, api-contract-validator, naming-enforcer, refactoring-agent, database-auditor |
-| Advanced Analysis | 9 | adversarial-reviewer, thought-graph-builder, persona-orchestrator, density-summarizer, context-retriever, frontend-scraper, vulnerability-explorer, swarm-orchestrator, guardrails-controller |
-| Execution | 9 | test-architect, performance-profiler, migration-planner, self-healer, convergence-monitor, decision-loop, metaclaw-learner, research-pipeline, security-hardener |
-| Orchestrative | 6 | gitops, frontend-designer, asset-generator, comms-assistant, comparative-analyzer, reverse-engineer |
-| Foundation | 15 | debate-tribunal, ecosystem-scanner, gap-analyzer, recursive-orchestrator, verification-gate, discuss-phase, stub-detector, plan-checker, architecture-designer, intake-interviewer, nyquist-filler, prd-generator, requirements-tracer, scaffold-generator, approval-gate |
-| Design & UX (v7) | 8 | self-evaluator, designer-upgrade, mockup-generator, design-system-architect, ux-genie, user-story-mapper, quality-loop-controller, session-context-manager |
-| Infrastructure (v7) | 3 | browser-controller, version-control, e2e-architect |
-| Code Intelligence (v8) | 7 | document-parser, worktree-orchestrator, quality-gate-enforcer, semgrep-scanner, ast-grep-analyzer, complexity-analyzer, rule-engine |
-| Quality Ratchet (v8) | 5 | regression-detector, documentation-auditor, rag-expert, db-creator, aiml-engineer |
+ProductionOS currently ships 78 agent definitions spanning:
+
+- Review and judging
+- Planning and orchestration
+- Refactoring and execution
+- Security and compliance
+- Design and UX
+- Research and context retrieval
+- Worktree and release operations
+
+Representative agents:
+
+- Review: `llm-judge`, `deep-researcher`, `code-reviewer`, `ux-auditor`, `dynamic-planner`, `business-logic-validator`, `dependency-scanner`
+- Architecture: `api-contract-validator`, `naming-enforcer`, `refactoring-agent`, `database-auditor`, `test-architect`, `performance-profiler`, `migration-planner`
+- Orchestration: `self-healer`, `convergence-monitor`, `decision-loop`, `metaclaw-learner`, `research-pipeline`, `security-hardener`, `gitops`
+- Design: `frontend-designer`, `comparative-analyzer`, `reverse-engineer`, `design-system-architect`, `designer-upgrade`, `ux-genie`, `user-story-mapper`
+- Coordination: `quality-loop-controller`, `session-context-manager`, `browser-controller`, `version-control`, `e2e-architect`, `document-parser`, `worktree-orchestrator`
+- Quality: `quality-gate-enforcer`, `semgrep-scanner`, `regression-detector`, `documentation-auditor`, `rag-expert`, `db-creator`, `aiml-engineer`
+
+The exact current roster lives in [`agents/`](/Users/muhammadshaheerkhawaja/ProductionOS/agents) and the generated handoff in [`docs/CODEX-PARITY-HANDOFF.md`](/Users/muhammadshaheerkhawaja/ProductionOS/docs/CODEX-PARITY-HANDOFF.md).
 
 ### Agent Stakes Classification (HumanLayer Pattern)
 
@@ -351,11 +387,11 @@ pos-telemetry       # Log skill usage events
 
 ## Tech
 
-- 77 agent definitions with YAML frontmatter (model routing, tool constraints, stakes classification)
-- 39 commands (14 absorbed from gstack/superpowers/ECC, 4 recursive orchestrators)
+- 78 agent definitions with YAML frontmatter (model routing, tool constraints, stakes classification)
+- 41 commands (including recursive orchestrators and imported workflow surfaces)
 - 10-layer prompt architecture (Emotion → Meta → Scratchpad → Context → CoT → ToT → GoT → CoD → Generated Knowledge → Distractor-Augmented)
 - Default-on self-evaluation protocol (7-question quality gate on all outputs)
-- 12 lifecycle hooks (SessionStart, PreToolUse security + boundary + gitleaks, PostToolUse telemetry/review, Stop handoff)
+- 17 hook files (SessionStart, PreToolUse security + boundary + gitleaks, PostToolUse telemetry/review, Stop handoff)
 - 6 CLI tools for config, analytics, telemetry, version management
 - 4 auto-activating skills with file pattern matching
 - Executable convergence engine (TypeScript, Algorithm 1 + Algorithm 6)
@@ -365,7 +401,7 @@ pos-telemetry       # Log skill usage events
 - HumanLayer-inspired approval gate for HIGH-stakes operations
 - CI/CD pipeline (GitHub Actions: validate + lint + convergence check)
 - Secret detection via gitleaks + regex fallback
-- Zero runtime dependencies beyond Claude Code + Bun
+- Zero runtime dependencies beyond Claude Code or Codex + Bun
 
 ## Built On
 

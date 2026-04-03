@@ -80,6 +80,54 @@ describe('plugin.json', () => {
   });
 });
 
+describe('Codex skill packaging', () => {
+  test('root SKILL.md exists and has valid frontmatter', () => {
+    const content = readFileOrNull(path.join(ROOT, 'SKILL.md'));
+    expect(content).not.toBeNull();
+
+    const fm = parseFrontmatter(content!);
+    expect(fm).not.toBeNull();
+    expect(fm!.name).toBe('productionos');
+    expect(typeof fm!.description).toBe('string');
+    expect(String(fm!.description).length).toBeGreaterThan(0);
+  });
+
+  test('agents/openai.yaml exists and includes required interface fields', () => {
+    const content = readFileOrNull(path.join(ROOT, 'agents', 'openai.yaml'));
+    expect(content).not.toBeNull();
+    expect(content).toContain('display_name:');
+    expect(content).toContain('short_description:');
+    expect(content).toContain('default_prompt:');
+    expect(content).toContain('$productionos');
+  });
+
+  test('.codex-plugin/plugin.json exists', () => {
+    const content = readFileOrNull(path.join(ROOT, '.codex-plugin', 'plugin.json'));
+    expect(content).not.toBeNull();
+    expect(() => JSON.parse(content!)).not.toThrow();
+  });
+
+  test('package.json ships the files required for Codex install', () => {
+    const pkg = JSON.parse(readFileOrNull(path.join(ROOT, 'package.json')) ?? '{}');
+    const files = Array.isArray(pkg.files) ? pkg.files : [];
+    const required = [
+      '.codex-plugin/',
+      'skills/',
+      'docs/',
+      'templates/',
+      'prompts/',
+      'hooks/',
+      'scripts/',
+      'README.md',
+      'ARCHITECTURE.md',
+    ];
+
+    for (const entry of required) {
+      expect(files).toContain(entry);
+    }
+  });
+});
+
 describe('Agent frontmatter validation', () => {
   const agentsDir = path.join(ROOT, 'agents');
   const agentFiles = listMdFiles(agentsDir);

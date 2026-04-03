@@ -24,13 +24,13 @@ The user provides:
 3. If target is a description: Identify what needs to be created or improved
 
 ### Step 2: Gap Analysis
-1. Score current state using `python3 ~/.claude/skills/rlm/scripts/confidence_scorer.py`
+1. Score current state using the ProductionOS rubric and convergence heuristics already present in this repo
 2. Scan `~/repos/` for reference implementations (per CLAUDE.md Auto-Enrichment Protocol)
-3. Check `~/.productionos/rlm/reference-corpus/` for similar high-quality outputs
+3. Check `~/.productionos/recursive/reference-corpus/` for similar high-quality outputs
 4. Identify specific gaps between current state and goal
 
 ### Step 3: Initialize Recursion
-1. Create session state at `~/.productionos/rlm/recursion-state.json`:
+1. Create session state at `~/.productionos/recursive/recursion-state.json`:
    ```json
    {
      "session_id": "<generated>",
@@ -67,8 +67,8 @@ For each iteration:
    - EMA velocity (plateau if |EMA delta| < 0.05)
 4. **If STOP**: Return best iteration output
 5. **If CONTINUE**: Apply refinement via the selected layer
-6. **Quality Gate**: Check monotonic improvement via `quality_gate.py`
-7. **Log**: Write metrics to `~/.productionos/rlm/metrics/`
+6. **Quality Gate**: Check for monotonic improvement and stop if the loop regresses materially
+7. **Log**: Write metrics to `~/.productionos/recursive/metrics/`
 
 ### Step 5: Completion
 1. Return the output from the best-scoring iteration

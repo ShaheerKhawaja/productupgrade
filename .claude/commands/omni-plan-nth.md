@@ -91,6 +91,7 @@ Identify which external skills are available:
 - Try `/ship` — available? Log YES/NO
 - Try `/deep-research` — available? Log YES/NO (this is internal)
 - Try `/auto-swarm` — available? Log YES/NO (this is internal)
+- Try `/production-upgrade` — available? Log YES/NO (this is internal)
 - Try `/security-audit` — available? Log YES/NO (this is internal)
 - Try `/agentic-eval` — available? Log YES/NO (this is internal)
 

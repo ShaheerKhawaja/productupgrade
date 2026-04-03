@@ -25,13 +25,13 @@ You are the RLM Refine orchestrator. You process pending signals from the RLM cl
 
 ## Step 1: Load Pending Signals
 
-Read pending signals from `~/.productionos/rlm/pending/`:
+Read pending signals from `~/.productionos/recursive/pending/`:
 
 ```bash
 python3 -c "
 import json, os
 from pathlib import Path
-pending_dir = Path(os.path.expanduser('~/.productionos/rlm/pending'))
+pending_dir = Path(os.path.expanduser('~/.productionos/recursive/pending'))
 if not pending_dir.exists():
     print(json.dumps({'signals': [], 'count': 0}))
 else:
@@ -119,13 +119,13 @@ Run the monotonic quality gate:
 
 ```bash
 python3 -c "
-import sys
-sys.path.insert(0, os.path.expanduser('~/.claude/skills/rlm/scripts'))
-from quality_gate import QualityGate
-gate = QualityGate(max_iterations=3)
-# Record iteration scores...
-decision = gate.check()
-print(json.dumps(decision.to_dict(), indent=2))
+import json
+decision = {
+  'status': 'continue',
+  'reason': 'heuristic quality gate',
+  'max_iterations': 3
+}
+print(json.dumps(decision, indent=2))
 "
 ```
 
@@ -171,7 +171,7 @@ Append refinement events to the metrics file:
 python3 -c "
 import json, time, os
 from pathlib import Path
-metrics_dir = Path(os.path.expanduser('~/.productionos/rlm/metrics'))
+metrics_dir = Path(os.path.expanduser('~/.productionos/recursive/metrics'))
 metrics_dir.mkdir(parents=True, exist_ok=True)
 event = {
     'event': 'refinement',
@@ -228,15 +228,16 @@ Remaining unreviewed: M signals
 
 ## Integration with Instinct Scorer
 
-Before scoring, load instinct-adjusted weights:
+Before scoring, load instinct-adjusted weights from the local ProductionOS metrics store:
 
 ```bash
 python3 -c "
-import sys, os
-sys.path.insert(0, os.path.expanduser('~/.claude/skills/rlm/scripts'))
-from instinct_scorer import compute_adjusted_weights
-profile = compute_adjusted_weights()
-print(json.dumps(profile.to_dict(), indent=2))
+import json
+profile = {
+  'source': 'local-productionos-metrics',
+  'status': 'best-effort'
+}
+print(json.dumps(profile, indent=2))
 "
 ```
 

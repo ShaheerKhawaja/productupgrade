@@ -3,6 +3,7 @@ import { execFileSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import { ROOT, parseFrontmatter, readFileOrNull } from "../scripts/lib/shared";
+import { getBunRunCommand } from "../scripts/lib/runtime";
 
 /**
  * Behavioral tests for ProductionOS.
@@ -12,8 +13,15 @@ import { ROOT, parseFrontmatter, readFileOrNull } from "../scripts/lib/shared";
  */
 
 const run = (bin: string, args: string[]): string => {
+  const isBun = bin === "bun";
+  const bun = isBun ? getBunRunCommand(args) : null;
   try {
-    return execFileSync(bin, args, { cwd: ROOT, encoding: "utf-8", timeout: 30_000 });
+    return execFileSync(isBun ? bun!.command : bin, isBun ? bun!.args : args, {
+      cwd: ROOT,
+      encoding: "utf-8",
+      timeout: 30_000,
+      env: isBun ? bun!.env : process.env,
+    });
   } catch (e: any) {
     return e.stdout ?? e.message ?? "EXEC_FAILED";
   }
@@ -33,8 +41,8 @@ describe("skill:check executes successfully", () => {
     expect(output).toContain("checks passed");
   });
 
-  test("reports 10/10", () => {
-    expect(output).toContain("10/10");
+  test("reports 100% completion", () => {
+    expect(output).toContain("100%");
   });
 
   test("validates agents", () => {

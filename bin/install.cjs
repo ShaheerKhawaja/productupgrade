@@ -5,10 +5,14 @@
 // .cjs extension ensures CommonJS even when package.json has "type": "module".
 //
 // Usage:
-//   npx productionos@latest              Install globally to ~/.claude/
-//   npx productionos@latest --uninstall  Remove all ProductionOS files
-//   npx productionos@latest --update     Pull latest version and reinstall
-//   npx productionos@latest --help       Show this message
+//   npx productionos@latest                    Install for Claude Code (default)
+//   npx productionos@latest --codex           Install skill + plugin for Codex
+//   npx productionos@latest --all-targets     Install for Claude Code and Codex
+//   npx productionos@latest --uninstall       Remove Claude Code install
+//   npx productionos@latest --uninstall --codex
+//                                              Remove Codex install
+//   npx productionos@latest --update [flags]  Pull latest version and reinstall
+//   npx productionos@latest --help            Show this message
 
 'use strict';
 
@@ -22,18 +26,21 @@ const { execFileSync } = require('child_process');
 // ---------------------------------------------------------------------------
 
 const PRODUCT = 'ProductionOS';
+const PRODUCT_SLUG = 'productionos';
 const VERSION = fs.readFileSync(path.join(__dirname, '..', 'VERSION'), 'utf8').trim();
 const PKG_ROOT = path.join(__dirname, '..');
 
 // Namespace constants -- avoids collisions with other plugins (GSD uses gsd-)
-const COMMANDS_NS = 'productionos';      // -> commands/productionos/
+const COMMANDS_NS = PRODUCT_SLUG;        // -> commands/productionos/
 const AGENTS_PREFIX = 'pos-';            // -> agents/pos-*.md
-const DATA_DIR = 'productionos';         // -> productionos/ (VERSION, data)
+const DATA_DIR = PRODUCT_SLUG;           // -> productionos/ (VERSION, data)
+const INSTALL_EXCLUDES = { '.git': true, 'node_modules': true };
 
 // Source paths relative to the npm package root
 const SRC = {
   commands: path.join(PKG_ROOT, '.claude', 'commands'),
   skills:   path.join(PKG_ROOT, '.claude', 'skills'),
+  codexAliases: path.join(PKG_ROOT, 'codex-skills'),
   agents:   path.join(PKG_ROOT, 'agents'),
 };
 
@@ -41,17 +48,24 @@ const SRC = {
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Resolve the Claude config directory, respecting CLAUDE_CONFIG_DIR. */
-function resolveTarget() {
-  var raw = process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), '.claude');
+function resolveScopedPath(raw, envName) {
   var resolved = path.resolve(raw);
-  // H-6 fix: Validate path is under home directory to prevent path traversal
   var home = os.homedir();
   if (!resolved.startsWith(home + path.sep) && resolved !== home) {
-    console.error('ERROR: CLAUDE_CONFIG_DIR must be within home directory. Got: ' + resolved);
+    console.error('ERROR: ' + envName + ' must be within home directory. Got: ' + resolved);
     process.exit(1);
   }
   return resolved;
+}
+
+/** Resolve the Claude config directory, respecting CLAUDE_CONFIG_DIR. */
+function resolveClaudeTarget() {
+  return resolveScopedPath(process.env.CLAUDE_CONFIG_DIR || path.join(os.homedir(), '.claude'), 'CLAUDE_CONFIG_DIR');
+}
+
+/** Resolve the Codex config directory, respecting CODEX_HOME. */
+function resolveCodexTarget() {
+  return resolveScopedPath(process.env.CODEX_HOME || path.join(os.homedir(), '.codex'), 'CODEX_HOME');
 }
 
 /** Recursively copy a directory. Returns file count. Applies optional prefix to filenames. */
@@ -69,6 +83,28 @@ function copyDir(src, dest, opts) {
     } else {
       var destName = opts.prefix ? opts.prefix + entry.name : entry.name;
       fs.copyFileSync(srcPath, path.join(dest, destName));
+      count++;
+    }
+  }
+  return count;
+}
+
+/** Recursively copy the packaged repo tree for Codex skill/plugin installs. */
+function copyProjectTree(src, dest) {
+  if (!fs.existsSync(src)) return 0;
+  fs.mkdirSync(dest, { recursive: true });
+  var count = 0;
+  var entries = fs.readdirSync(src, { withFileTypes: true });
+  for (var i = 0; i < entries.length; i++) {
+    var entry = entries[i];
+    if (INSTALL_EXCLUDES[entry.name]) continue;
+    var srcPath = path.join(src, entry.name);
+    var destPath = path.join(dest, entry.name);
+    if (entry.isDirectory()) {
+      count += copyProjectTree(srcPath, destPath);
+    } else {
+      fs.mkdirSync(path.dirname(destPath), { recursive: true });
+      fs.copyFileSync(srcPath, destPath);
       count++;
     }
   }
@@ -96,10 +132,10 @@ function rmPrefixed(dir, prefix) {
 // Install
 // ---------------------------------------------------------------------------
 
-function install() {
-  var target = resolveTarget();
+function installClaude() {
+  var target = resolveClaudeTarget();
   console.log('\n  Installing ' + PRODUCT + ' v' + VERSION);
-  console.log('  Target: ' + target + '\n');
+  console.log('  Target (Claude Code): ' + target + '\n');
 
   // 1. Commands -> {target}/commands/productionos/
   var cmdDest = path.join(target, 'commands', COMMANDS_NS);
@@ -127,15 +163,39 @@ function install() {
   console.log('    Agents   : ' + agentCount + ' -> ' + agentDest);
   console.log('    Version  : ' + VERSION + '  -> ' + path.join(dataDest, 'VERSION'));
   console.log();
-  printBanner(cmdCount, agentCount);
+  printClaudeBanner(cmdCount, agentCount);
+}
+
+function installCodex() {
+  var target = resolveCodexTarget();
+  console.log('\n  Installing ' + PRODUCT + ' v' + VERSION);
+  console.log('  Target (Codex): ' + target + '\n');
+
+  var pluginDest = path.join(target, 'plugins', PRODUCT_SLUG);
+  var skillDest = path.join(target, 'skills', PRODUCT_SLUG);
+  var aliasDest = path.join(target, 'skills');
+
+  rmDir(pluginDest);
+  rmDir(skillDest);
+
+  var pluginFileCount = copyProjectTree(PKG_ROOT, pluginDest);
+  var skillFileCount = copyProjectTree(PKG_ROOT, skillDest);
+  var aliasCount = copyDir(SRC.codexAliases, aliasDest);
+
+  console.log('  Installed:');
+  console.log('    Plugin   : ' + pluginFileCount + ' files -> ' + pluginDest);
+  console.log('    Skill    : ' + skillFileCount + ' files -> ' + skillDest);
+  console.log('    Aliases  : ' + aliasCount + ' skills -> ' + aliasDest);
+  console.log();
+  printCodexBanner(pluginFileCount, skillFileCount, aliasCount);
 }
 
 // ---------------------------------------------------------------------------
 // Uninstall
 // ---------------------------------------------------------------------------
 
-function uninstall() {
-  var target = resolveTarget();
+function uninstallClaude() {
+  var target = resolveClaudeTarget();
   console.log('\n  Uninstalling ' + PRODUCT + ' from ' + target + '\n');
 
   // Remove commands namespace directory
@@ -154,15 +214,30 @@ function uninstall() {
   console.log('  Claude Code marketplace plugin install is unaffected.\n');
 }
 
+function uninstallCodex() {
+  var target = resolveCodexTarget();
+  console.log('\n  Uninstalling ' + PRODUCT + ' Codex install from ' + target + '\n');
+
+  rmDir(path.join(target, 'plugins', PRODUCT_SLUG));
+  rmDir(path.join(target, 'skills', PRODUCT_SLUG));
+  rmPrefixed(path.join(target, 'skills'), PRODUCT_SLUG + '-');
+
+  console.log('  Codex plugin and skill install removed.\n');
+}
+
 // ---------------------------------------------------------------------------
 // Update -- delegates to npx to fetch the latest published version
 // ---------------------------------------------------------------------------
 
 function update() {
+  var forwardFlags = [];
+  if (process.argv.includes('--codex')) forwardFlags.push('--codex');
+  if (process.argv.includes('--all-targets')) forwardFlags.push('--all-targets');
+  if (process.argv.includes('--claude')) forwardFlags.push('--claude');
   console.log('\n  Updating ' + PRODUCT + ' to latest...\n');
   try {
     // execFileSync prevents shell injection -- args are passed as an array
-    execFileSync('npx', ['productionos@latest'], { stdio: 'inherit' });
+    execFileSync('npx', ['productionos@latest'].concat(forwardFlags), { stdio: 'inherit' });
   } catch (e) {
     console.error('  Update failed. Try manually: npx productionos@latest');
     process.exit(1);
@@ -179,14 +254,21 @@ function printHelp() {
     '  ' + PRODUCT + ' v' + VERSION + ' -- Agentic Development OS',
     '',
     '  Usage:',
-    '    npx productionos@latest              Install to ~/.claude/',
-    '    npx productionos@latest --uninstall  Remove all ProductionOS files',
-    '    npx productionos@latest --update     Pull latest version and reinstall',
-    '    npx productionos@latest --help       Show this message',
+    '    npx productionos@latest                 Install to ~/.claude/ (default)',
+    '    npx productionos@latest --codex        Install to ~/.codex/plugins + ~/.codex/skills',
+    '    npx productionos@latest --all-targets  Install to Claude Code and Codex',
+    '    npx productionos@latest --uninstall    Remove Claude Code install',
+    '    npx productionos@latest --uninstall --codex',
+    '                                           Remove Codex install',
+    '    npx productionos@latest --update [flags]',
+    '                                           Pull latest version and reinstall',
+    '    npx productionos@latest --help         Show this message',
     '',
     '  Environment:',
     '    CLAUDE_CONFIG_DIR   Override the Claude config directory',
     '                        (default: ~/.claude/)',
+    '    CODEX_HOME         Override the Codex config directory',
+    '                        (default: ~/.codex/)',
     '',
     '  After install, use slash commands in Claude Code:',
     '    /omni-plan-nth        Recursive orchestration, loops until 10/10',
@@ -203,6 +285,11 @@ function printHelp() {
     '    /auto-swarm           Distributed agent swarm',
     '    /productionos-help    Full command reference',
     '    /productionos-update  Self-update from GitHub',
+    '',
+    '  After Codex install, use:',
+    '    $productionos         Root Codex skill',
+    '    ~/.codex/plugins/productionos/.codex-plugin/plugin.json',
+    '                        Native Codex plugin manifest',
     ''
   ].join('\n'));
 }
@@ -211,7 +298,7 @@ function printHelp() {
 // Banner
 // ---------------------------------------------------------------------------
 
-function printBanner(cmdCount, agentCount) {
+function printClaudeBanner(cmdCount, agentCount) {
   var pad2 = function(n) { return String(n).length < 2 ? ' ' + n : String(n); };
   console.log('  +---------------------------------------------------+');
   console.log('  |  ' + PRODUCT + ' v' + VERSION + ' installed successfully        |');
@@ -220,6 +307,20 @@ function printBanner(cmdCount, agentCount) {
   console.log('  |  Start with:  /omni-plan-nth [target]             |');
   console.log('  |  Full list:   /productionos-help                  |');
   console.log('  |  Uninstall:   npx productionos --uninstall        |');
+  console.log('  +---------------------------------------------------+');
+  console.log();
+}
+
+function printCodexBanner(pluginFileCount, skillFileCount, aliasCount) {
+  console.log('  +---------------------------------------------------+');
+  console.log('  |  ' + PRODUCT + ' v' + VERSION + ' installed for Codex         |');
+  console.log('  |  Plugin files: ' + pluginFileCount + '  |  Skill files: ' + skillFileCount + '             |');
+  console.log('  |  Workflow aliases: ' + aliasCount + '                           |');
+  console.log('  |                                                   |');
+  console.log('  |  Use:        $productionos                        |');
+  console.log('  |  Alias:      $productionos-review                 |');
+  console.log('  |  Plugin:     ~/.codex/plugins/productionos        |');
+  console.log('  |  Skill:      ~/.codex/skills/productionos         |');
   console.log('  +---------------------------------------------------+');
   console.log();
 }
@@ -240,18 +341,22 @@ function main() {
     return;
   }
 
-  if (flags['--uninstall']) {
-    uninstall();
-    return;
-  }
-
   if (flags['--update']) {
     update();
     return;
   }
 
-  // Default: install
-  install();
+  var installCodexTarget = !!flags['--codex'] || !!flags['--all-targets'];
+  var installClaudeTarget = !!flags['--claude'] || !!flags['--all-targets'] || !installCodexTarget;
+
+  if (flags['--uninstall']) {
+    if (installClaudeTarget) uninstallClaude();
+    if (installCodexTarget) uninstallCodex();
+    return;
+  }
+
+  if (installClaudeTarget) installClaude();
+  if (installCodexTarget) installCodex();
 }
 
 main();

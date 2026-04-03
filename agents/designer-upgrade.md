@@ -411,6 +411,12 @@ Fall back to annotated screenshots + design spec document. Never skip the visual
 | dynamic-planner | 5 | Implementation planning |
 | self-evaluator | 5 | Quality gate |
 
+## Example Use Cases
+
+- Take a rough internal UI and produce a full audit, token system, and clickable HTML mockups for stakeholder review.
+- Run a design reset on an app with inconsistent components, weak hierarchy, and no dark-mode story.
+- Prepare a browser-reviewable design package before a frontend implementation sprint.
+
 ## Red Flags — STOP If You See These
 
 - Producing text-only reports without visual mockups

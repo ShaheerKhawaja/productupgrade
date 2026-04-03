@@ -11,6 +11,7 @@
 
 import * as path from 'path';
 import { parseFrontmatter, readFileOrNull, walkFiles, listMdFiles, ROOT } from './lib/shared';
+import { getGeneratedTargetFiles } from './lib/runtime-targets';
 
 // ─── Helpers (remaining, not in shared.ts) ──────────────────
 
@@ -98,6 +99,51 @@ runCheck('SKILL.md has valid frontmatter', () => {
   return { pass: hasName && hasDesc, details };
 });
 
+// 4b. Root Codex SKILL.md exists and has valid frontmatter
+runCheck('Root Codex SKILL.md has valid frontmatter', () => {
+  const content = readFileOrNull(path.join(ROOT, 'SKILL.md'));
+  if (!content) return { pass: false, details: ['Root SKILL.md not found'] };
+  const fm = parseFrontmatter(content);
+  if (!fm) return { pass: false, details: ['No YAML frontmatter found'] };
+  const hasName = typeof fm.name === 'string' && fm.name.length > 0;
+  const hasDesc = typeof fm.description === 'string' && fm.description.length > 0;
+  const details: string[] = [];
+  if (!hasName) details.push('Missing "name" field');
+  if (!hasDesc) details.push('Missing "description" field');
+  if (details.length === 0) details.push(`name="${fm.name}"`);
+  return { pass: hasName && hasDesc, details };
+});
+
+// 4c. Codex UI metadata exists
+runCheck('agents/openai.yaml has required interface fields', () => {
+  const content = readFileOrNull(path.join(ROOT, 'agents', 'openai.yaml'));
+  if (!content) return { pass: false, details: ['agents/openai.yaml not found'] };
+
+  const required = ['display_name:', 'short_description:', 'default_prompt:'];
+  const missing = required.filter(field => !content.includes(field));
+  const mentionsSkill = content.includes('$productionos');
+
+  const details: string[] = [];
+  if (missing.length > 0) {
+    details.push(`Missing fields: ${missing.join(', ')}`);
+  }
+  if (!mentionsSkill) {
+    details.push('default_prompt should mention $productionos');
+  }
+  if (details.length === 0) {
+    details.push('display_name, short_description, and default_prompt are present');
+  }
+  return { pass: missing.length === 0 && mentionsSkill, details };
+});
+
+// 4d. Codex plugin manifest exists and is valid JSON
+runCheck('.codex-plugin/plugin.json is valid JSON', () => {
+  const content = readFileOrNull(path.join(ROOT, '.codex-plugin', 'plugin.json'));
+  if (!content) return { pass: false, details: ['.codex-plugin/plugin.json not found'] };
+  const valid = isValidJson(content);
+  return { pass: valid, details: valid ? ['Valid'] : ['Invalid JSON'] };
+});
+
 // 5. All agent .md files have valid YAML frontmatter (name, description, color, tools)
 runCheck('All agents have valid frontmatter', () => {
   const agentFiles = listMdFiles(path.join(ROOT, 'agents'));
@@ -131,16 +177,26 @@ runCheck('All agents have valid frontmatter', () => {
   return { pass: allValid, details };
 });
 
-// 6. No agent references .productupgrade/ (should be .productionos/)
-runCheck('No stale .productupgrade/ references in agents', () => {
-  const agentFiles = listMdFiles(path.join(ROOT, 'agents'));
+// 6. No active stale productupgrade references in shipped surfaces
+runCheck('No active stale productupgrade references', () => {
+  const surfaces = [
+    path.join(ROOT, 'README.md'),
+    path.join(ROOT, 'CLAUDE.md'),
+    path.join(ROOT, 'ARCHITECTURE.md'),
+    path.join(ROOT, 'SKILL.md'),
+    path.join(ROOT, '.claude-plugin', 'plugin.json'),
+    path.join(ROOT, '.claude-plugin', 'marketplace.json'),
+    path.join(ROOT, '.claude', 'skills', 'productionos', 'SKILL.md'),
+    path.join(ROOT, 'skills', 'productionos', 'SKILL.md'),
+    ...walkFiles(path.join(ROOT, '.claude', 'commands'), '.md'),
+  ];
   const violations: string[] = [];
 
-  for (const file of agentFiles) {
-    const content = readFileOrNull(path.join(ROOT, 'agents', file));
+  for (const file of surfaces) {
+    const content = readFileOrNull(file);
     if (!content) continue;
-    if (content.includes('.productupgrade/') || content.includes('.productupgrade\\')) {
-      violations.push(file);
+    if (content.includes('productupgrade') || content.includes('.productupgrade/')) {
+      violations.push(path.relative(ROOT, file));
     }
   }
 
@@ -148,11 +204,11 @@ runCheck('No stale .productupgrade/ references in agents', () => {
     pass: violations.length === 0,
     details: violations.length === 0
       ? ['No stale references found']
-      : violations.map(f => `${f} references .productupgrade/`),
+      : violations.map(f => `${f} contains stale productupgrade reference`),
   };
 });
 
-// 7. No file references /ultra-upgrade or /productupgrade (old command names)
+// 7. No file references /ultra-upgrade (old command name)
 runCheck('No stale command name references', () => {
   const allMdFiles = [
     ...walkFiles(path.join(ROOT, 'agents'), '.md'),
@@ -161,8 +217,6 @@ runCheck('No stale command name references', () => {
   ];
   const violations: string[] = [];
   const stalePatterns = ['/ultra-upgrade'];
-  // Note: '/productupgrade' is excluded because the actual directory is named 'productupgrade'
-  // and legitimate references to the directory path are valid (e.g., in productionos-update.md)
 
   for (const file of allMdFiles) {
     const content = readFileOrNull(file);
@@ -180,6 +234,25 @@ runCheck('No stale command name references', () => {
     details: violations.length === 0
       ? ['No stale command name references']
       : violations,
+  };
+});
+
+// 7b. Generated targets are committed and in sync
+runCheck('Generated runtime targets are in sync', () => {
+  const mismatches: string[] = [];
+
+  for (const generated of getGeneratedTargetFiles()) {
+    const current = readFileOrNull(path.join(ROOT, generated.path));
+    if (current !== generated.content) {
+      mismatches.push(generated.path);
+    }
+  }
+
+  return {
+    pass: mismatches.length === 0,
+    details: mismatches.length === 0
+      ? ['Committed target files match generator output']
+      : mismatches.map(file => `${file} is out of sync with scripts/gen-targets.ts`),
   };
 });
 
