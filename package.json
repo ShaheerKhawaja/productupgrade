@@ -16,6 +16,7 @@
     ".claude/commands/",
     ".claude/skills/",
     "skills/",
+    "codex-skills/",
     "agents/",
     "docs/",
     "templates/",

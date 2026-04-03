@@ -30,6 +30,7 @@ export interface GeneratedTargetFile {
 
 interface CommandSkillSpec {
   name: string;
+  aliasName: string;
   description: string;
   sourcePath: string;
   arguments: Array<{
@@ -311,6 +312,7 @@ function getCommandSkillSpecs(): CommandSkillSpec[] {
           : `Codex-native wrapper for ${file.replace(/\.md$/, "")}.`);
       return {
         name: file.replace(/\.md$/, ""),
+        aliasName: `${PRODUCT_SLUG}-${file.replace(/\.md$/, "")}`,
         description,
         sourcePath,
         arguments: extractCommandArguments(content),
@@ -419,6 +421,44 @@ function renderCommandSkill(spec: CommandSkillSpec): string {
     "- Keep the scope faithful to the source command rather than broadening into a generic repo audit.",
     "- Prefer concrete outputs and validation over describing the workflow abstractly.",
     ...guardrailLines,
+    "",
+  ].join("\n");
+}
+
+function renderCommandAliasSkill(spec: CommandSkillSpec): string {
+  const sourceLink = docLinkFromSkill(`codex-skills/${spec.aliasName}/SKILL.md`, spec.sourcePath);
+  const handoffLink = docLinkFromSkill(`codex-skills/${spec.aliasName}/SKILL.md`, "docs/CODEX-PARITY-HANDOFF.md");
+  const pluginLocalSkill = docLinkFromSkill(`codex-skills/${spec.aliasName}/SKILL.md`, `skills/${spec.name}/SKILL.md`);
+  const parity = WORKFLOW_PARITY.find((workflow) => workflow.id === spec.name);
+
+  return [
+    "---",
+    `name: ${spec.aliasName}`,
+    `description: "${spec.description.replace(/"/g, '\\"')}"`,
+    'argument-hint: "[repo path, target, or task context]"',
+    "---",
+    "",
+    `# ${spec.aliasName}`,
+    "",
+    "## Overview",
+    "",
+    `Top-level Codex alias for the ProductionOS workflow [\`${spec.name}\`](${pluginLocalSkill}).`,
+    "",
+    `- Source command: [${spec.sourcePath}](${sourceLink})`,
+    `- Plugin-local skill: [skills/${spec.name}/SKILL.md](${pluginLocalSkill})`,
+    `- Parity reference: [CODEX-PARITY-HANDOFF.md](${handoffLink})`,
+    "",
+    "Use this alias when you want a Codex-native entrypoint without the `productionos:` namespace.",
+    "",
+    "## Expected Behavior",
+    "",
+    `- Workflow: \`${spec.name}\``,
+    parity ? `- Codex intent: ${parity.codexBehavior}` : `- Codex intent: ${spec.description}`,
+    "",
+    "## Guardrails",
+    "",
+    "- This alias should preserve the same scope and expectations as the underlying ProductionOS workflow.",
+    "- Prefer this alias over namespaced invocation if you want a cleaner Codex skill call path.",
     "",
   ].join("\n");
 }
@@ -649,6 +689,10 @@ export function getGeneratedTargetFiles(): GeneratedTargetFile[] {
     getCommandSkillSpecs().map((spec) => ({
       path: `skills/${spec.name}/SKILL.md`,
       content: renderCommandSkill(spec),
+    })),
+    getCommandSkillSpecs().map((spec) => ({
+      path: `codex-skills/${spec.aliasName}/SKILL.md`,
+      content: renderCommandAliasSkill(spec),
     })),
   );
 }

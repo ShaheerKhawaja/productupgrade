@@ -45,6 +45,7 @@ describe("native installer", () => {
     expect(out).toContain("installed for Codex");
     expect(existsSync(join(codexHome, "plugins", "productionos", ".codex-plugin", "plugin.json"))).toBe(true);
     expect(existsSync(join(codexHome, "skills", "productionos", "SKILL.md"))).toBe(true);
+    expect(existsSync(join(codexHome, "skills", "productionos-review", "SKILL.md"))).toBe(true);
   });
 
   test("--all-targets installs Claude and Codex payloads together", () => {

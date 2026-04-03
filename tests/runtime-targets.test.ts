@@ -64,4 +64,16 @@ describe("runtime target generation", () => {
       expect(skill.content).toContain("## Guardrails");
     }
   });
+
+  test("every Claude command has a generated top-level Codex alias skill", () => {
+    const commandNames = listMdFiles(join(ROOT, ".claude", "commands"))
+      .map((file) => file.replace(/\.md$/, ""))
+      .sort();
+    const generatedAliasNames = getGeneratedTargetFiles()
+      .filter((file) => file.path.startsWith("codex-skills/") && file.path.endsWith("/SKILL.md"))
+      .map((file) => file.path.replace(/^codex-skills\//, "").replace(/\/SKILL\.md$/, ""))
+      .sort();
+
+    expect(generatedAliasNames).toEqual(commandNames.map((name) => `productionos-${name}`).sort());
+  });
 });

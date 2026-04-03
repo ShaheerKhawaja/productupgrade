@@ -50,6 +50,7 @@ npx productionos@latest --codex
 This installs:
 - `~/.codex/skills/productionos`
 - `~/.codex/plugins/productionos`
+- `~/.codex/skills/productionos-<workflow>` aliases for every ProductionOS workflow
 
 Restart Codex to pick up the new skill and plugin.
 
@@ -62,6 +63,10 @@ npx productionos@latest --all-targets
 ### Codex App / Plugin Surface
 
 ProductionOS now ships a native Codex plugin manifest at `.codex-plugin/plugin.json` plus a plugin skill at `skills/productionos/SKILL.md`.
+
+Recommended Codex usage:
+- `$productionos` for the umbrella workflow router
+- `$productionos-review`, `$productionos-plan-eng-review`, `$productionos-production-upgrade`, etc. for direct workflow entrypoints
 
 ## What It Does
 

@@ -34,4 +34,5 @@ Current snapshot: 78 agents, 41 commands, 17 hooks, 11 templates, 25 tests.
 - `.claude/commands/*.md` remain workflow specs, not the cross-runtime source of truth.
 - The runtime-neutral registry owns target support, shared descriptions, and generated manifests.
 - The Codex plugin now exposes one generated skill wrapper per ProductionOS command under `skills/<command>/SKILL.md`.
+- The Codex install also exports top-level alias skills under `codex-skills/productionos-<command>/SKILL.md` for non-namespaced invocation.
 - Claude-only concepts must be translated to Codex-native execution, not copied verbatim.

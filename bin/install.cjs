@@ -40,6 +40,7 @@ const INSTALL_EXCLUDES = { '.git': true, 'node_modules': true };
 const SRC = {
   commands: path.join(PKG_ROOT, '.claude', 'commands'),
   skills:   path.join(PKG_ROOT, '.claude', 'skills'),
+  codexAliases: path.join(PKG_ROOT, 'codex-skills'),
   agents:   path.join(PKG_ROOT, 'agents'),
 };
 
@@ -172,18 +173,21 @@ function installCodex() {
 
   var pluginDest = path.join(target, 'plugins', PRODUCT_SLUG);
   var skillDest = path.join(target, 'skills', PRODUCT_SLUG);
+  var aliasDest = path.join(target, 'skills');
 
   rmDir(pluginDest);
   rmDir(skillDest);
 
   var pluginFileCount = copyProjectTree(PKG_ROOT, pluginDest);
   var skillFileCount = copyProjectTree(PKG_ROOT, skillDest);
+  var aliasCount = copyDir(SRC.codexAliases, aliasDest);
 
   console.log('  Installed:');
   console.log('    Plugin   : ' + pluginFileCount + ' files -> ' + pluginDest);
   console.log('    Skill    : ' + skillFileCount + ' files -> ' + skillDest);
+  console.log('    Aliases  : ' + aliasCount + ' skills -> ' + aliasDest);
   console.log();
-  printCodexBanner(pluginFileCount, skillFileCount);
+  printCodexBanner(pluginFileCount, skillFileCount, aliasCount);
 }
 
 // ---------------------------------------------------------------------------
@@ -216,6 +220,7 @@ function uninstallCodex() {
 
   rmDir(path.join(target, 'plugins', PRODUCT_SLUG));
   rmDir(path.join(target, 'skills', PRODUCT_SLUG));
+  rmPrefixed(path.join(target, 'skills'), PRODUCT_SLUG + '-');
 
   console.log('  Codex plugin and skill install removed.\n');
 }
@@ -306,12 +311,14 @@ function printClaudeBanner(cmdCount, agentCount) {
   console.log();
 }
 
-function printCodexBanner(pluginFileCount, skillFileCount) {
+function printCodexBanner(pluginFileCount, skillFileCount, aliasCount) {
   console.log('  +---------------------------------------------------+');
   console.log('  |  ' + PRODUCT + ' v' + VERSION + ' installed for Codex         |');
   console.log('  |  Plugin files: ' + pluginFileCount + '  |  Skill files: ' + skillFileCount + '             |');
+  console.log('  |  Workflow aliases: ' + aliasCount + '                           |');
   console.log('  |                                                   |');
   console.log('  |  Use:        $productionos                        |');
+  console.log('  |  Alias:      $productionos-review                 |');
   console.log('  |  Plugin:     ~/.codex/plugins/productionos        |');
   console.log('  |  Skill:      ~/.codex/skills/productionos         |');
   console.log('  +---------------------------------------------------+');
