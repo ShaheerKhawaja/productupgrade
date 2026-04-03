@@ -44,13 +44,20 @@ That's it. ProductionOS discovers your stack, deploys 7 review agents in paralle
 ### Codex CLI Skill Install
 
 ```bash
-python ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py \
-  --repo ShaheerKhawaja/ProductionOS \
-  --path . \
-  --name productionos
+npx productionos@latest --codex
 ```
 
-Restart Codex to pick up the new skill.
+This installs:
+- `~/.codex/skills/productionos`
+- `~/.codex/plugins/productionos`
+
+Restart Codex to pick up the new skill and plugin.
+
+### Install For Claude + Codex Together
+
+```bash
+npx productionos@latest --all-targets
+```
 
 ### Codex App / Plugin Surface
 

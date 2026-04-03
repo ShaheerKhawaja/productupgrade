@@ -100,6 +100,32 @@ describe('Codex skill packaging', () => {
     expect(content).toContain('default_prompt:');
     expect(content).toContain('$productionos');
   });
+
+  test('.codex-plugin/plugin.json exists', () => {
+    const content = readFileOrNull(path.join(ROOT, '.codex-plugin', 'plugin.json'));
+    expect(content).not.toBeNull();
+    expect(() => JSON.parse(content!)).not.toThrow();
+  });
+
+  test('package.json ships the files required for Codex install', () => {
+    const pkg = JSON.parse(readFileOrNull(path.join(ROOT, 'package.json')) ?? '{}');
+    const files = Array.isArray(pkg.files) ? pkg.files : [];
+    const required = [
+      '.codex-plugin/',
+      'skills/',
+      'docs/',
+      'templates/',
+      'prompts/',
+      'hooks/',
+      'scripts/',
+      'README.md',
+      'ARCHITECTURE.md',
+    ];
+
+    for (const entry of required) {
+      expect(files).toContain(entry);
+    }
+  });
 });
 
 describe('Agent frontmatter validation', () => {
