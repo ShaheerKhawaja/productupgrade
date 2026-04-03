@@ -17,6 +17,7 @@
     ".claude/skills/",
     "skills/",
     "codex-skills/",
+    "codex-overrides/",
     "agents/",
     "docs/",
     "templates/",

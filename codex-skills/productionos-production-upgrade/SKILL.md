@@ -1,27 +1,64 @@
 ---
 name: productionos-production-upgrade
 description: "Run the full product upgrade pipeline — 55-agent iterative review with CEO/Engineering/UX/QA parallel loops"
-argument-hint: "[repo path, target, or task context]"
+argument-hint: "[mode, target repo, or directory]"
 ---
 
 # productionos-production-upgrade
 
+
+Use this alias when you want the same workflow through a top-level Codex-safe name without the `productionos:` namespace.
 ## Overview
 
-Top-level Codex alias for the ProductionOS workflow [`production-upgrade`](../../skills/production-upgrade/SKILL.md).
+Use this as the Codex-first end-to-end upgrade workflow for a repository. It should behave like a bounded audit-and-improve loop: discover the current state, score the codebase, prioritize high-leverage fixes, implement safe improvements, validate, and summarize before/after results.
 
-- Source command: [.claude/commands/production-upgrade.md](../../.claude/commands/production-upgrade.md)
-- Plugin-local skill: [skills/production-upgrade/SKILL.md](../../skills/production-upgrade/SKILL.md)
-- Parity reference: [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md)
+Source references:
+- `.claude/commands/production-upgrade.md`
+- `agents/self-evaluator.md`
+- `agents/self-healer.md`
+- `agents/plan-checker.md`
 
-Use this alias when you want a Codex-native entrypoint without the `productionos:` namespace.
+## Inputs
 
-## Expected Behavior
+- `mode`: `full`, `audit`, `ux`, `fix`, or `validate`
+- optional target path or repository
+- optional `profile`, `converge`, and `target_grade`
 
-- Workflow: `production-upgrade`
-- Codex intent: Run a repo audit, prioritize high-leverage defects, implement bounded fixes, then validate before reporting.
+## Codex Workflow
+
+1. Discover the codebase.
+   - stack, architecture, tests, docs, churn hotspots, TODO markers
+   - read any existing `.productionos/` artifacts first
+2. Build the baseline.
+   - score major quality dimensions
+   - identify the 2-3 weakest dimensions
+3. Plan the next fix slice.
+   - prioritize high-leverage, bounded work
+   - avoid giant rewrite batches
+4. Implement safely.
+   - make focused changes
+   - validate after each batch
+   - stop on regressions
+5. Re-score and summarize.
+   - before/after posture
+   - fixed items
+   - deferred items
+
+## Expected Output
+
+- baseline findings
+- prioritized fix plan
+- implemented improvements when mode allows it
+- validation results
+- before/after summary
+
+## Verification
+
+- run the smallest relevant tests or checks after each implementation batch
+- if validation fails, repair or stop; do not claim success
 
 ## Guardrails
 
-- This alias should preserve the same scope and expectations as the underlying ProductionOS workflow.
-- Prefer this alias over namespaced invocation if you want a cleaner Codex skill call path.
+- do not take destructive actions without approval
+- do not hide regressions behind aggregate score improvement
+- do not treat existing `.productionos/` artifacts as disposable; build on them when useful

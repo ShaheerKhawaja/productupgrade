@@ -1,27 +1,52 @@
 ---
 name: productionos-plan-ceo-review
 description: "CEO/founder-mode plan review — rethink the problem, find the 10-star product, challenge premises. Four modes: SCOPE EXPANSION, SELECTIVE EXPANSION, HOLD SCOPE, SCOPE REDUCTION."
-argument-hint: "[repo path, target, or task context]"
+argument-hint: "[plan, feature, or repo path]"
 ---
 
 # productionos-plan-ceo-review
 
+
+Use this alias when you want the same workflow through a top-level Codex-safe name without the `productionos:` namespace.
 ## Overview
 
-Top-level Codex alias for the ProductionOS workflow [`plan-ceo-review`](../../skills/plan-ceo-review/SKILL.md).
+Use this as the Codex-first strategic plan review. It should question whether the team is solving the right problem, whether the proposed scope is ambitious enough, and what the smallest or best version of the work should be.
 
-- Source command: [.claude/commands/plan-ceo-review.md](../../.claude/commands/plan-ceo-review.md)
-- Plugin-local skill: [skills/plan-ceo-review/SKILL.md](../../skills/plan-ceo-review/SKILL.md)
-- Parity reference: [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md)
+Source references:
+- `.claude/commands/plan-ceo-review.md`
+- `templates/SELF-EVAL-PROTOCOL.md`
 
-Use this alias when you want a Codex-native entrypoint without the `productionos:` namespace.
+## Inputs
 
-## Expected Behavior
+- target plan or feature
+- `mode`: `expansion`, `selective`, `hold`, or `reduction`
+- optional product context and user constraints
 
-- Workflow: `plan-ceo-review`
-- Codex intent: Challenge scope, tighten user value, and surface expansion opportunities explicitly.
+## Codex Workflow
+
+1. Restate the problem and user outcome.
+2. Select the review posture.
+   - `expansion`: push toward the 10-star version
+   - `selective`: show high-value optional expansions
+   - `hold`: bulletproof the current scope
+   - `reduction`: cut to the minimum viable version
+3. Review the plan across:
+   - user value
+   - ambition and differentiation
+   - risks and failure modes
+   - simplicity versus overbuild
+4. Present concrete recommendations and tradeoffs.
+5. End with a verdict on what would make the plan stronger.
+
+## Expected Output
+
+- direct restatement of the product problem
+- 10-star framing or reduction path
+- highest-risk gaps
+- recommended scope decisions
 
 ## Guardrails
 
-- This alias should preserve the same scope and expectations as the underlying ProductionOS workflow.
-- Prefer this alias over namespaced invocation if you want a cleaner Codex skill call path.
+- Do not silently change scope; present scope changes explicitly.
+- Tie recommendations back to user value, not just architecture taste.
+- Prefer complete solutions over shortcuts when the delta is small in AI time.

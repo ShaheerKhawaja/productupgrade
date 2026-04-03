@@ -6,22 +6,56 @@ argument-hint: "[repo path, target, or task context]"
 
 # productionos-document-release
 
+
+Use this alias when you want the same workflow through a top-level Codex-safe name without the `productionos:` namespace.
 ## Overview
 
-Top-level Codex alias for the ProductionOS workflow [`document-release`](../../skills/document-release/SKILL.md).
+This is the Codex-native workflow wrapper for [.claude/commands/document-release.md](../../.claude/commands/document-release.md).
 
-- Source command: [.claude/commands/document-release.md](../../.claude/commands/document-release.md)
-- Plugin-local skill: [skills/document-release/SKILL.md](../../skills/document-release/SKILL.md)
-- Parity reference: [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md)
+Use it when the user wants this exact ProductionOS workflow, not just the umbrella `productionos` router.
 
-Use this alias when you want a Codex-native entrypoint without the `productionos:` namespace.
+## Source of Truth
 
-## Expected Behavior
+1. Read the source command spec at [.claude/commands/document-release.md](../../.claude/commands/document-release.md).
+2. Use [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md) to confirm runtime support and parity expectations.
+3. Preserve the source workflow's guardrails, scope, artifacts, and verification intent.
+4. Translate Claude-only slash-command and hook semantics into Codex-native execution instead of copying them literally.
 
-- Workflow: `document-release`
-- Codex intent: Post-ship documentation update — reads all project docs, cross-references the diff, updates README/ARCHITECTURE/CONTRIBUTING/CLAUDE.md to match what shipped.
+## Codex Behavior
+
+- Summary: Post-ship documentation update — reads all project docs, cross-references the diff, updates README/ARCHITECTURE/CONTRIBUTING/CLAUDE.md to match what shipped.
+- Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.
+
+## Inputs
+
+- `scope` — What to update: all | readme | architecture | changelog (default: all) Default: `all` Optional.
+
+## Execution Outline
+
+1. Preamble
+2. Diff Analysis
+3. Read Current Docs
+4. Cross-Reference
+5. Update
+6. Self-Eval
+
+## Agents And Assets
+
+- Agents: no explicit agent references in the source command.
+- Templates: `PREAMBLE.md`, `SELF-EVAL-PROTOCOL.md`
+- Artifacts: no explicit `.productionos/` artifacts called out in the source command.
+
+## Workflow
+
+1. Load only the agents, templates, prompts, and docs referenced by the source command.
+2. Execute the workflow intent with Codex-native tools.
+3. If the source command implies parallel agent work, only delegate when the user explicitly wants that overhead.
+4. Verify with the smallest relevant checks before concluding.
+5. Summarize what changed, what was verified, and what still needs human approval.
 
 ## Guardrails
 
-- This alias should preserve the same scope and expectations as the underlying ProductionOS workflow.
-- Prefer this alias over namespaced invocation if you want a cleaner Codex skill call path.
+- Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
+- Keep the scope faithful to the source command rather than broadening into a generic repo audit.
+- Prefer concrete outputs and validation over describing the workflow abstractly.
+- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.

@@ -6,22 +6,56 @@ argument-hint: "[repo path, target, or task context]"
 
 # productionos-ux-genie
 
+
+Use this alias when you want the same workflow through a top-level Codex-safe name without the `productionos:` namespace.
 ## Overview
 
-Top-level Codex alias for the ProductionOS workflow [`ux-genie`](../../skills/ux-genie/SKILL.md).
+This is the Codex-native workflow wrapper for [.claude/commands/ux-genie.md](../../.claude/commands/ux-genie.md).
 
-- Source command: [.claude/commands/ux-genie.md](../../.claude/commands/ux-genie.md)
-- Plugin-local skill: [skills/ux-genie/SKILL.md](../../skills/ux-genie/SKILL.md)
-- Parity reference: [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md)
+Use it when the user wants this exact ProductionOS workflow, not just the umbrella `productionos` router.
 
-Use this alias when you want a Codex-native entrypoint without the `productionos:` namespace.
+## Source of Truth
 
-## Expected Behavior
+1. Read the source command spec at [.claude/commands/ux-genie.md](../../.claude/commands/ux-genie.md).
+2. Use [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md) to confirm runtime support and parity expectations.
+3. Preserve the source workflow's guardrails, scope, artifacts, and verification intent.
+4. Translate Claude-only slash-command and hook semantics into Codex-native execution instead of copying them literally.
 
-- Workflow: `ux-genie`
-- Codex intent: Map user flows, identify friction, and translate findings into concrete improvements.
+## Codex Behavior
+
+- Summary: User-story, journey, and friction mapping workflow.
+- Expected behavior: Map user flows, identify friction, and translate findings into concrete improvements.
+- Validation: tests/runtime-targets.test.ts
+
+## Inputs
+
+- `target` — Target directory or repo (default: current directory) Optional.
+- `personas` — Number of user personas to derive (default: auto, min 3) Default: `auto` Optional.
+- `focus` — Focus areas: stories | journeys | friction | full (default: full) Default: `full` Optional.
+- `fix` — Auto-fix friction points: on | off (default: off — analyze only) Default: `off` Optional.
+- `grade` — Target UX score (default: 10.0) Default: `10.0` Optional.
+
+## Execution Outline
+
+1. Preamble
+
+## Agents And Assets
+
+- Agents: `ux-genie`
+- Templates: `PREAMBLE.md`, `SELF-EVAL-PROTOCOL.md`
+- Artifacts: `.productionos/designer-upgrade/DESIGN-SYSTEM.md`, `.productionos/ux-genie/`, `.productionos/ux-genie/self-eval`
+
+## Workflow
+
+1. Load only the agents, templates, prompts, and docs referenced by the source command.
+2. Execute the workflow intent with Codex-native tools.
+3. If the source command implies parallel agent work, only delegate when the user explicitly wants that overhead.
+4. Verify with the smallest relevant checks before concluding.
+5. Summarize what changed, what was verified, and what still needs human approval.
 
 ## Guardrails
 
-- This alias should preserve the same scope and expectations as the underlying ProductionOS workflow.
-- Prefer this alias over namespaced invocation if you want a cleaner Codex skill call path.
+- Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
+- Keep the scope faithful to the source command rather than broadening into a generic repo audit.
+- Prefer concrete outputs and validation over describing the workflow abstractly.
+- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.

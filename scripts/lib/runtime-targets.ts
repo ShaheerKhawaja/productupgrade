@@ -326,6 +326,9 @@ function getCommandSkillSpecs(): CommandSkillSpec[] {
 }
 
 function renderCommandSkill(spec: CommandSkillSpec): string {
+  const override = readFileOrNull(join(ROOT, "codex-overrides", `${spec.name}.md`));
+  if (override) return override;
+
   const parity = WORKFLOW_PARITY.find((workflow) => workflow.id === spec.name);
   const skillPath = `skills/${spec.name}/SKILL.md`;
   const sourceLink = docLinkFromSkill(skillPath, spec.sourcePath);
@@ -426,41 +429,19 @@ function renderCommandSkill(spec: CommandSkillSpec): string {
 }
 
 function renderCommandAliasSkill(spec: CommandSkillSpec): string {
-  const sourceLink = docLinkFromSkill(`codex-skills/${spec.aliasName}/SKILL.md`, spec.sourcePath);
-  const handoffLink = docLinkFromSkill(`codex-skills/${spec.aliasName}/SKILL.md`, "docs/CODEX-PARITY-HANDOFF.md");
-  const pluginLocalSkill = docLinkFromSkill(`codex-skills/${spec.aliasName}/SKILL.md`, `skills/${spec.name}/SKILL.md`);
-  const parity = WORKFLOW_PARITY.find((workflow) => workflow.id === spec.name);
+  const baseSkill = renderCommandSkill(spec);
+  const lines = baseSkill.split("\n");
 
-  return [
-    "---",
-    `name: ${spec.aliasName}`,
-    `description: "${spec.description.replace(/"/g, '\\"')}"`,
-    'argument-hint: "[repo path, target, or task context]"',
-    "---",
-    "",
-    `# ${spec.aliasName}`,
-    "",
-    "## Overview",
-    "",
-    `Top-level Codex alias for the ProductionOS workflow [\`${spec.name}\`](${pluginLocalSkill}).`,
-    "",
-    `- Source command: [${spec.sourcePath}](${sourceLink})`,
-    `- Plugin-local skill: [skills/${spec.name}/SKILL.md](${pluginLocalSkill})`,
-    `- Parity reference: [CODEX-PARITY-HANDOFF.md](${handoffLink})`,
-    "",
-    "Use this alias when you want a Codex-native entrypoint without the `productionos:` namespace.",
-    "",
-    "## Expected Behavior",
-    "",
-    `- Workflow: \`${spec.name}\``,
-    parity ? `- Codex intent: ${parity.codexBehavior}` : `- Codex intent: ${spec.description}`,
-    "",
-    "## Guardrails",
-    "",
-    "- This alias should preserve the same scope and expectations as the underlying ProductionOS workflow.",
-    "- Prefer this alias over namespaced invocation if you want a cleaner Codex skill call path.",
-    "",
-  ].join("\n");
+  return lines
+    .map((line, index) => {
+      if (line === `name: ${spec.name}`) return `name: ${spec.aliasName}`;
+      if (line === `# ${spec.name}`) return `# ${spec.aliasName}`;
+      if (index === 7) {
+        return `${line}\n\nUse this alias when you want the same workflow through a top-level Codex-safe name without the \`productionos:\` namespace.`;
+      }
+      return line;
+    })
+    .join("\n");
 }
 
 export function renderClaudeSkill(): string {

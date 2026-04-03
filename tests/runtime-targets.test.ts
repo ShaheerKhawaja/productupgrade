@@ -59,9 +59,15 @@ describe("runtime target generation", () => {
 
     for (const skill of generatedCommandSkills) {
       expect(skill.content).toContain("## Inputs");
-      expect(skill.content).toContain("## Execution Outline");
-      expect(skill.content).toContain("## Agents And Assets");
       expect(skill.content).toContain("## Guardrails");
+      expect(
+        skill.content.includes("## Agents And Assets") ||
+        skill.content.includes("Source references:"),
+      ).toBe(true);
+      expect(
+        skill.content.includes("## Execution Outline") ||
+        skill.content.includes("## Codex Workflow"),
+      ).toBe(true);
     }
   });
 
@@ -75,5 +81,26 @@ describe("runtime target generation", () => {
       .sort();
 
     expect(generatedAliasNames).toEqual(commandNames.map((name) => `productionos-${name}`).sort());
+  });
+
+  test("core workflows use hand-authored Codex overrides", () => {
+    const coreSkills = [
+      "review",
+      "plan-eng-review",
+      "plan-ceo-review",
+      "production-upgrade",
+      "security-audit",
+      "qa",
+      "ship",
+    ];
+
+    for (const skillName of coreSkills) {
+      const skill = getGeneratedTargetFiles().find((file) => file.path === `skills/${skillName}/SKILL.md`);
+      expect(skill).toBeDefined();
+      expect(skill!.content).toContain("## Overview");
+      expect(skill!.content).toContain("## Codex Workflow");
+      expect(skill!.content).toContain("## Guardrails");
+      expect(skill!.content).not.toContain("This is the Codex-native workflow wrapper");
+    }
   });
 });

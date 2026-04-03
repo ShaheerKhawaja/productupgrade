@@ -39,11 +39,6 @@ Use this skill to translate the Claude-oriented workflow specs in this repo into
 - Respect the repo's guardrails in `hooks/`, `.claude-plugin/`, `.codex-plugin/`, and `templates/`.
 - For packaging or install questions, inspect `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.codex-plugin/plugin.json`, `package.json`, and `README.md`.
 
-## Direct Alias Skills
-
-- The Codex install also ships top-level aliases like `productionos-review`, `productionos-plan-eng-review`, and `productionos-production-upgrade`.
-- Prefer those aliases when you want a direct workflow entrypoint without the `productionos:` namespace.
-
 ## Output Expectations
 
 - Explain which ProductionOS workflow you are mapping.

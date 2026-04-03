@@ -1,27 +1,50 @@
 ---
 name: productionos-security-audit
 description: "7-domain security hardening audit — OWASP Top 10 2025, MITRE ATT&CK mapping, NIST CSF 2.0 alignment, secret detection, supply chain audit, container security, DevSecOps pipeline. Grounded in 734 cybersecurity skills."
-argument-hint: "[repo path, target, or task context]"
+argument-hint: "[framework, scope, or repo path]"
 ---
 
 # productionos-security-audit
 
+
+Use this alias when you want the same workflow through a top-level Codex-safe name without the `productionos:` namespace.
 ## Overview
 
-Top-level Codex alias for the ProductionOS workflow [`security-audit`](../../skills/security-audit/SKILL.md).
+Use this as the Codex-first security audit workflow. It is detection-first and evidence-first: find concrete security issues, map them to frameworks, and never cross into exploit behavior.
 
-- Source command: [.claude/commands/security-audit.md](../../.claude/commands/security-audit.md)
-- Plugin-local skill: [skills/security-audit/SKILL.md](../../skills/security-audit/SKILL.md)
-- Parity reference: [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md)
+Source references:
+- `.claude/commands/security-audit.md`
+- `agents/security-hardener.md`
 
-Use this alias when you want a Codex-native entrypoint without the `productionos:` namespace.
+## Inputs
 
-## Expected Behavior
+- `framework`: `owasp`, `mitre`, `nist`, or `all`
+- `scope`: `full` or `changed-files`
+- repository path or current checkout
 
-- Workflow: `security-audit`
-- Codex intent: Inspect auth, secrets, input handling, and deployment risk with findings-first output.
+## Codex Workflow
+
+1. Resolve scope and prior audit context.
+2. Audit the codebase across the main security domains:
+   - access control
+   - crypto and secrets handling
+   - injection risk
+   - security misconfiguration
+   - dependency and supply-chain risk
+   - auth/session weaknesses
+   - logging, monitoring, and SSRF-style outbound risk
+3. Map every real finding to a framework category where possible.
+4. Classify severity and explain exploitability and impact.
+5. End with an actionable posture summary, not just a list of grep hits.
+
+## Expected Output
+
+- findings with severity, evidence, and framework mapping
+- overall security posture summary
+- concrete remediations
 
 ## Guardrails
 
-- This alias should preserve the same scope and expectations as the underlying ProductionOS workflow.
-- Prefer this alias over namespaced invocation if you want a cleaner Codex skill call path.
+- never attempt live exploitation
+- never expose secret values in output
+- every finding must be backed by file and line evidence

@@ -6,22 +6,64 @@ argument-hint: "[repo path, target, or task context]"
 
 # productionos-auto-swarm-nth
 
+
+Use this alias when you want the same workflow through a top-level Codex-safe name without the `productionos:` namespace.
 ## Overview
 
-Top-level Codex alias for the ProductionOS workflow [`auto-swarm-nth`](../../skills/auto-swarm-nth/SKILL.md).
+This is the Codex-native workflow wrapper for [.claude/commands/auto-swarm-nth.md](../../.claude/commands/auto-swarm-nth.md).
 
-- Source command: [.claude/commands/auto-swarm-nth.md](../../.claude/commands/auto-swarm-nth.md)
-- Plugin-local skill: [skills/auto-swarm-nth/SKILL.md](../../skills/auto-swarm-nth/SKILL.md)
-- Parity reference: [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md)
+Use it when the user wants this exact ProductionOS workflow, not just the umbrella `productionos` router.
 
-Use this alias when you want a Codex-native entrypoint without the `productionos:` namespace.
+## Source of Truth
 
-## Expected Behavior
+1. Read the source command spec at [.claude/commands/auto-swarm-nth.md](../../.claude/commands/auto-swarm-nth.md).
+2. Use [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md) to confirm runtime support and parity expectations.
+3. Preserve the source workflow's guardrails, scope, artifacts, and verification intent.
+4. Translate Claude-only slash-command and hook semantics into Codex-native execution instead of copying them literally.
 
-- Workflow: `auto-swarm-nth`
-- Codex intent: Repeat swarm-style execution until gaps close, while translating agent waves into Codex-native orchestration.
+## Codex Behavior
+
+- Summary: Recursive swarm orchestration until coverage and quality thresholds are met.
+- Expected behavior: Repeat swarm-style execution until gaps close, while translating agent waves into Codex-native orchestration.
+- Validation: tests/runtime-targets.test.ts
+
+## Inputs
+
+- `task` — The task to swarm on (natural language description) Required.
+- `max_waves` — Maximum swarm waves (default: unlimited, practical cap: 20) Default: `20` Optional.
+- `mode` — Swarm mode: research | build | audit | fix | explore (default: auto-detect) Optional.
+- `swarm_size` — Agents per wave (default: 7, max: 7) Default: `7` Optional.
+- `max_cost` — Maximum accumulated cost in USD before halting (default: 20) Default: `20` Optional.
+- `isolation` — Agent isolation mode: none (default) | worktree (each agent gets isolated git worktree with non-overlapping file scopes) Default: `none` Optional.
+
+## Execution Outline
+
+1. Preamble
+
+## Agents And Assets
+
+- Agents: `merge-conflict-resolver`, `self-evaluator`, `self-healer`, `worktree-orchestrator`
+- Templates: `INVOCATION-PROTOCOL.md`, `PREAMBLE.md`, `SELF-EVAL-PROTOCOL.md`
+- Artifacts: `.productionos/SWARM-COVERAGE.md`, `.productionos/SWARM-NTH-COST-HALT.md`, `.productionos/SWARM-NTH-REPORT.md`, `.productionos/SWARM-WAVE-{N}.md`, `.productionos/TOKEN-BUDGET.md`, `.productionos/WORKTREE-MERGE-LOG.md`, `.productionos/self-eval/`, `.productionos/swarm-tasks.json`
+
+## Workflow
+
+1. Load only the agents, templates, prompts, and docs referenced by the source command.
+2. Execute the workflow intent with Codex-native tools.
+3. If the source command implies parallel agent work, only delegate when the user explicitly wants that overhead.
+4. Verify with the smallest relevant checks before concluding.
+5. Summarize what changed, what was verified, and what still needs human approval.
 
 ## Guardrails
 
-- This alias should preserve the same scope and expectations as the underlying ProductionOS workflow.
-- Prefer this alias over namespaced invocation if you want a cleaner Codex skill call path.
+- Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
+- Keep the scope faithful to the source command rather than broadening into a generic repo audit.
+- Prefer concrete outputs and validation over describing the workflow abstractly.
+- **Cost ceiling: $ARGUMENTS.max_cost (default $20). Enforced via Phase 0 cost check before every wave. Hard halt when exceeded.**
+- Maximum waves: $ARGUMENTS.max_waves (default 20, hard cap 50)
+- Agents per wave: $ARGUMENTS.swarm_size (default 7, max 7)
+- Per-wave token budget: 400K
+- Total session budget: 5M tokens
+- Regression protection: if a fix breaks existing tests, rollback immediately
+- Stall detection: 2 waves with < 2% coverage improvement triggers pivot
+- Quality floor: no item can drop below its previous quality score
