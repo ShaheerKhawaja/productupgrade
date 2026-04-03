@@ -25,6 +25,24 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Expected behavior: Map user flows, identify friction, and translate findings into concrete improvements.
 - Validation: tests/runtime-targets.test.ts
 
+## Inputs
+
+- `target` — Target directory or repo (default: current directory) Optional.
+- `personas` — Number of user personas to derive (default: auto, min 3) Default: `auto` Optional.
+- `focus` — Focus areas: stories | journeys | friction | full (default: full) Default: `full` Optional.
+- `fix` — Auto-fix friction points: on | off (default: off — analyze only) Default: `off` Optional.
+- `grade` — Target UX score (default: 10.0) Default: `10.0` Optional.
+
+## Execution Outline
+
+1. Preamble
+
+## Agents And Assets
+
+- Agents: `ux-genie`
+- Templates: `PREAMBLE.md`, `SELF-EVAL-PROTOCOL.md`
+- Artifacts: `.productionos/designer-upgrade/DESIGN-SYSTEM.md`, `.productionos/ux-genie/`, `.productionos/ux-genie/self-eval`
+
 ## Workflow
 
 1. Load only the agents, templates, prompts, and docs referenced by the source command.
@@ -38,3 +56,4 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
 - Keep the scope faithful to the source command rather than broadening into a generic repo audit.
 - Prefer concrete outputs and validation over describing the workflow abstractly.
+- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.

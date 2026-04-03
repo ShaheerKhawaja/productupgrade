@@ -25,6 +25,21 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Expected behavior: Inspect auth, secrets, input handling, and deployment risk with findings-first output.
 - Validation: tests/runtime-targets.test.ts
 
+## Inputs
+
+- `framework` — owasp | mitre | nist | all (default: all) Default: `all` Optional.
+- `scope` — full | changed-files (default: full) Default: `full` Optional.
+
+## Execution Outline
+
+1. Preamble
+
+## Agents And Assets
+
+- Agents: `security-hardener`
+- Templates: `INVOCATION-PROTOCOL.md`, `PREAMBLE.md`
+- Artifacts: `.productionos/AUDIT-SECURITY.md`
+
 ## Workflow
 
 1. Load only the agents, templates, prompts, and docs referenced by the source command.
@@ -38,3 +53,4 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
 - Keep the scope faithful to the source command rather than broadening into a generic repo audit.
 - Prefer concrete outputs and validation over describing the workflow abstractly.
+- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.

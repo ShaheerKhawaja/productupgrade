@@ -25,6 +25,23 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Expected behavior: Iterate the full orchestration loop until quality targets are met or clearly plateau.
 - Validation: tests/runtime-targets.test.ts
 
+## Inputs
+
+- `target` — Target directory, repo URL, or idea description Optional.
+- `max_iterations` — Maximum iterations before forced exit (default: unlimited, practical cap: 20) Default: `20` Optional.
+- `focus` — Focus area: architecture | security | ux | performance | full (default: full) Default: `full` Optional.
+- `max_cost` — Maximum accumulated cost in USD before halting (default: 20) Default: `20` Optional.
+
+## Execution Outline
+
+1. Preamble
+
+## Agents And Assets
+
+- Agents: `self-evaluator`, `self-healer`
+- Templates: `INVOCATION-PROTOCOL.md`, `PREAMBLE.md`, `SELF-EVAL-PROTOCOL.md`
+- Artifacts: `.productionos/AUDIT-SECURITY.md`, `.productionos/CONVERGENCE-LOG.md`, `.productionos/EVAL-CLEAR.md`, `.productionos/ITERATION-{N}.md`, `.productionos/OMNI-NTH-COST-HALT.md`, `.productionos/OMNI-NTH-FINAL.md`, `.productionos/OMNI-NTH-REPORT.md`, `.productionos/RESEARCH-security-`, `.productionos/SCORE-BASELINE.md`, `.productionos/SKILL-MAP.md`, `.productionos/SWARM-NTH-REPORT.md`, `.productionos/SWARM-REPORT.md`, `.productionos/TOKEN-BUDGET.md`, `.productionos/self-eval/`
+
 ## Workflow
 
 1. Load only the agents, templates, prompts, and docs referenced by the source command.
@@ -38,3 +55,10 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
 - Keep the scope faithful to the source command rather than broadening into a generic repo audit.
 - Prefer concrete outputs and validation over describing the workflow abstractly.
+- **Cost ceiling: $ARGUMENTS.max_cost (default $20). Enforced via Phase 0 cost check before every iteration. Hard halt when exceeded.**
+- Maximum iterations: $ARGUMENTS.max_iterations (default 20, hard cap 50)
+- Per-iteration agent limit: 21 agents
+- Per-iteration token budget: 800K
+- Regression protection: rollback any batch that causes dimension drop > 0.5
+- Self-regulation: if 3 consecutive iterations show no improvement, force a strategy pivot
+- Emergency stop: if total session tokens exceed 5M, pause and ask user to continue

@@ -25,6 +25,24 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Expected behavior: Run the workflow serially by default in Codex, or delegate only when the user explicitly wants parallel work.
 - Validation: tests/runtime-targets.test.ts
 
+## Inputs
+
+- `task` — The task to swarm on (natural language description) Required.
+- `depth` — Research depth: shallow | medium | deep | ultra (default: deep) Default: `deep` Optional.
+- `swarm_size` — Agents per swarm wave (default: 7, max: 7) Default: `7` Optional.
+- `iterations` — Maximum iteration loops (default: 7, max: 11) Default: `7` Optional.
+- `mode` — Swarm mode: research | build | audit | fix | explore (default: auto-detect) Optional.
+
+## Execution Outline
+
+1. Preamble
+
+## Agents And Assets
+
+- Agents: no explicit agent references in the source command.
+- Templates: `INVOCATION-PROTOCOL.md`, `PREAMBLE.md`
+- Artifacts: `.productionos/SWARM-REPORT.md`
+
 ## Workflow
 
 1. Load only the agents, templates, prompts, and docs referenced by the source command.
@@ -38,3 +56,11 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
 - Keep the scope faithful to the source command rather than broadening into a generic repo audit.
 - Prefer concrete outputs and validation over describing the workflow abstractly.
+- Maximum 7 agents per wave (Claude Code Agent tool limit)
+- Maximum 11 waves (77 total agents)
+- Per-agent token budget: 100K
+- Per-wave token budget: 400K
+- Total session budget: 2M tokens
+- Emergency stop if any agent exceeds budget
+- Read-only mode available (append `--readonly` to prevent code changes)
+- All code changes require validation gate before commit

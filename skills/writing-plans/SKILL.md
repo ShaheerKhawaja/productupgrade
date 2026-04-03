@@ -21,7 +21,23 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 
 ## Codex Behavior
 
+- Summary: Create step-by-step implementation plans with risk assessment, dependency mapping, and effort estimation. Used after brainstorming, before execution.
 - Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.
+
+## Inputs
+
+- `spec` — Spec or requirements to plan from (default: latest brainstorming output) Optional.
+
+## Execution Outline
+
+1. Preamble
+2. Capture the Approved Scope
+
+## Agents And Assets
+
+- Agents: no explicit agent references in the source command.
+- Templates: `PREAMBLE.md`, `SELF-EVAL-PROTOCOL.md`
+- Artifacts: no explicit `.productionos/` artifacts called out in the source command.
 
 ## Workflow
 
@@ -36,3 +52,4 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
 - Keep the scope faithful to the source command rather than broadening into a generic repo audit.
 - Prefer concrete outputs and validation over describing the workflow abstractly.
+- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.

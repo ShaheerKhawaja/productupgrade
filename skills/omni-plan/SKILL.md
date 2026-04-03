@@ -25,6 +25,23 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Expected behavior: Chain the major review and execution patterns in a Codex-native sequence without Claude-only assumptions.
 - Validation: tests/runtime-targets.test.ts
 
+## Inputs
+
+- `target` — Target directory, repo URL, or idea description Optional.
+- `focus` — Focus area: architecture | security | ux | performance | full (default: full) Optional.
+- `depth` — Research depth: quick | standard | deep | exhaustive (default: deep) Optional.
+- `profile` — Model profile: quality (default) | balanced | budget. Budget enables ES-CoT and reduces agent depth. Default: `quality` Optional.
+
+## Execution Outline
+
+1. Preamble
+
+## Agents And Assets
+
+- Agents: no explicit agent references in the source command.
+- Templates: `INVOCATION-PROTOCOL.md`, `PREAMBLE.md`
+- Artifacts: `.productionos/CONVERGENCE-DATA.json`, `.productionos/EVAL-CLEAR.md`, `.productionos/INTEL-CONTEXT.md`, `.productionos/INTEL-RESEARCH.md`, `.productionos/JUDGE-PANEL-{N}.md`, `.productionos/OMNI-PLAN.md`, `.productionos/OMNI-REPORT.md`, `.productionos/REVIEW-CEO.md`, `.productionos/REVIEW-DESIGN.md`, `.productionos/REVIEW-ENGINEERING.md`
+
 ## Workflow
 
 1. Load only the agents, templates, prompts, and docs referenced by the source command.
@@ -38,3 +55,4 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
 - Keep the scope faithful to the source command rather than broadening into a generic repo audit.
 - Prefer concrete outputs and validation over describing the workflow abstractly.
+- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.

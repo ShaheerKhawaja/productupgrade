@@ -21,7 +21,22 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 
 ## Codex Behavior
 
+- Summary: Resume a paused pipeline from .productionos/CHECKPOINT.json. Restores context and routes to the correct step.
 - Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.
+
+## Inputs
+
+- No explicit arguments. Use repo path, target, or task context as needed.
+
+## Execution Outline
+
+1. Follow the source command sections in order and preserve its exit criteria.
+
+## Agents And Assets
+
+- Agents: no explicit agent references in the source command.
+- Templates: no explicit shared templates beyond general repo conventions.
+- Artifacts: `.productionos/CHECKPOINT.json`, `.productionos/CHECKPOINT.json.`
 
 ## Workflow
 
@@ -36,3 +51,4 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
 - Keep the scope faithful to the source command rather than broadening into a generic repo audit.
 - Prefer concrete outputs and validation over describing the workflow abstractly.
+- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.

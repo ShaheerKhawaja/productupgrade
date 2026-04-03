@@ -32,6 +32,17 @@ interface CommandSkillSpec {
   name: string;
   description: string;
   sourcePath: string;
+  arguments: Array<{
+    name: string;
+    description: string;
+    required: boolean;
+    defaultValue?: string;
+  }>;
+  steps: string[];
+  agents: string[];
+  templates: string[];
+  artifacts: string[];
+  guardrails: string[];
 }
 
 export const PRODUCT_NAME = "ProductionOS";
@@ -172,6 +183,65 @@ function docLinkFromSkill(skillPath: string, repoPath: string): string {
   return `${prefix}${repoPath}`;
 }
 
+function extractCommandArguments(content: string): CommandSkillSpec["arguments"] {
+  const args = [...content.matchAll(
+    /-\s+name:\s*([^\n]+)\n\s+description:\s*"([^"]+)"\n\s+required:\s*(true|false)(?:\n\s+default:\s*"([^"]*)")?/g,
+  )].map((match) => ({
+    name: match[1].trim(),
+    description: match[2].trim(),
+    required: match[3] === "true",
+    defaultValue: match[4]?.trim() || undefined,
+  }));
+
+  return args;
+}
+
+function extractSection(content: string, heading: string): string {
+  const escaped = heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const match = content.match(new RegExp(`^## ${escaped}\\n([\\s\\S]*?)(?=^## |\\Z)`, "m"));
+  return match?.[1]?.trim() || "";
+}
+
+function extractStepHeadings(content: string): string[] {
+  const steps = [...content.matchAll(/^##\s+Step\s+\d+(?::|\s+)?\s*(.+)$/gm)]
+    .map((match) => match[1].trim())
+    .filter(Boolean);
+
+  return steps.length > 0 ? steps : ["Follow the source command sections in order and preserve its exit criteria."];
+}
+
+function extractAgents(content: string): string[] {
+  const matches = [
+    ...content.matchAll(/agents\/([a-z0-9-]+)\.md/g),
+    ...content.matchAll(/Dispatch\s+`([a-z0-9-]+)`/g),
+    ...content.matchAll(/-+\s+Dispatch\s+`([a-z0-9-]+)`/g),
+    ...content.matchAll(/-+\s+`([a-z0-9-]+)`:\s/g),
+  ].map((match) => match[1]);
+
+  return [...new Set(matches)].sort();
+}
+
+function extractTemplates(content: string): string[] {
+  const matches = [...content.matchAll(/templates\/([A-Z0-9-]+)\.md/g)].map((match) => `${match[1]}.md`);
+  return [...new Set(matches)].sort();
+}
+
+function extractArtifacts(content: string): string[] {
+  const matches = [...content.matchAll(/\.productionos\/[A-Za-z0-9._\-{}\/]+/g)].map((match) => match[0]);
+  return [...new Set(matches)].sort();
+}
+
+function extractGuardrails(content: string): string[] {
+  const section = extractSection(content, "Guardrails");
+  if (!section) return [];
+
+  return section
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line.startsWith("-") || /^\d+\./.test(line))
+    .map((line) => line.replace(/^-\s+/, "").replace(/^\d+\.\s+/, "").trim());
+}
+
 function renderSharedSkillBody(): string {
   const counts = collectRepoCounts();
   return [
@@ -243,6 +313,12 @@ function getCommandSkillSpecs(): CommandSkillSpec[] {
         name: file.replace(/\.md$/, ""),
         description,
         sourcePath,
+        arguments: extractCommandArguments(content),
+        steps: extractStepHeadings(content),
+        agents: extractAgents(content),
+        templates: extractTemplates(content),
+        artifacts: extractArtifacts(content),
+        guardrails: extractGuardrails(content),
       };
     });
 }
@@ -264,9 +340,33 @@ function renderCommandSkill(spec: CommandSkillSpec): string {
     : [
         "## Codex Behavior",
         "",
+        `- Summary: ${spec.description}`,
         "- Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.",
         "",
       ];
+
+  const inputLines = spec.arguments.length > 0
+    ? spec.arguments.map((arg) => {
+        const parts = [`- \`${arg.name}\` — ${arg.description}`];
+        if (arg.defaultValue) parts.push(`Default: \`${arg.defaultValue}\``);
+        parts.push(arg.required ? "Required." : "Optional.");
+        return parts.join(" ");
+      })
+    : ["- No explicit arguments. Use repo path, target, or task context as needed."];
+
+  const stepLines = spec.steps.map((step, index) => `${index + 1}. ${step}`);
+  const agentLines = spec.agents.length > 0
+    ? [`- Agents: ${spec.agents.map((agent) => `\`${agent}\``).join(", ")}`]
+    : ["- Agents: no explicit agent references in the source command."];
+  const templateLines = spec.templates.length > 0
+    ? [`- Templates: ${spec.templates.map((template) => `\`${template}\``).join(", ")}`]
+    : ["- Templates: no explicit shared templates beyond general repo conventions."];
+  const artifactLines = spec.artifacts.length > 0
+    ? [`- Artifacts: ${spec.artifacts.map((artifact) => `\`${artifact}\``).join(", ")}`]
+    : ["- Artifacts: no explicit `.productionos/` artifacts called out in the source command."];
+  const guardrailLines = spec.guardrails.length > 0
+    ? spec.guardrails.slice(0, 8).map((item) => `- ${item}`)
+    : ["- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit."];
 
   return [
     "---",
@@ -291,6 +391,20 @@ function renderCommandSkill(spec: CommandSkillSpec): string {
     "4. Translate Claude-only slash-command and hook semantics into Codex-native execution instead of copying them literally.",
     "",
     ...behavior,
+    "## Inputs",
+    "",
+    ...inputLines,
+    "",
+    "## Execution Outline",
+    "",
+    ...stepLines,
+    "",
+    "## Agents And Assets",
+    "",
+    ...agentLines,
+    ...templateLines,
+    ...artifactLines,
+    "",
     "## Workflow",
     "",
     "1. Load only the agents, templates, prompts, and docs referenced by the source command.",
@@ -304,6 +418,7 @@ function renderCommandSkill(spec: CommandSkillSpec): string {
     "- Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.",
     "- Keep the scope faithful to the source command rather than broadening into a generic repo audit.",
     "- Prefer concrete outputs and validation over describing the workflow abstractly.",
+    ...guardrailLines,
     "",
   ].join("\n");
 }

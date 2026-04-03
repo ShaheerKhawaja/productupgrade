@@ -25,6 +25,24 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Expected behavior: Build a UX audit and redesign plan, then route into interface work when needed.
 - Validation: tests/runtime-targets.test.ts
 
+## Inputs
+
+- `target` — Target frontend directory or repo (default: current directory) Optional.
+- `grade` — Target design score (default: 10.0) Default: `10.0` Optional.
+- `focus` — Focus areas: design-system | mockups | audit | full (default: full) Default: `full` Optional.
+- `mockup_views` — Comma-separated list of views to mockup (default: auto-detect top 5) Optional.
+- `competitive` — Number of competitor products to analyze (default: 5) Default: `5` Optional.
+
+## Execution Outline
+
+1. Preamble
+
+## Agents And Assets
+
+- Agents: `designer-upgrade`, `quality-loop-controller`
+- Templates: `PREAMBLE.md`, `SELF-EVAL-PROTOCOL.md`
+- Artifacts: `.productionos/designer-upgrade/`, `.productionos/designer-upgrade/{audit`
+
 ## Workflow
 
 1. Load only the agents, templates, prompts, and docs referenced by the source command.
@@ -38,3 +56,4 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
 - Keep the scope faithful to the source command rather than broadening into a generic repo audit.
 - Prefer concrete outputs and validation over describing the workflow abstractly.
+- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.

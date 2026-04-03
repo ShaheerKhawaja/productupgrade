@@ -21,7 +21,27 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 
 ## Codex Behavior
 
+- Summary: Self-improving agent optimization — generates challenger variants of any agent/command, benchmarks against baseline, promotes winners, logs learnings to instincts. Inspired by Karpathy's autoresearch pattern.
 - Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.
+
+## Inputs
+
+- `target` — Agent or command to optimize (e.g., 'code-reviewer', 'security-hardener', '/production-upgrade') Required.
+- `challengers` — Number of challenger variants to generate (default: 3) Default: `3` Optional.
+- `benchmark` — Benchmark to evaluate against: 'self-eval' (default) | 'test-suite' | 'llm-judge' | path to custom benchmark Default: `self-eval` Optional.
+- `hypothesis` — Specific hypothesis to test (e.g., 'add chain-of-thought to security-hardener'). If omitted, auto-generates hypotheses. Optional.
+- `max_cost` — Maximum cost in USD for the optimization run (default: 5) Default: `5` Optional.
+- `mode` — Optimization mode: prompt (modify agent instructions) | model (test different models) | layers (test prompt composition layers) | params (test convergence parameters) Default: `prompt` Optional.
+
+## Execution Outline
+
+1. Preamble
+
+## Agents And Assets
+
+- Agents: `metaclaw-learner`, `prompt-optimizer`, `rubric-evolver`
+- Templates: `PREAMBLE.md`, `PROMPT-COMPOSITION.md`
+- Artifacts: `.productionos/AUTO-OPTIMIZE-BASELINE.md`, `.productionos/AUTO-OPTIMIZE-HARVEST.md`, `.productionos/AUTO-OPTIMIZE-HYPOTHESES.md`, `.productionos/AUTO-OPTIMIZE-REPORT.md`, `.productionos/AUTO-OPTIMIZE-RESULTS.md`, `.productionos/analytics/skill-usage.jsonl`, `.productionos/calibration/`, `.productionos/challengers/challenger-{N}.md`, `.productionos/instincts/`, `.productionos/instincts/project/`
 
 ## Workflow
 
@@ -36,3 +56,9 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
 - Keep the scope faithful to the source command rather than broadening into a generic repo audit.
 - Prefer concrete outputs and validation over describing the workflow abstractly.
+- **Cost ceiling:** $ARGUMENTS.max_cost (default $5). Hard halt when exceeded.
+- **No regression allowed:** If ALL challengers score lower than baseline, keep baseline.
+- **Prompt length limit:** Challenger prompts cannot exceed 2x the baseline length.
+- **Model safety:** Model changes require human approval before promotion.
+- **Idempotent:** Running auto-optimize twice with the same inputs produces the same baseline measurement.
+- **Rollback:** If promoted winner causes test failures in subsequent runs, revert automatically.

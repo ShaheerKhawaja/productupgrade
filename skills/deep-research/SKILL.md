@@ -21,7 +21,24 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 
 ## Codex Behavior
 
+- Summary: 8-phase autonomous research pipeline with multi-source discovery, 4-layer citation verification, hypothesis generation, and PIVOT/REFINE/PROCEED decision loops. Confidence-gated — loops until 95%+ confidence.
 - Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.
+
+## Inputs
+
+- `topic` — Research topic or question Required.
+- `depth` — quick (10 sources) | standard (50) | deep (500) | exhaustive (2000) Default: `deep` Optional.
+- `sources` — arxiv | web | docs | all (default: all) Default: `all` Optional.
+
+## Execution Outline
+
+1. Follow the source command sections in order and preserve its exit criteria.
+
+## Agents And Assets
+
+- Agents: no explicit agent references in the source command.
+- Templates: no explicit shared templates beyond general repo conventions.
+- Artifacts: `.productionos/RESEARCH-{topic-slug}.md`, `.productionos/learned/research-lessons.jsonl`
 
 ## Workflow
 
@@ -36,3 +53,4 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
 - Keep the scope faithful to the source command rather than broadening into a generic repo audit.
 - Prefer concrete outputs and validation over describing the workflow abstractly.
+- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.

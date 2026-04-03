@@ -21,7 +21,23 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 
 ## Codex Behavior
 
+- Summary: Niche-agnostic agentic evaluator using CLEAR v2.0 framework — 6-domain assessment, 8 analysis dimensions, 6-tier source prioritization, evidence strength ratings, and decision trees. Evaluates any plan, codebase, or research output.
 - Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.
+
+## Inputs
+
+- `target` — What to evaluate: a file path, directory, or 'latest' for most recent pipeline output Default: `latest` Optional.
+- `domain` — Evaluation domain or 'auto-detect' Default: `auto-detect` Optional.
+
+## Execution Outline
+
+1. Follow the source command sections in order and preserve its exit criteria.
+
+## Agents And Assets
+
+- Agents: no explicit agent references in the source command.
+- Templates: no explicit shared templates beyond general repo conventions.
+- Artifacts: `.productionos/EVAL-CLEAR.md`
 
 ## Workflow
 
@@ -36,3 +52,4 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
 - Keep the scope faithful to the source command rather than broadening into a generic repo audit.
 - Prefer concrete outputs and validation over describing the workflow abstractly.
+- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.

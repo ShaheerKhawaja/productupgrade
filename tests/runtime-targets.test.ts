@@ -51,4 +51,17 @@ describe("runtime target generation", () => {
 
     expect(generatedSkillNames).toEqual(commandNames);
   });
+
+  test("generated command skill wrappers contain Codex-specific workflow sections", () => {
+    const generatedCommandSkills = getGeneratedTargetFiles()
+      .filter((file) => file.path.startsWith("skills/") && file.path.endsWith("/SKILL.md"))
+      .filter((file) => !file.path.endsWith("skills/productionos/SKILL.md"));
+
+    for (const skill of generatedCommandSkills) {
+      expect(skill.content).toContain("## Inputs");
+      expect(skill.content).toContain("## Execution Outline");
+      expect(skill.content).toContain("## Agents And Assets");
+      expect(skill.content).toContain("## Guardrails");
+    }
+  });
 });

@@ -21,7 +21,23 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 
 ## Codex Behavior
 
+- Summary: Headless browser for QA testing, site inspection, and interaction verification. Navigate, screenshot, click, fill forms, capture snapshots.
 - Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.
+
+## Inputs
+
+- `url` — URL to navigate to Required.
+- `action` — Action: navigate | screenshot | interact | snapshot (default: navigate) Default: `navigate` Optional.
+
+## Execution Outline
+
+1. Preamble
+
+## Agents And Assets
+
+- Agents: `browser-controller`
+- Templates: `PREAMBLE.md`, `SELF-EVAL-PROTOCOL.md`
+- Artifacts: `.productionos/browse/`, `.productionos/browse/screenshot-{timestamp}.png`
 
 ## Workflow
 
@@ -36,3 +52,4 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
 - Keep the scope faithful to the source command rather than broadening into a generic repo audit.
 - Prefer concrete outputs and validation over describing the workflow abstractly.
+- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.
