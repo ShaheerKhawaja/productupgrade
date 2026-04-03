@@ -85,17 +85,23 @@ describe("runtime target generation", () => {
 
   test("core workflows use hand-authored Codex overrides", () => {
     const coreSkills = [
+      "agentic-eval",
       "review",
       "plan-eng-review",
       "plan-ceo-review",
       "production-upgrade",
       "security-audit",
       "qa",
+      "qa-only",
+      "self-eval",
+      "session-validate",
       "ship",
       "deep-research",
       "debug",
       "auto-swarm",
+      "auto-swarm-nth",
       "omni-plan",
+      "omni-plan-nth",
       "designer-upgrade",
       "ux-genie",
       "document-release",
