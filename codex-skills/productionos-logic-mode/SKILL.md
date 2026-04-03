@@ -1,7 +1,7 @@
 ---
 name: productionos-logic-mode
-description: "Business idea → production-ready plan pipeline. User provides an idea or business plan, agent researches market, competitors, existing solutions, challenges assumptions, identifies flaws, and builds a comprehensive execution plan with auto-document population."
-argument-hint: "[repo path, target, or task context]"
+description: "Business idea validation workflow that pressure-tests assumptions, users, and viability before implementation."
+argument-hint: "[idea, business model, or problem]"
 ---
 
 # productionos-logic-mode
@@ -10,48 +10,27 @@ argument-hint: "[repo path, target, or task context]"
 Use this alias when you want the same workflow through a top-level Codex-safe name without the `productionos:` namespace.
 ## Overview
 
-This is the Codex-native workflow wrapper for [.claude/commands/logic-mode.md](../../.claude/commands/logic-mode.md).
-
-Use it when the user wants this exact ProductionOS workflow, not just the umbrella `productionos` router.
-
-## Source of Truth
-
-1. Read the source command spec at [.claude/commands/logic-mode.md](../../.claude/commands/logic-mode.md).
-2. Use [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md) to confirm runtime support and parity expectations.
-3. Preserve the source workflow's guardrails, scope, artifacts, and verification intent.
-4. Translate Claude-only slash-command and hook semantics into Codex-native execution instead of copying them literally.
-
-## Codex Behavior
-
-- Summary: Business idea → production-ready plan pipeline. User provides an idea or business plan, agent researches market, competitors, existing solutions, challenges assumptions, identifies flaws, and builds a comprehensive execution plan with auto-document population.
-- Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.
+Use this as the Codex-first business-logic and idea-validation workflow. It should challenge the idea, test assumptions, and decide whether the concept is strong enough to justify implementation.
 
 ## Inputs
 
-- `idea` — The business idea, product concept, or business plan to analyze Required.
-- `depth` — quick | standard | deep | exhaustive (default: deep) Default: `deep` Optional.
+- idea or product concept
+- optional business context
 
-## Execution Outline
+## Codex Workflow
 
-1. Preamble
+1. restate the core problem and audience
+2. list the critical assumptions
+3. challenge the assumptions with evidence and logic
+4. judge whether to proceed, refine, or stop
 
-## Agents And Assets
+## Expected Output
 
-- Agents: no explicit agent references in the source command.
-- Templates: `INVOCATION-PROTOCOL.md`, `PREAMBLE.md`
-- Artifacts: `.productionos/logic-mode/`
-
-## Workflow
-
-1. Load only the agents, templates, prompts, and docs referenced by the source command.
-2. Execute the workflow intent with Codex-native tools.
-3. If the source command implies parallel agent work, only delegate when the user explicitly wants that overhead.
-4. Verify with the smallest relevant checks before concluding.
-5. Summarize what changed, what was verified, and what still needs human approval.
+- validated or invalidated assumptions
+- business logic concerns
+- recommendation
 
 ## Guardrails
 
-- Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
-- Keep the scope faithful to the source command rather than broadening into a generic repo audit.
-- Prefer concrete outputs and validation over describing the workflow abstractly.
-- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.
+- be honest if the idea is weak
+- avoid implementation detail when the concept itself is still unstable

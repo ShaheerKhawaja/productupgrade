@@ -61,10 +61,6 @@ describe("runtime target generation", () => {
       expect(skill.content).toContain("## Inputs");
       expect(skill.content).toContain("## Guardrails");
       expect(
-        skill.content.includes("## Agents And Assets") ||
-        skill.content.includes("Source references:"),
-      ).toBe(true);
-      expect(
         skill.content.includes("## Execution Outline") ||
         skill.content.includes("## Codex Workflow"),
       ).toBe(true);
@@ -86,6 +82,14 @@ describe("runtime target generation", () => {
   test("core workflows use hand-authored Codex overrides", () => {
     const coreSkills = [
       "agentic-eval",
+      "auto-mode",
+      "auto-optimize",
+      "autoloop",
+      "brainstorming",
+      "browse",
+      "build-productionos",
+      "context-engineer",
+      "devtools",
       "review",
       "plan-eng-review",
       "plan-ceo-review",
@@ -100,12 +104,24 @@ describe("runtime target generation", () => {
       "debug",
       "auto-swarm",
       "auto-swarm-nth",
+      "frontend-upgrade",
+      "learn-mode",
+      "logic-mode",
+      "max-research",
       "omni-plan",
       "omni-plan-nth",
       "designer-upgrade",
+      "productionos-help",
+      "productionos-pause",
+      "productionos-resume",
+      "productionos-stats",
+      "refine",
+      "retro",
+      "tdd",
       "ux-genie",
       "document-release",
       "productionos-update",
+      "writing-plans",
     ];
 
     for (const skillName of coreSkills) {
