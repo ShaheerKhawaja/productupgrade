@@ -18,6 +18,9 @@ Write tests first. Implement second. Refactor third. Never skip a step.
 ## Step 0: Preamble
 Run `templates/PREAMBLE.md`. Detect test framework (jest, vitest, pytest, bun test).
 
+## Step 1: Write the First Failing Test
+Choose the smallest requirement slice, write the failing test first, and prove it fails before implementation starts.
+
 ## The Cycle
 
 ### Red: Write Failing Tests

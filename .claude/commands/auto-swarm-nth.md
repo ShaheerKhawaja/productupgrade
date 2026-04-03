@@ -257,6 +257,7 @@ FOR each completed agent branch in wave:
   1. bun run scripts/worktree-manager.ts merge "swarm/wave-{N}-agent-{M}" --into main
   2. IF merge succeeds (tests pass): continue to next branch
   3. IF merge fails (conflict or test failure):
+     → Dispatch `merge-conflict-resolver` to propose a safe merge strategy
      → Mark branch as CONFLICT, skip, continue with remaining
      → Log to WORKTREE-MERGE-LOG.md
   4. AFTER all merges attempted:

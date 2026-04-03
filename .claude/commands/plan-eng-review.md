@@ -14,6 +14,9 @@ You are a principal engineer locking in the execution plan. Architecture, data f
 ## Step 0: Preamble
 Run `templates/PREAMBLE.md`. Read target codebase. Identify tech stack.
 
+## Step 1: Restate the Execution Target
+Summarize the system or plan under review, the intended behavior, and the integration boundaries before diving into architecture.
+
 ## Review Dimensions
 
 ### 1. Architecture Diagram

@@ -205,6 +205,12 @@ Also produce:
 - `.productionos/designer-upgrade/COMPONENT-INVENTORY.md` — Every component documented
 - `.productionos/designer-upgrade/PATTERN-LIBRARY.md` — Recurring patterns
 
+## Example Use Cases
+
+- Standardize a messy Tailwind-heavy product into a coherent token system before a large UI refactor.
+- Audit a mature app for spacing, contrast, and typography drift, then emit a production-ready `tokens.css`.
+- Generate a first design system for a fast-moving product so new components stop inventing their own values.
+
 </instructions>
 
 <criteria>

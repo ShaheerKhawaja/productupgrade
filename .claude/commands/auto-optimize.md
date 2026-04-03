@@ -82,6 +82,7 @@ Use the user's hypothesis directly. Create $ARGUMENTS.challengers variants that 
 
 ### If no hypothesis:
 Read the `prompt-optimizer` agent definition from `agents/prompt-optimizer.md` and dispatch it to generate hypotheses.
+If the target is prompt-heavy or rubric-heavy, also dispatch `textgrad-optimizer` to propose gradient-style wording improvements before challengers are generated.
 
 The prompt-optimizer should analyze:
 1. The target's current instructions (strengths, weaknesses)

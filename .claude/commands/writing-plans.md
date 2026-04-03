@@ -14,6 +14,9 @@ Turn approved designs into step-by-step executable plans.
 ## Step 0: Preamble
 Run `templates/PREAMBLE.md`. Read the spec or latest brainstorming output.
 
+## Step 1: Capture the Approved Scope
+Restate the approved design, goal, and constraints before decomposing the work into tasks.
+
 ## Plan Structure
 
 ### 1. Requirements Summary
