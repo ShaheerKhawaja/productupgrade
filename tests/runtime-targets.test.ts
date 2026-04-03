@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { join } from "path";
-import { ROOT, readFileOrNull } from "../scripts/lib/shared";
+import { ROOT, listMdFiles, readFileOrNull } from "../scripts/lib/shared";
 import { getGeneratedTargetFiles, WORKFLOW_PARITY } from "../scripts/lib/runtime-targets";
 
 describe("runtime target generation", () => {
@@ -37,5 +37,18 @@ describe("runtime target generation", () => {
       expect(workflow.targets).toContain("codex-cli");
       expect(workflow.targets).toContain("codex-app");
     }
+  });
+
+  test("every Claude command has a generated Codex skill wrapper", () => {
+    const commandNames = listMdFiles(join(ROOT, ".claude", "commands"))
+      .map((file) => file.replace(/\.md$/, ""))
+      .sort();
+    const generatedSkillNames = getGeneratedTargetFiles()
+      .filter((file) => file.path.startsWith("skills/") && file.path.endsWith("/SKILL.md"))
+      .map((file) => file.path.replace(/^skills\//, "").replace(/\/SKILL\.md$/, ""))
+      .filter((name) => name !== "productionos" && name !== "interface-craft")
+      .sort();
+
+    expect(generatedSkillNames).toEqual(commandNames);
   });
 });

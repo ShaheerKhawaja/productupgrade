@@ -1,6 +1,6 @@
 import { mkdirSync, readdirSync, writeFileSync } from "fs";
 import { dirname, join } from "path";
-import { listMdFiles, readVersion, ROOT, walkFiles } from "./shared";
+import { listMdFiles, parseFrontmatter, readFileOrNull, readVersion, ROOT, walkFiles } from "./shared";
 
 export type RuntimeTargetId = "claude-plugin" | "codex-cli" | "codex-app";
 
@@ -26,6 +26,12 @@ export interface RepoCounts {
 export interface GeneratedTargetFile {
   path: string;
   content: string;
+}
+
+interface CommandSkillSpec {
+  name: string;
+  description: string;
+  sourcePath: string;
 }
 
 export const PRODUCT_NAME = "ProductionOS";
@@ -160,6 +166,12 @@ function docLinkFromDocs(pathFromRepoRoot: string): string {
   return `../${pathFromRepoRoot}`;
 }
 
+function docLinkFromSkill(skillPath: string, repoPath: string): string {
+  const depth = skillPath.split("/").length - 1;
+  const prefix = "../".repeat(depth);
+  return `${prefix}${repoPath}`;
+}
+
 function renderSharedSkillBody(): string {
   const counts = collectRepoCounts();
   return [
@@ -212,6 +224,88 @@ export function renderRootSkill(): string {
 
 export function renderCodexPluginSkill(): string {
   return renderRootSkill();
+}
+
+function getCommandSkillSpecs(): CommandSkillSpec[] {
+  return listMdFiles(join(ROOT, ".claude", "commands"))
+    .sort()
+    .map((file) => {
+      const sourcePath = `.claude/commands/${file}`;
+      const content = readFileOrNull(join(ROOT, sourcePath)) ?? "";
+      const fm = parseFrontmatter(content);
+      const descriptionLine = content.match(/^description:\s*"?(.*?)"?$/m);
+      const description =
+        descriptionLine?.[1] ||
+        (typeof fm?.description === "string" && fm.description.length > 0
+          ? fm.description
+          : `Codex-native wrapper for ${file.replace(/\.md$/, "")}.`);
+      return {
+        name: file.replace(/\.md$/, ""),
+        description,
+        sourcePath,
+      };
+    });
+}
+
+function renderCommandSkill(spec: CommandSkillSpec): string {
+  const parity = WORKFLOW_PARITY.find((workflow) => workflow.id === spec.name);
+  const skillPath = `skills/${spec.name}/SKILL.md`;
+  const sourceLink = docLinkFromSkill(skillPath, spec.sourcePath);
+  const handoffLink = docLinkFromSkill(skillPath, "docs/CODEX-PARITY-HANDOFF.md");
+  const behavior = parity
+    ? [
+        "## Codex Behavior",
+        "",
+        `- Summary: ${parity.summary}`,
+        `- Expected behavior: ${parity.codexBehavior}`,
+        `- Validation: ${parity.validation.join(", ")}`,
+        "",
+      ]
+    : [
+        "## Codex Behavior",
+        "",
+        "- Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.",
+        "",
+      ];
+
+  return [
+    "---",
+    `name: ${spec.name}`,
+    `description: "${spec.description.replace(/"/g, '\\"')}"`,
+    'argument-hint: "[repo path, target, or task context]"',
+    "---",
+    "",
+    `# ${spec.name}`,
+    "",
+    "## Overview",
+    "",
+    `This is the Codex-native workflow wrapper for [${spec.sourcePath}](${sourceLink}).`,
+    "",
+    "Use it when the user wants this exact ProductionOS workflow, not just the umbrella `productionos` router.",
+    "",
+    "## Source of Truth",
+    "",
+    `1. Read the source command spec at [${spec.sourcePath}](${sourceLink}).`,
+    `2. Use [CODEX-PARITY-HANDOFF.md](${handoffLink}) to confirm runtime support and parity expectations.`,
+    "3. Preserve the source workflow's guardrails, scope, artifacts, and verification intent.",
+    "4. Translate Claude-only slash-command and hook semantics into Codex-native execution instead of copying them literally.",
+    "",
+    ...behavior,
+    "## Workflow",
+    "",
+    "1. Load only the agents, templates, prompts, and docs referenced by the source command.",
+    "2. Execute the workflow intent with Codex-native tools.",
+    "3. If the source command implies parallel agent work, only delegate when the user explicitly wants that overhead.",
+    "4. Verify with the smallest relevant checks before concluding.",
+    "5. Summarize what changed, what was verified, and what still needs human approval.",
+    "",
+    "## Guardrails",
+    "",
+    "- Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.",
+    "- Keep the scope faithful to the source command rather than broadening into a generic repo audit.",
+    "- Prefer concrete outputs and validation over describing the workflow abstractly.",
+    "",
+  ].join("\n");
 }
 
 export function renderClaudeSkill(): string {
@@ -391,7 +485,7 @@ export function renderCodexParityHandoff(): string {
   const counts = collectRepoCounts();
   const rows = WORKFLOW_PARITY.map(
     (workflow) =>
-      `| \`${workflow.id}\` | [${workflow.sourceCommand}](${docLinkFromDocs(workflow.sourceCommand)}) | ${workflow.targets.join(", ")} | ${workflow.codexBehavior} | ${workflow.validation.join(", ")} |`,
+      `| \`${workflow.id}\` | [${workflow.sourceCommand}](${docLinkFromDocs(workflow.sourceCommand)}) | [skills/${workflow.id}/SKILL.md](${docLinkFromDocs(`skills/${workflow.id}/SKILL.md`)}) | ${workflow.targets.join(", ")} | ${workflow.codexBehavior} | ${workflow.validation.join(", ")} |`,
   ).join("\n");
 
   return [
@@ -412,14 +506,15 @@ export function renderCodexParityHandoff(): string {
     "",
     "## Workflow Parity Map",
     "",
-    "| Workflow | Source Spec | Targets | Codex Behavior | Validation |",
-    "|----------|-------------|---------|----------------|------------|",
+    "| Workflow | Source Spec | Codex Skill | Targets | Codex Behavior | Validation |",
+    "|----------|-------------|-------------|---------|----------------|------------|",
     rows,
     "",
     "## Notes",
     "",
     "- `.claude/commands/*.md` remain workflow specs, not the cross-runtime source of truth.",
     "- The runtime-neutral registry owns target support, shared descriptions, and generated manifests.",
+    "- The Codex plugin now exposes one generated skill wrapper per ProductionOS command under `skills/<command>/SKILL.md`.",
     "- Claude-only concepts must be translated to Codex-native execution, not copied verbatim.",
     "",
   ].join("\n");
@@ -435,7 +530,12 @@ export function getGeneratedTargetFiles(): GeneratedTargetFile[] {
     { path: ".claude/skills/productionos/SKILL.md", content: renderClaudeSkill() },
     { path: "agents/openai.yaml", content: renderOpenAIInterfaceYaml() },
     { path: "docs/CODEX-PARITY-HANDOFF.md", content: renderCodexParityHandoff() },
-  ];
+  ].concat(
+    getCommandSkillSpecs().map((spec) => ({
+      path: `skills/${spec.name}/SKILL.md`,
+      content: renderCommandSkill(spec),
+    })),
+  );
 }
 
 export function writeGeneratedTargetFiles(): GeneratedTargetFile[] {

@@ -206,7 +206,7 @@ You're building AI-powered products and need agent orchestration patterns:
 17 hook files (SessionStart, PreToolUse security, PostToolUse telemetry, Stop handoff)
 11 templates (PREAMBLE, SELF-EVAL, INVOCATION, PROMPT-COMPOSITION, MODEL-ROUTING, etc.)
  7 CLI tools (pos-init, pos-config, pos-analytics, pos-review-log, etc.)
- 6 skills (Claude auto-activation + Codex-native surfaces)
+47 skills (Claude auto-activation + Codex-native workflow wrappers)
 ```
 
 ### Agent Model
