@@ -100,6 +100,11 @@ python3 "$PLUGIN_ROOT/hooks/devtools-dashboard.py" --snapshot 2>/dev/null || tru
 # Get dashboard metrics for banner
 DASHBOARD_METRICS=$(python3 "$PLUGIN_ROOT/hooks/devtools-dashboard.py" --banner 2>/dev/null || echo "")
 
+# First-run detection — triggers onboarding flow in ONBOARDING.md
+if [ ! -f "$STATE_DIR/.onboarded" ]; then
+  echo "FIRST_RUN: true"
+fi
+
 cat << 'BANNER'
 
   ╔═══════════════════════════════════════════════════╗
@@ -142,4 +147,50 @@ fi
 if [ -n "${ORPHAN_MSG:-}" ]; then
   echo "  WARNING: $ORPHAN_MSG — run: bun run scripts/worktree-manager.ts status"
 fi
+
+# Context recovery — surface recent work for session continuity
+CONTEXT_PATHS=""
+CONTEXT_FLAGS=""
+
+# Check for recent handoff files from previous sessions
+LAST_HANDOFF=$(ls -t "$STATE_DIR/sessions"/handoff-*.md 2>/dev/null | head -1)
+if [ -n "$LAST_HANDOFF" ]; then
+  CONTEXT_PATHS="\"handoff\": \"$LAST_HANDOFF\""
+  CONTEXT_FLAGS="handoff"
+fi
+
+# Check for recent instincts (learned patterns within last 2 hours)
+RECENT_INSTINCTS=$(find "$STATE_DIR/instincts" -name "*.json" -mmin -120 2>/dev/null | wc -l | tr -d ' ')
+if [ "$RECENT_INSTINCTS" -gt 0 ] 2>/dev/null; then
+  if [ -n "$CONTEXT_PATHS" ]; then
+    CONTEXT_PATHS="$CONTEXT_PATHS, \"instincts_count\": $RECENT_INSTINCTS, \"instincts_dir\": \"$STATE_DIR/instincts\""
+  else
+    CONTEXT_PATHS="\"instincts_count\": $RECENT_INSTINCTS, \"instincts_dir\": \"$STATE_DIR/instincts\""
+  fi
+  CONTEXT_FLAGS="${CONTEXT_FLAGS:+$CONTEXT_FLAGS,}instincts"
+fi
+
+# Check git log for recent work (last 12 hours)
+RECENT_COMMITS=""
+if command -v git >/dev/null 2>&1 && [ -n "$PROJECT_ROOT" ]; then
+  RECENT_COMMITS=$(git -C "$PROJECT_ROOT" log --oneline --since="12 hours ago" 2>/dev/null | head -5)
+fi
+if [ -n "$RECENT_COMMITS" ]; then
+  # Count recent commits
+  COMMIT_COUNT=$(echo "$RECENT_COMMITS" | wc -l | tr -d ' ')
+  FIRST_COMMIT=$(echo "$RECENT_COMMITS" | tail -1 | cut -d' ' -f2-)
+  LAST_COMMIT=$(echo "$RECENT_COMMITS" | head -1 | cut -d' ' -f2-)
+  if [ -n "$CONTEXT_PATHS" ]; then
+    CONTEXT_PATHS="$CONTEXT_PATHS, \"recent_commits\": $COMMIT_COUNT, \"latest\": \"$LAST_COMMIT\""
+  else
+    CONTEXT_PATHS="\"recent_commits\": $COMMIT_COUNT, \"latest\": \"$LAST_COMMIT\""
+  fi
+  CONTEXT_FLAGS="${CONTEXT_FLAGS:+$CONTEXT_FLAGS,}git"
+fi
+
+# Emit context recovery block if any signals found
+if [ -n "$CONTEXT_FLAGS" ]; then
+  echo "  CONTEXT_RECOVERY: {$CONTEXT_PATHS}"
+fi
+
 echo ""
