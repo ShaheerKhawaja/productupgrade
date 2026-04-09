@@ -2,6 +2,17 @@
 
 78-agent AI engineering OS with 41 commands, 17 lifecycle hooks, 6 CLI tools, 47 skills, continuous learning, self-evaluation, and dual Claude/Codex targets. 4-layer Production House: Smart Router (auto-dispatch agents by goal), Stack Detector (auto-provision tools), Adaptive Learning (dispatch history feeds routing), Dynamic Factory (create ephemeral agents). Built for solo founders who need a 10-person engineering + design team from 1 person + AI.
 
+## Capabilities
+
+- **356 total skills** (was 110) across orchestration, quality, design, security, research, learning
+- **98 marketing skills** — CRO, SEO, ads (Google/Meta/TikTok/LinkedIn/Apple), growth, content ops
+- **ruflo v3.5.78** — 100+ agents, swarm orchestration, MCP server, AgentDB, neural learning
+- **~/SecondBrain/** Obsidian vault — PARA + Wiki for session persistence
+- **Knowledge graphs** — graphify (codebase topology), code-review-graph (change impact)
+- **Research aggregation** — last30days (recent changes), deep-research (8-phase pipeline)
+- **Enterprise knowledge** — SOC2, ISO27001, LangChain, ML patterns, security protocols
+- **n8n-architect** — Full n8n ontology with 537 nodes, workflow generation, validation
+
 ## What's New in v7.0
 
 ### Self-Evaluation (default-on)
@@ -21,6 +32,13 @@
 - **Context rot detection** — Monitors for repeated work, contradictions, quality drift
 - **Automatic compression** — Triggers at 60% context usage, emergency at 80%
 - **Cross-session instinct transfer** — Patterns with confidence > 0.8 persist globally
+
+### Context Recovery
+On session start or after compaction, reconstruct context before acting:
+1. **Check recent artifacts** — Read `~/.productionos/sessions/handoff-*.md` (last 3), `~/.productionos/instincts/global/`, and any eval results in `.productionos/` of the current project
+2. **Check git state** — `git log --oneline -10`, `git branch --show-current`, `git status` to understand recent work and current position
+3. **Synthesize briefing** — 2-3 sentence welcome-back: what was done, what's in progress, what's next
+4. **Predict next action** — Based on recent handoff patterns, suggest the most likely next step. "Last session shipped the auth fix. The handoff flagged 3 remaining frontend issues. Start there?"
 
 ### v6.0 Foundation (retained)
 - **Native Hooks** — 9 hook scripts across SessionStart/PreToolUse/PostToolUse/Stop
@@ -227,6 +245,18 @@ Agents in deep/ultra mode receive 10-layer composed prompts (see `templates/PROM
 9. **Distractor-Augmented** — Force judges to argue against plausible-but-wrong conclusions
 10. **12-Factor Agent** — Small focused agents, unified state, human contact via tools
 
+## AskUserQuestion Format
+
+When asking the user a question or presenting a decision, use this format:
+
+1. **Re-ground** (1-2 sentences): State the project, branch, and current task so the user has context even if they switched away.
+2. **Simplify**: Explain the situation in plain English. A smart 16-year-old should follow it. No jargon without definition.
+3. **Recommend**: `RECOMMENDATION: Choose [X] because [reason].` Lead with your pick and why. Do not hide it at the end.
+4. **Options**: List A) B) C) with effort estimates (e.g., "~15 min", "~2 hours"). Include "D) Something else" when the options are not exhaustive.
+
+Bad: "Should I use Redis or PostgreSQL for this?" (No context, no recommendation.)
+Good: "Working on Entropy Studio (main branch), adding the job queue for video renders. RECOMMENDATION: Choose Redis because the jobs are short-lived and don't need ACID. A) Redis pub/sub (~20 min) B) PostgreSQL SKIP LOCKED (~45 min) C) Celery + Redis (~1 hour) D) Something else"
+
 ## Guardrails (Non-Negotiable)
 
 - Pre-commit diff review required (unless --auto-commit)
@@ -239,9 +269,51 @@ Agents in deep/ultra mode receive 10-layer composed prompts (see `templates/PROM
 - Security-sensitive files flagged by PreToolUse security scan
 - Review hint after 10+ edits per session
 
+## Escalation Protocol
+
+Bad work is worse than no work. Agents are not penalized for escalating. They are penalized for shipping garbage silently.
+
+Escalate when:
+- **3 failed attempts** at the same fix -- STOP. The approach is wrong, not the execution.
+- **Security-sensitive changes** -- Auth, payment, credentials, RLS policies. STOP and flag.
+- **Scope exceeds verification capacity** -- If you cannot verify what you changed, you changed too much.
+- **Contradictory requirements** -- Two instructions conflict. Do not pick one silently. Ask.
+
+Format:
+```
+STATUS: BLOCKED | NEEDS_CONTEXT
+REASON: [what went wrong]
+ATTEMPTED: [what was tried, with results]
+RECOMMENDATION: [what to do next]
+```
+
+## Voice
+
+Direct, concrete, sharp. Lead with the point.
+
+- Name the file, the function, the line number. "There's a bug in the auth flow" is useless. "`auth/views.py:142` -- the `verify_token` call swallows the `ExpiredSignatureError` and returns `None` instead of raising" is useful.
+- No AI vocabulary: never use "delve", "crucial", "robust", "comprehensive", "nuanced", "multifaceted", "streamline", "leverage", "utilize." Say the plain thing.
+- Short paragraphs. Punchy standalone sentences. Break after the point lands.
+- Connect to user outcomes: "This matters because your users will see a blank screen for 3 seconds on every page load."
+- End with what to do. Every analysis, every finding, every review ends with an action. "Here's what's wrong" without "here's what to do" is incomplete.
+
 ## Output Directory
 
 All pipeline outputs go to `.productionos/` in the target project. Artifacts are tracked via manifest for cross-command consumption.
+
+## Ecosystem
+
+ProductionOS is one layer in a multi-system stack. Each system owns a clear scope:
+
+| System | Role | Scope |
+|--------|------|-------|
+| **ProductionOS** | Orchestration + quality | Commands, agents, eval loops, prompting architecture |
+| **gstack** | Operational leaf skills | `/review`, `/ship`, `/qa`, `/browse` -- the last-mile tools |
+| **ruflo** | Execution substrate | Swarm runtime, AgentDB, neural learning, MCP server |
+| **Obsidian** | Session persistence | `~/SecondBrain/` -- PARA + Wiki for cross-session memory |
+| **n8n** | Workflow automation | `n8n-mcp` + `n8n-architect` -- 537 nodes, workflow gen |
+
+ProductionOS invokes gstack skills (e.g., `/omni-plan` calls `/ship` at Step 13). ruflo provides the swarm runtime that `/auto-swarm-nth` dispatches to. Obsidian stores session artifacts that context recovery reads on startup. n8n handles workflow automation that agents can trigger.
 
 ## Attribution
 
