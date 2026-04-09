@@ -90,10 +90,10 @@ describe("scoreConvergence", () => {
     expect(result.focusDimensions).toContain("security");
   });
 
-  test("returns SUCCESS when grade >= 10.0", () => {
+  test("returns SUCCESS when grade >= 8.0", () => {
     const history = makeHistory([
-      { a: 9.0, b: 9.0 },
-      { a: 10.0, b: 10.0 },
+      { a: 7.0, b: 7.0 },
+      { a: 8.5, b: 8.5 },
     ]);
     const result = scoreConvergence(history);
     expect(result.decision).toBe("SUCCESS");

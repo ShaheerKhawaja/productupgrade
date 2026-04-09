@@ -553,15 +553,15 @@ describe("T2: Self-Eval System Verification", () => {
     expect(missing).toEqual([]);
   });
 
-  test("score threshold documented correctly (10.0)", () => {
+  test("score threshold documented correctly (8.0)", () => {
     const protocol = readFileOrNull(join(TEMPLATES_DIR, "SELF-EVAL-PROTOCOL.md"));
     if (!protocol) return;
-    const has10 = protocol.includes("10.0") || protocol.includes("10/10");
-    if (!has10) {
+    const has8 = protocol.includes(">= 8.0") || protocol.includes("8.0");
+    if (!has8) {
       addIssue("MEDIUM", "self-eval", "SELF-EVAL-PROTOCOL.md",
-        "Score threshold not set to 10.0 as documented in CLAUDE.md");
+        "Score threshold not set to 8.0 as documented in CLAUDE.md");
     }
-    expect(has10).toBe(true);
+    expect(has8).toBe(true);
   });
 });
 

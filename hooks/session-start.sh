@@ -104,7 +104,7 @@ cat << 'BANNER'
 
   ╔═══════════════════════════════════════════════════╗
   ║  ProductionOS v1.0.0-beta.1 — Production House   ║
-  ║  76 agents | 41 commands | 14 hooks               ║
+  ║  78 agents | 41 commands | 17 hooks               ║
   ╠═══════════════════════════════════════════════════╣
 BANNER
 printf "  ║  Sessions: %-3s | Auto-Review: %-5s | Learn: %-4s ║\n" "$SESSIONS" "$AUTO_REVIEW" "$PROACTIVE"

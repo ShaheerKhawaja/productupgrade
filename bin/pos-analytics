@@ -14,14 +14,15 @@ if [ -f "$ANALYTICS/skill-usage.jsonl" ]; then
   python3 -c "
 import json, collections
 counts = collections.Counter()
-for line in open('$ANALYTICS/skill-usage.jsonl'):
+import sys; analytics_path = sys.argv[1] if len(sys.argv) > 1 else '$ANALYTICS/skill-usage.jsonl'
+for line in open(analytics_path):
     try:
         d = json.loads(line)
         counts[d.get('skill', d.get('event',''))] += 1
     except: pass
 for skill, count in counts.most_common(10):
     print(f'    {skill}: {count}')
-" 2>/dev/null || echo "    (no data yet)"
+" "$ANALYTICS/skill-usage.jsonl" 2>/dev/null || echo "    (no data yet)"
 else
   echo "  No analytics data yet."
 fi
