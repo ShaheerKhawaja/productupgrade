@@ -49,7 +49,7 @@ export interface VelocityMetrics {
 
 const EPSILON = 0.1;
 const PATIENCE = 2;
-const TARGET_GRADE = 10.0;
+const TARGET_GRADE = 8.0;
 const REGRESSION_THRESHOLD = 0.3;
 const DIMENSION_REGRESSION_THRESHOLD = 0.5;
 const DEFAULT_MAX_ITERATIONS = 20;
