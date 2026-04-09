@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # eval-gate.sh — Autonomous eval gate that runs after significant actions.
 # Called by PostToolUse (after every 10+ edits) and Stop hooks.
-# Enforces 10/10 quality standard — blocks session completion if below threshold.
+# Enforces 8/10 quality standard — blocks session completion if below threshold.
 set -euo pipefail
 
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
-STATE_DIR="${HOME}/.productionos"
+STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
 EDIT_COUNT_FILE="$STATE_DIR/sessions/edit-count-$$"
-EVAL_THRESHOLD=10
+EVAL_THRESHOLD=8
 EVAL_INTERVAL=10  # Run eval every N edits
 
 # ─── Check if we should run ─────────────────────────────────

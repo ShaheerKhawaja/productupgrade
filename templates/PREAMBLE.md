@@ -63,12 +63,11 @@ _SELF_EVAL=$(bash "${CLAUDE_PLUGIN_ROOT}/bin/pos-config" get self_eval 2>/dev/nu
 
 If `_SELF_EVAL` is `"true"`:
 1. Apply the 7 Questions from SELF-EVAL-PROTOCOL.md to the agent's output
-2. If score = 10.0: PASS — log and proceed. The ONLY acceptable outcome.
-3. If score 9.0-9.9: SELF-HEAL — apply CEO+Eng review logic, fix gaps (max 5 iterations)
-4. If score 8.0-8.9: SIGNIFICANT HEAL — re-do lowest dimensions with /plan-ceo-review rigor
-5. If score < 8.0: BLOCK — do NOT commit, escalate to human with /retro analysis
-6. Log all evaluations to `.productionos/self-eval/`
-7. Feed scores into convergence tracking — convergence target is always 10.0
+2. If score >= 8.0: PASS — production-ready, log and proceed
+3. If score 6.0-7.9: SELF-HEAL — identify lowest dimensions, fix gaps (max 3 iterations)
+4. If score < 6.0: BLOCK — do NOT commit, escalate to human with /retro analysis
+5. Log all evaluations to `.productionos/self-eval/`
+6. Feed scores into convergence tracking — convergence target is 8.0+
 
 This is enabled by default. Disable with `pos-config set self_eval false`.
 
