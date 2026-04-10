@@ -108,19 +108,20 @@ fi
 cat << 'BANNER'
 
   ╔═══════════════════════════════════════════════════╗
-  ║  ProductionOS v1.1.0-beta.2 — Production House   ║
-  ║  78 agents | 41 commands | 17 hooks               ║
+  ║  ProductionOS v2.0 — 10 Composites               ║
+  ╠═══════════════════════════════════════════════════╣
+  ║  /plan-ceo-review  /unified-review  /qa          ║
+  ║  /ship  /unified-debug  /unified-security        ║
+  ║  /deep-research  /unified-content  /retro        ║
+  ║  /auto-swarm                                     ║
   ╠═══════════════════════════════════════════════════╣
 BANNER
-printf "  ║  Sessions: %-3s | Auto-Review: %-5s | Learn: %-4s ║\n" "$SESSIONS" "$AUTO_REVIEW" "$PROACTIVE"
+printf "  ║  Sessions: %-3s | Learn: %-4s                    ║\n" "$SESSIONS" "$PROACTIVE"
 if [ -n "$PROJECT_NAME" ]; then
   printf "  ║  Project: %-40s ║\n" "$PROJECT_NAME"
 fi
-printf "  ║  DevTools: %-39s ║\n" "$DEVTOOLS_STATUS"
-if [ -n "$DASHBOARD_METRICS" ]; then
-  printf "  ║  Metrics: %-39s ║\n" "$DASHBOARD_METRICS"
-fi
 echo "  ╚═══════════════════════════════════════════════════╝"
+echo "  Router: ~/.claude/skills/SKILL-ROUTER.md"
 
 # Show last retro action item if available
 if [ -d "$STATE_DIR/retro" ]; then
