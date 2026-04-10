@@ -108,7 +108,7 @@ fi
 cat << 'BANNER'
 
   ╔═══════════════════════════════════════════════════╗
-  ║  ProductionOS v1.0.0-beta.1 — Production House   ║
+  ║  ProductionOS v1.1.0-beta.1 — Production House   ║
   ║  78 agents | 41 commands | 17 hooks               ║
   ╠═══════════════════════════════════════════════════╣
 BANNER
