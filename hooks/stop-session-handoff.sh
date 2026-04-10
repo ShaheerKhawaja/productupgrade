@@ -201,6 +201,44 @@ if [ -d "$OBSIDIAN_VAULT/Sessions" ]; then
       echo "No handoff generated."
     fi
   } > "$SESSION_NOTE" 2>/dev/null || true
+
+  # Copy to project-specific SecondBrain folder
+  _PROJ_PROFILE="$STATE_DIR/sessions/active-project-$$.json"
+  if [ ! -f "$_PROJ_PROFILE" ]; then
+    _PROJ_PROFILE="$STATE_DIR/projects/$(echo "$ACTIVE_PROJECT_NAME" | tr '[:upper:]' '[:lower:]')/profile.json"
+  fi
+  if [ -f "$_PROJ_PROFILE" ] && command -v python3 >/dev/null 2>&1; then
+    _SB_FOLDER=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('secondbrain_folder',''))" "$_PROJ_PROFILE" 2>/dev/null || echo "")
+    if [ -n "$_SB_FOLDER" ] && [ -d "$OBSIDIAN_VAULT/$_SB_FOLDER" ]; then
+      mkdir -p "$OBSIDIAN_VAULT/$_SB_FOLDER/sessions"
+      cp "$SESSION_NOTE" "$OBSIDIAN_VAULT/$_SB_FOLDER/sessions/" 2>/dev/null || true
+    fi
+  fi
+
+  # Update wiki/hot.md with latest session context
+  if [ -d "$OBSIDIAN_VAULT/wiki" ]; then
+    {
+      echo "---"
+      echo "type: meta"
+      echo "title: \"Hot Cache\""
+      echo "updated: $(date -u +%Y-%m-%dT%H:%M:%S)"
+      echo "tags: [meta, hot-cache]"
+      echo "---"
+      echo ""
+      echo "# Recent Context"
+      echo ""
+      echo "**Last session:** $(date +%Y-%m-%d\ %H:%M) on ${ACTIVE_PROJECT_NAME:-unknown}"
+      echo "**Branch:** $(git branch --show-current 2>/dev/null || echo 'unknown')"
+      echo ""
+      echo "## Recent Commits"
+      git log --oneline --since="4 hours ago" 2>/dev/null | head -5 | sed 's/^/- /' || echo "- (none)"
+      echo ""
+      echo "## Hot Files"
+      if [ -f "$STATE_DIR/instincts/learned/CROSS-SESSION-PATTERNS.md" ]; then
+        grep "^\- \*\*" "$STATE_DIR/instincts/learned/CROSS-SESSION-PATTERNS.md" 2>/dev/null | head -5 || true
+      fi
+    } > "$OBSIDIAN_VAULT/wiki/hot.md" 2>/dev/null || true
+  fi
 fi
 
 # 5. Extract instincts

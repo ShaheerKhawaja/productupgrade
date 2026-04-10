@@ -53,7 +53,11 @@ case "$TOOL_NAME" in
         *) exit 0 ;; # Outside active project, skip learning
       esac
     fi
-    jq -n --arg ts "$TIMESTAMP" --arg tool "$TOOL_NAME" --arg file "$FILE_PATH" \
+    # Use flock for atomic JSONL appends (concurrent session safety)
+    jq -cn --arg ts "$TIMESTAMP" --arg tool "$TOOL_NAME" --arg file "$FILE_PATH" \
+      '{ts: $ts, event: "file_modified", tool: $tool, file: $file}' | \
+      (flock -n 9 && cat >> "$SESSION_FILE") 9>"$SESSION_FILE.lock" 2>/dev/null || \
+      jq -cn --arg ts "$TIMESTAMP" --arg tool "$TOOL_NAME" --arg file "$FILE_PATH" \
       '{ts: $ts, event: "file_modified", tool: $tool, file: $file}' >> "$SESSION_FILE" 2>/dev/null || true
     ;;
   Bash)
@@ -62,7 +66,7 @@ case "$TOOL_NAME" in
     # Only capture test/lint/build commands
     if echo "$COMMAND" | grep -qE "test|lint|build|pytest|tsc|ruff|eslint|vitest|jest"; then
       EXIT_CODE=$(echo "$INPUT" | jq -r '.tool_result.exit_code // 0' 2>/dev/null || echo "0")
-      jq -n --arg ts "$TIMESTAMP" --arg cmd "$COMMAND" --argjson ec "${EXIT_CODE:-0}" \
+      jq -cn --arg ts "$TIMESTAMP" --arg cmd "$COMMAND" --argjson ec "${EXIT_CODE:-0}" \
         '{ts: $ts, event: "validation", command: $cmd, exit_code: $ec}' >> "$SESSION_FILE" 2>/dev/null || true
     fi
     ;;
@@ -70,12 +74,12 @@ case "$TOOL_NAME" in
     # Capture agent dispatch — use jq -n for safe JSON construction
     DESC=$(echo "$INPUT" | jq -r '.tool_input.description // "unknown"' 2>/dev/null | head -c 100 || echo "unknown")
     AGENT_TYPE=$(echo "$INPUT" | jq -r '.tool_input.subagent_type // "general"' 2>/dev/null | head -c 50 || echo "general")
-    jq -n --arg ts "$TIMESTAMP" --arg desc "$DESC" --arg agent "$AGENT_TYPE" \
+    jq -cn --arg ts "$TIMESTAMP" --arg desc "$DESC" --arg agent "$AGENT_TYPE" \
       '{ts: $ts, event: "agent_dispatch", description: $desc, agent_type: $agent}' >> "$SESSION_FILE" 2>/dev/null || true
 
     # Log to dispatch-log.jsonl for Production House adaptive routing (Layer 3)
     DISPATCH_LOG="$STATE_DIR/dispatch-log.jsonl"
-    jq -n --arg ts "$TIMESTAMP" --arg goal "$DESC" --arg agent "$AGENT_TYPE" --arg outcome "pending" \
+    jq -cn --arg ts "$TIMESTAMP" --arg goal "$DESC" --arg agent "$AGENT_TYPE" --arg outcome "pending" \
       '{ts: $ts, goal: $goal, agents: [$agent], outcome: $outcome}' >> "$DISPATCH_LOG" 2>/dev/null || true
 
     # Update pending dispatch outcomes

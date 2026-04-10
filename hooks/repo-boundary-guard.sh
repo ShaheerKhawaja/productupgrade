@@ -150,9 +150,9 @@ except:
   # Log cross-repo edit event
   # C-1 fix: Use jq for safe JSON construction (prevents injection via repo names)
   if command -v jq >/dev/null 2>&1; then
-    jq -n --arg event "cross_repo_edit" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg file "$(basename "$FILE_PATH")" --arg target "$TARGET_NAME" --arg active "$ACTIVE_NAME" \
+    jq -cn --arg event "cross_repo_edit" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg file "$(basename "$FILE_PATH")" --arg target "$TARGET_NAME" --arg active "$ACTIVE_NAME" \
       '{event: $event, ts: $ts, file: $file, target_repo: $target, active_project: $active}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
-    jq -n --arg ctx "REPO BOUNDARY WARNING: Editing file in '$TARGET_NAME' but active project is '$ACTIVE_NAME'. This edit will not be tracked in session telemetry. If intentional, continue." \
+    jq -cn --arg ctx "REPO BOUNDARY WARNING: Editing file in '$TARGET_NAME' but active project is '$ACTIVE_NAME'. This edit will not be tracked in session telemetry. If intentional, continue." \
       '{additionalContext: $ctx}'
   else
     SAFE_TARGET=$(printf '%s' "$TARGET_NAME" | tr -cd '[:alnum:]._/-')

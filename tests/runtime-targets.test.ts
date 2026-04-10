@@ -1,7 +1,25 @@
 import { describe, expect, test } from "bun:test";
+import { existsSync } from "fs";
 import { join } from "path";
 import { ROOT, listMdFiles, readFileOrNull } from "../scripts/lib/shared";
 import { getGeneratedTargetFiles, WORKFLOW_PARITY } from "../scripts/lib/runtime-targets";
+
+/**
+ * Skills with hand-crafted dense runbooks. These are NOT auto-generated but
+ * their SKILL.md files exist on disk as manually authored content.
+ */
+const HAND_CRAFTED_SKILLS = new Set([
+  "omni-plan-nth",
+  "designer-upgrade",
+  "auto-mode",
+  "logic-mode",
+  "agentic-eval",
+  "omni-plan",
+  "auto-swarm-nth",
+  "frontend-upgrade",
+  "context-engineer",
+  "max-research",
+]);
 
 describe("runtime target generation", () => {
   test("generated target files match committed files", () => {
@@ -39,7 +57,7 @@ describe("runtime target generation", () => {
     }
   });
 
-  test("every Claude command has a generated Codex skill wrapper", () => {
+  test("every Claude command has a generated or hand-crafted Codex skill wrapper", () => {
     const commandNames = listMdFiles(join(ROOT, ".claude", "commands"))
       .map((file) => file.replace(/\.md$/, ""))
       .sort();
@@ -49,7 +67,15 @@ describe("runtime target generation", () => {
       .filter((name) => name !== "productionos" && name !== "interface-craft")
       .sort();
 
-    expect(generatedSkillNames).toEqual(commandNames);
+    // Hand-crafted skills exist on disk but are not in auto-generated targets
+    const allSkillNames = [...new Set([...generatedSkillNames, ...HAND_CRAFTED_SKILLS])].sort();
+
+    expect(allSkillNames).toEqual(commandNames);
+
+    // Verify hand-crafted skills actually exist on disk
+    for (const skill of HAND_CRAFTED_SKILLS) {
+      expect(existsSync(join(ROOT, "skills", skill, "SKILL.md"))).toBe(true);
+    }
   });
 
   test("generated command skill wrappers contain Codex-specific workflow sections", () => {
@@ -78,7 +104,7 @@ describe("runtime target generation", () => {
     }
   });
 
-  test("every Claude command has a generated top-level Codex alias skill", () => {
+  test("every Claude command has a generated top-level Codex alias skill or is hand-crafted", () => {
     const commandNames = listMdFiles(join(ROOT, ".claude", "commands"))
       .map((file) => file.replace(/\.md$/, ""))
       .sort();
@@ -87,11 +113,18 @@ describe("runtime target generation", () => {
       .map((file) => file.path.replace(/^codex-skills\//, "").replace(/\/SKILL\.md$/, ""))
       .sort();
 
-    expect(generatedAliasNames).toEqual(commandNames.map((name) => `productionos-${name}`).sort());
+    // Hand-crafted skills do not need codex-alias wrappers since they are self-contained
+    const expectedAliases = commandNames
+      .filter((name) => !HAND_CRAFTED_SKILLS.has(name))
+      .map((name) => `productionos-${name}`)
+      .sort();
+
+    expect(generatedAliasNames).toEqual(expectedAliases);
   });
 
-  test("core workflows use hand-authored Codex overrides", () => {
-    const coreSkills = [
+  test("core workflows use hand-authored Codex overrides or dense runbooks", () => {
+    // Skills still in auto-generated targets (with codex-overrides or special rendering)
+    const autoGenCoreSkills = [
       "review",
       "plan-eng-review",
       "plan-ceo-review",
@@ -102,18 +135,14 @@ describe("runtime target generation", () => {
       "deep-research",
       "debug",
       "auto-swarm",
-      "omni-plan",
-      "designer-upgrade",
       "ux-genie",
       "document-release",
       "productionos-update",
     ];
 
-    for (const skillName of coreSkills) {
+    for (const skillName of autoGenCoreSkills) {
       const skill = getGeneratedTargetFiles().find((file) => file.path === `skills/${skillName}/SKILL.md`);
       expect(skill).toBeDefined();
-      // Upgraded overrides may replace "## Overview" with inline content and
-      // "## Codex Workflow" with specific step/phase headings
       expect(
         skill!.content.includes("## Overview") ||
         skill!.content.includes("## Inputs"),
@@ -126,6 +155,16 @@ describe("runtime target generation", () => {
       ).toBe(true);
       expect(skill!.content).toContain("## Guardrails");
       expect(skill!.content).not.toContain("This is the Codex-native workflow wrapper");
+    }
+
+    // Hand-crafted dense runbooks exist on disk, not in auto-generated targets
+    const handCraftedCoreSkills = ["omni-plan", "designer-upgrade"];
+    for (const skillName of handCraftedCoreSkills) {
+      expect(HAND_CRAFTED_SKILLS.has(skillName)).toBe(true);
+      const content = readFileOrNull(join(ROOT, "skills", skillName, "SKILL.md"));
+      expect(content).not.toBeNull();
+      expect(content!).toContain("## Inputs");
+      expect(content!).toContain("## Guardrails");
     }
   });
 });

@@ -46,7 +46,7 @@ if [ "$CURRENT_COUNT" -gt 0 ] && [ $((CURRENT_COUNT % EVAL_INTERVAL)) -eq 0 ]; t
       CONVERGENCE_FILE="$STATE_DIR/analytics/eval-convergence.jsonl"
       mkdir -p "$(dirname "$CONVERGENCE_FILE")"
       if command -v jq >/dev/null 2>&1; then
-        jq -n --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson score "$EVAL_SCORE" --argjson edits "$CURRENT_COUNT" \
+        jq -cn --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson score "$EVAL_SCORE" --argjson edits "$CURRENT_COUNT" \
           '{ts: $ts, score: $score, edits: $edits}' >> "$CONVERGENCE_FILE" 2>/dev/null || true
       else
         printf '{"ts":"%s","score":%s,"edits":%d}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$EVAL_SCORE" "$CURRENT_COUNT" >> "$CONVERGENCE_FILE" 2>/dev/null || true

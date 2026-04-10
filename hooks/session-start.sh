@@ -64,7 +64,7 @@ fi
 # Log session start with project context
 # C-1 fix: Use jq for safe JSON construction
 if command -v jq >/dev/null 2>&1; then
-  jq -n --arg event "session_start" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson pid $$ --argjson sessions "$SESSIONS" --arg project "$PROJECT_NAME" \
+  jq -cn --arg event "session_start" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson pid $$ --argjson sessions "$SESSIONS" --arg project "$PROJECT_NAME" \
     '{event: $event, ts: $ts, pid: $pid, sessions: $sessions, project: $project}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
 else
   SAFE_PROJ=$(printf '%s' "$PROJECT_NAME" | tr -cd '[:alnum:]._/-')
@@ -160,7 +160,7 @@ if [ -n "$LAST_HANDOFF" ]; then
 fi
 
 # Check for recent instincts (learned patterns within last 2 hours)
-RECENT_INSTINCTS=$(find "$STATE_DIR/instincts" -name "*.json" -mmin -120 2>/dev/null | wc -l | tr -d ' ')
+RECENT_INSTINCTS=$(find "$STATE_DIR/instincts" \( -name "*.json" -o -name "*.md" -o -name "*.jsonl" \) -mmin -120 2>/dev/null | wc -l | tr -d ' ')
 if [ "$RECENT_INSTINCTS" -gt 0 ] 2>/dev/null; then
   if [ -n "$CONTEXT_PATHS" ]; then
     CONTEXT_PATHS="$CONTEXT_PATHS, \"instincts_count\": $RECENT_INSTINCTS, \"instincts_dir\": \"$STATE_DIR/instincts\""
@@ -193,16 +193,24 @@ if [ -n "$CONTEXT_FLAGS" ]; then
   echo "  CONTEXT_RECOVERY: {$CONTEXT_PATHS}"
 fi
 
-# Project profile loading
-if [ -n "${PROJECT_ROOT:-}" ]; then
-  _PROFILE_SLUG=$(basename "$PROJECT_ROOT")
-  _PROFILE_FILE="$STATE_DIR/project-profiles/$_PROFILE_SLUG.yml"
-  if [ -f "$_PROFILE_FILE" ]; then
-    echo "  PROJECT_PROFILE: $_PROFILE_SLUG"
-    _PROFILE_STACK=$(grep "^stack:" "$_PROFILE_FILE" 2>/dev/null | head -1 | sed 's/^stack: *//')
-    _PROFILE_COMPLIANCE=$(grep "^compliance:" "$_PROFILE_FILE" 2>/dev/null | head -1 | sed 's/^compliance: *//')
-    [ -n "$_PROFILE_STACK" ] && echo "  STACK: $_PROFILE_STACK"
-    [ -n "$_PROFILE_COMPLIANCE" ] && echo "  COMPLIANCE: $_PROFILE_COMPLIANCE"
+# Project-aware context switching (Phase 3)
+_DETECT_SCRIPT="$STATE_DIR/bin/detect-project.sh"
+if [ -x "$_DETECT_SCRIPT" ]; then
+  _PROJECT_JSON=$(timeout 2 "$_DETECT_SCRIPT" $$ 2>/dev/null || echo '{"slug":"agnostic"}')
+  _PROJECT_SLUG=$(echo "$_PROJECT_JSON" | python3 -c "import json,sys; print(json.loads(sys.stdin.read()).get('slug','unknown'))" 2>/dev/null || echo "unknown")
+  _PROJECT_STACK=$(echo "$_PROJECT_JSON" | python3 -c "import json,sys; print(','.join(json.loads(sys.stdin.read()).get('stack',[])))" 2>/dev/null || echo "")
+  _PROJECT_SKILLS=$(echo "$_PROJECT_JSON" | python3 -c "import json,sys; print(len(json.loads(sys.stdin.read()).get('skills',[])))" 2>/dev/null || echo "0")
+  if [ "$_PROJECT_SLUG" != "agnostic" ] && [ "$_PROJECT_SLUG" != "unknown" ]; then
+    echo "  PROJECT: $_PROJECT_SLUG | Stack: $_PROJECT_STACK | Skills: $_PROJECT_SKILLS surfaced"
+  fi
+else
+  # Legacy fallback
+  if [ -n "${PROJECT_ROOT:-}" ]; then
+    _PROFILE_SLUG=$(basename "$PROJECT_ROOT")
+    _PROFILE_FILE="$STATE_DIR/project-profiles/$_PROFILE_SLUG.yml"
+    if [ -f "$_PROFILE_FILE" ]; then
+      echo "  PROJECT_PROFILE: $_PROFILE_SLUG"
+    fi
   fi
 fi
 

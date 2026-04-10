@@ -27,11 +27,11 @@ if [ -n "$ACTIVE_PROJECT" ] && [ -n "$FILE_PATH" ]; then
   case "$FILE_PATH" in
     "$ACTIVE_PROJECT"/*)
       # Within active project — log normally
-      # C-1 fix: Use jq for safe JSON construction; M-1 fix: log basename only
+      # C-1 fix: Use jq for safe JSON construction; M-1 fix: log basename + full path
       FILE_BASE=$(basename "$FILE_PATH" 2>/dev/null || echo "unknown")
       if command -v jq >/dev/null 2>&1; then
-        jq -n --arg event "edit" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg file "$FILE_BASE" \
-          '{event: $event, ts: $ts, file: $file}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
+        jq -cn --arg event "edit" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg file "$FILE_BASE" --arg path "$FILE_PATH" \
+          '{event: $event, ts: $ts, file: $file, path: $path}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
       else
         SAFE_FILE=$(printf '%s' "$FILE_BASE" | tr -cd '[:alnum:]._/-')
         printf '{"event":"edit","ts":"%s","file":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$SAFE_FILE" >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
@@ -42,7 +42,7 @@ if [ -n "$ACTIVE_PROJECT" ] && [ -n "$FILE_PATH" ]; then
       FILE_BASE=$(basename "$FILE_PATH" 2>/dev/null || echo "unknown")
       PROJ_BASE=$(basename "$ACTIVE_PROJECT" 2>/dev/null || echo "unknown")
       if command -v jq >/dev/null 2>&1; then
-        jq -n --arg event "cross_repo_edit" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg file "$FILE_BASE" --arg proj "$PROJ_BASE" \
+        jq -cn --arg event "cross_repo_edit" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg file "$FILE_BASE" --arg proj "$PROJ_BASE" \
           '{event: $event, ts: $ts, file: $file, active_project: $proj}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
       else
         SAFE_FILE=$(printf '%s' "$FILE_BASE" | tr -cd '[:alnum:]._/-')
@@ -55,7 +55,7 @@ else
   # No active project — log everything (backwards compatible)
   FILE_BASE=$(basename "$FILE_PATH" 2>/dev/null || echo "unknown")
   if command -v jq >/dev/null 2>&1; then
-    jq -n --arg event "edit" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg file "$FILE_BASE" \
+    jq -cn --arg event "edit" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg file "$FILE_BASE" \
       '{event: $event, ts: $ts, file: $file}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
   else
     SAFE_FILE=$(printf '%s' "$FILE_BASE" | tr -cd '[:alnum:]._/-')
