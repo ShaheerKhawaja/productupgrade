@@ -153,7 +153,7 @@ CONTEXT_PATHS=""
 CONTEXT_FLAGS=""
 
 # Check for recent handoff files from previous sessions
-LAST_HANDOFF=$(ls -t "$STATE_DIR/sessions"/handoff-*.md 2>/dev/null | head -1)
+LAST_HANDOFF=$(ls -t "$STATE_DIR/sessions"/handoff-*.md 2>/dev/null | head -1 || true)
 if [ -n "$LAST_HANDOFF" ]; then
   CONTEXT_PATHS="\"handoff\": \"$LAST_HANDOFF\""
   CONTEXT_FLAGS="handoff"

@@ -320,10 +320,10 @@ describe("EMAVelocityTracker", () => {
 
   test("timeToTarget is reasonable for positive velocity", () => {
     const tracker = new EMAVelocityTracker(3);
-    // grade=5.0, EMA velocity=2.0, target=10.0, gap=5.0
-    // TTT = 5.0 / 2.0 = 2.5
+    // grade=5.0, EMA velocity=2.0, target=8.0, gap=3.0
+    // TTT = 3.0 / 2.0 = 1.5
     const m = tracker.update(5.0, 3.0);
-    expect(m.timeToTarget).toBeCloseTo(2.5, 1);
+    expect(m.timeToTarget).toBeCloseTo(1.5, 1);
   });
 
   test("timeToTarget clamped to 999 for near-zero velocity", () => {

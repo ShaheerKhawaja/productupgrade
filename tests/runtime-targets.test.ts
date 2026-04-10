@@ -60,13 +60,20 @@ describe("runtime target generation", () => {
     for (const skill of generatedCommandSkills) {
       expect(skill.content).toContain("## Inputs");
       expect(skill.content).toContain("## Guardrails");
+      // Upgraded skills replace "Agents And Assets" with richer sections (e.g. Step, Phase, Domain headings)
       expect(
         skill.content.includes("## Agents And Assets") ||
-        skill.content.includes("Source references:"),
+        skill.content.includes("Source references:") ||
+        skill.content.includes("## Step ") ||
+        skill.content.includes("## Phase ") ||
+        skill.content.includes("## Domain "),
       ).toBe(true);
       expect(
         skill.content.includes("## Execution Outline") ||
-        skill.content.includes("## Codex Workflow"),
+        skill.content.includes("## Codex Workflow") ||
+        skill.content.includes("## Step 1:") ||
+        skill.content.includes("## Phase A:") ||
+        skill.content.includes("## Domain 1:"),
       ).toBe(true);
     }
   });
@@ -105,8 +112,18 @@ describe("runtime target generation", () => {
     for (const skillName of coreSkills) {
       const skill = getGeneratedTargetFiles().find((file) => file.path === `skills/${skillName}/SKILL.md`);
       expect(skill).toBeDefined();
-      expect(skill!.content).toContain("## Overview");
-      expect(skill!.content).toContain("## Codex Workflow");
+      // Upgraded overrides may replace "## Overview" with inline content and
+      // "## Codex Workflow" with specific step/phase headings
+      expect(
+        skill!.content.includes("## Overview") ||
+        skill!.content.includes("## Inputs"),
+      ).toBe(true);
+      expect(
+        skill!.content.includes("## Codex Workflow") ||
+        skill!.content.includes("## Step ") ||
+        skill!.content.includes("## Phase ") ||
+        skill!.content.includes("## Domain "),
+      ).toBe(true);
       expect(skill!.content).toContain("## Guardrails");
       expect(skill!.content).not.toContain("This is the Codex-native workflow wrapper");
     }
