@@ -157,6 +157,11 @@ with open(retro_file, 'a') as f:
 " "$STATE_DIR" "$ACTIVE_PROJECT" "$$" 2>/dev/null || true
 fi
 
+# Mark onboarding complete after first session
+if [ ! -f "$STATE_DIR/.onboarded" ]; then
+  touch "$STATE_DIR/.onboarded"
+fi
+
 # 4. Extract instincts
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 if [ -f "$PLUGIN_ROOT/hooks/stop-extract-instincts.sh" ]; then
