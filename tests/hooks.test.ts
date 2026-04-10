@@ -205,7 +205,7 @@ describe("Agent Declarative Frontmatter", () => {
 describe("version consistency", () => {
   test("VERSION file matches expected version", () => {
     const v = readFileSync(join(ROOT, "VERSION"), "utf-8").trim();
-    expect(v).toBe("1.0.0-beta.1");
+    expect(v).toBe("1.1.0-beta.1");
   });
 
   test("CLAUDE.md references current version", () => {
