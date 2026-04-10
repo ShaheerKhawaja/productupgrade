@@ -656,7 +656,28 @@ export function renderCodexParityHandoff(): string {
   ].join("\n");
 }
 
+/**
+ * Skills with hand-crafted dense runbooks that should NOT be auto-generated.
+ * These skills have been upgraded to self-contained 150+ line SKILL.md files
+ * that inline all agent instructions, error handling, and output specs.
+ */
+const HAND_CRAFTED_SKILLS = new Set([
+  "omni-plan-nth",
+  "designer-upgrade",
+  "auto-mode",
+  "logic-mode",
+  "agentic-eval",
+  "omni-plan",
+  "auto-swarm-nth",
+  "frontend-upgrade",
+  "context-engineer",
+  "max-research",
+]);
+
 export function getGeneratedTargetFiles(): GeneratedTargetFile[] {
+  const commandSpecs = getCommandSkillSpecs();
+  const autoGenSpecs = commandSpecs.filter((spec) => !HAND_CRAFTED_SKILLS.has(spec.name));
+
   return [
     { path: ".claude-plugin/plugin.json", content: renderClaudePluginManifest() },
     { path: ".claude-plugin/marketplace.json", content: renderClaudeMarketplaceManifest() },
@@ -667,11 +688,11 @@ export function getGeneratedTargetFiles(): GeneratedTargetFile[] {
     { path: "agents/openai.yaml", content: renderOpenAIInterfaceYaml() },
     { path: "docs/CODEX-PARITY-HANDOFF.md", content: renderCodexParityHandoff() },
   ].concat(
-    getCommandSkillSpecs().map((spec) => ({
+    autoGenSpecs.map((spec) => ({
       path: `skills/${spec.name}/SKILL.md`,
       content: renderCommandSkill(spec),
     })),
-    getCommandSkillSpecs().map((spec) => ({
+    autoGenSpecs.map((spec) => ({
       path: `codex-skills/${spec.aliasName}/SKILL.md`,
       content: renderCommandAliasSkill(spec),
     })),

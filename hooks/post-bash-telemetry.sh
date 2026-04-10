@@ -21,7 +21,7 @@ except:
 # H-1 fix: Log only the command name, not arguments (prevents secret leakage)
 CMD_NAME=$(printf '%s' "$COMMAND" | awk '{print $1}')
 if command -v jq >/dev/null 2>&1; then
-  jq -n --arg event "bash" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg cmd "$CMD_NAME" \
+  jq -cn --arg event "bash" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg cmd "$CMD_NAME" \
     '{event: $event, ts: $ts, cmd: $cmd}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
 else
   # Fallback: sanitize by stripping quotes and special chars

@@ -44,9 +44,9 @@ if [ -n "$MATCHED" ]; then
   fi
   # C-1 fix: Use jq for safe JSON construction (prevents injection via file paths)
   if command -v jq >/dev/null 2>&1; then
-    jq -n --arg event "security_edit" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg file "$BASENAME" --arg pattern "$MATCHED" --arg proj "$ACTIVE_PROJECT_NAME" \
+    jq -cn --arg event "security_edit" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg file "$BASENAME" --arg pattern "$MATCHED" --arg proj "$ACTIVE_PROJECT_NAME" \
       '{event: $event, ts: $ts, file: $file, pattern: $pattern, project: $proj}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
-    jq -n --arg ctx "ProductionOS Security [$ACTIVE_PROJECT_NAME]: Editing security-sensitive file ($MATCHED pattern in $BASENAME). Review before committing." \
+    jq -cn --arg ctx "ProductionOS Security [$ACTIVE_PROJECT_NAME]: Editing security-sensitive file ($MATCHED pattern in $BASENAME). Review before committing." \
       '{additionalContext: $ctx}'
   else
     SAFE_BASE=$(printf '%s' "$BASENAME" | tr -cd '[:alnum:]._/-')
