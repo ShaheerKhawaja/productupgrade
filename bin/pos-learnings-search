@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# pos-learnings-search — query learnings with confidence decay and dedup
+set -euo pipefail
+
+STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
+PROJECT_SLUG=$(basename "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null || basename "$PWD")
+
+LIMIT=5
+QUERY=""
+TYPE=""
+CROSS_PROJECT=false
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --limit) LIMIT="$2"; shift 2;;
+    --query) QUERY="$2"; shift 2;;
+    --type) TYPE="$2"; shift 2;;
+    --cross-project) CROSS_PROJECT=true; shift;;
+    *) shift;;
+  esac
+done
+
+if [ "$CROSS_PROJECT" = true ]; then
+  SEARCH_PATTERN="$STATE_DIR/learnings/*/learnings.jsonl"
+else
+  SEARCH_PATTERN="$STATE_DIR/learnings/$PROJECT_SLUG/learnings.jsonl"
+fi
+
+python3 -c "
+import json, sys, glob
+from datetime import datetime, timezone
+
+files = glob.glob('$SEARCH_PATTERN')
+if not files:
+    print('No learnings found.')
+    sys.exit(0)
+
+entries = []
+for f in files:
+    project = f.split('/')[-2]
+    try:
+        for line in open(f):
+            try:
+                d = json.loads(line.strip())
+                d['_project'] = project
+                entries.append(d)
+            except: pass
+    except: pass
+
+if not entries:
+    print('No learnings found.')
+    sys.exit(0)
+
+# Apply filters
+query = '$QUERY'.lower()
+type_filter = '$TYPE'
+if query:
+    entries = [e for e in entries if query in e.get('insight','').lower() or query in e.get('key','').lower()]
+if type_filter:
+    entries = [e for e in entries if e.get('type') == type_filter]
+
+# Apply confidence decay: -1 per 30 days for observed/inferred
+now = datetime.now(timezone.utc)
+for e in entries:
+    try:
+        ts = datetime.fromisoformat(e['ts'].replace('Z','+00:00'))
+        days_old = (now - ts).days
+        decay = days_old // 30
+        source = e.get('source', 'observed')
+        if source in ('observed', 'inferred'):
+            e['_effective_conf'] = max(0, e.get('confidence', 5) - decay)
+        else:
+            e['_effective_conf'] = e.get('confidence', 5)
+    except:
+        e['_effective_conf'] = e.get('confidence', 5)
+
+# Dedup by key+type (latest wins)
+seen = {}
+for e in sorted(entries, key=lambda x: x.get('ts', ''), reverse=False):
+    seen[(e.get('key',''), e.get('type',''))] = e
+entries = list(seen.values())
+
+# Sort by effective confidence (highest first)
+entries.sort(key=lambda x: x['_effective_conf'], reverse=True)
+entries = entries[:$LIMIT]
+
+# Output
+if not entries:
+    print('No matching learnings.')
+    sys.exit(0)
+
+cross = '$CROSS_PROJECT' == 'true'
+for e in entries:
+    proj = f' ({e[\"_project\"]})' if cross else ''
+    conf = e['_effective_conf']
+    orig = e.get('confidence', '?')
+    decay_note = f' (was {orig})' if conf != orig else ''
+    files_str = ', '.join(e.get('files', [])[:3])
+    files_note = f'  files: {files_str}' if files_str else ''
+    print(f'  [{e.get(\"type\",\"?\"):12}] {e.get(\"key\",\"?\"):20} conf:{conf}/10{decay_note}{proj}')
+    print(f'    {e.get(\"insight\",\"\")}')
+    if files_note:
+        print(f'   {files_note}')
+    print()
+" 2>/dev/null || echo "  (error reading learnings)"

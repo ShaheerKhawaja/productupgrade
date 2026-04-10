@@ -53,6 +53,27 @@ If `_AUTO_REVIEW` is `"true"`, run lightweight code review after major edits.
 If `_AUTO_LEARN` is `"true"`, extract patterns at session end.
 If `_SELF_EVAL` is `"true"` (default), run Self-Eval Protocol after every agent action.
 
+## Learnings Preload
+
+Before any agent action, load the most relevant project learnings for context priming.
+
+```bash
+# Learnings preload — load top 3 project learnings for context
+_PROJECT_SLUG=$(basename "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null || basename "$PWD")
+_LEARNINGS_FILE="${PRODUCTIONOS_HOME:-$HOME/.productionos}/learnings/$_PROJECT_SLUG/learnings.jsonl"
+if [ -f "$_LEARNINGS_FILE" ]; then
+  _LEARN_COUNT=$(wc -l < "$_LEARNINGS_FILE" 2>/dev/null | tr -d ' ')
+  echo "LEARNINGS: $_LEARN_COUNT entries loaded"
+  if [ "$_LEARN_COUNT" -gt 0 ] 2>/dev/null; then
+    "${CLAUDE_PLUGIN_ROOT}/bin/pos-learnings-search" --limit 3 2>/dev/null || true
+  fi
+else
+  echo "LEARNINGS: 0"
+fi
+```
+
+When a learning matches the current task, display: **Prior learning applied: [key] (confidence N/10)**
+
 ## Postamble (runs after every ProductionOS agent action)
 
 After every agent completes its work, run the Self-Eval Protocol (`templates/SELF-EVAL-PROTOCOL.md`):
