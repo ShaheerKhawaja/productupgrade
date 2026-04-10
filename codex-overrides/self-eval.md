@@ -1,13 +1,11 @@
 ---
-name: productionos-self-eval
+name: self-eval
 description: "Run self-evaluation on recent work — questions quality, necessity, correctness, dependencies, completeness, learning, and honesty. Enabled by default in all flows. Standalone invocation for on-demand evaluation."
 argument-hint: "[repo path, target, or task context]"
 ---
 
-# productionos-self-eval
+# self-eval
 
-
-Use this alias when you want the same workflow through a top-level Codex-safe name without the `productionos:` namespace.
 Self-evaluation orchestrator for ProductionOS. Evaluates the quality, necessity, and correctness of recent work using the 7-question protocol. Enabled by default in every ProductionOS flow. Can also be invoked standalone for on-demand evaluation of any artifact, session, or diff.
 
 This skill is SELF-CONTAINED. All protocol details, questions, scoring, and output formats are embedded below.

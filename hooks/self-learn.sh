@@ -77,6 +77,32 @@ case "$TOOL_NAME" in
     DISPATCH_LOG="$STATE_DIR/dispatch-log.jsonl"
     jq -n --arg ts "$TIMESTAMP" --arg goal "$DESC" --arg agent "$AGENT_TYPE" --arg outcome "pending" \
       '{ts: $ts, goal: $goal, agents: [$agent], outcome: $outcome}' >> "$DISPATCH_LOG" 2>/dev/null || true
+
+    # Update pending dispatch outcomes
+    # When an Agent tool completes, check for pending entries and update
+    if echo "$INPUT" | jq -r '.tool_result // empty' 2>/dev/null | grep -q . 2>/dev/null; then
+      if [ -f "$DISPATCH_LOG" ]; then
+        python3 -c "
+import json, sys
+dispatch_file = sys.argv[1]
+lines = open(dispatch_file).readlines()
+updated = False
+for i in range(len(lines)-1, -1, -1):
+    try:
+        d = json.loads(lines[i])
+        if d.get('outcome') == 'pending':
+            d['outcome'] = 'completed'
+            lines[i] = json.dumps(d) + '\n'
+            updated = True
+            break
+    except:
+        pass
+if updated:
+    with open(dispatch_file, 'w') as f:
+        f.writelines(lines)
+" "$DISPATCH_LOG" 2>/dev/null || true
+      fi
+    fi
     ;;
 esac
 

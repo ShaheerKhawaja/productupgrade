@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# pos-learnings-log — append a learning to the project-scoped learnings file
+set -euo pipefail
+
+STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
+# Compute project slug from git remote or directory name
+PROJECT_SLUG=$(basename "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null || basename "$PWD")
+LEARNINGS_DIR="$STATE_DIR/learnings/$PROJECT_SLUG"
+LEARNINGS_FILE="$LEARNINGS_DIR/learnings.jsonl"
+
+mkdir -p "$LEARNINGS_DIR"
+
+# Validate JSON input
+INPUT="${1:-}"
+if [ -z "$INPUT" ]; then
+  echo "Usage: pos-learnings-log '{\"skill\":\"...\",\"type\":\"...\",\"key\":\"...\",\"insight\":\"...\",\"confidence\":N}'" >&2
+  exit 1
+fi
+
+# Add timestamp if not present, then append
+ENTRY=$(python3 -c "
+import json, sys
+from datetime import datetime, timezone
+d = json.loads(sys.argv[1])
+if 'ts' not in d:
+    d['ts'] = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+# Validate required fields
+for f in ['skill', 'type', 'key', 'insight', 'confidence']:
+    if f not in d:
+        print(f'Missing required field: {f}', file=sys.stderr)
+        sys.exit(1)
+# Validate type
+valid_types = ['pattern', 'pitfall', 'preference', 'architecture', 'tool', 'operational']
+if d['type'] not in valid_types:
+    print(f'Invalid type: {d[\"type\"]}. Must be one of: {valid_types}', file=sys.stderr)
+    sys.exit(1)
+# Validate confidence
+if not (0 <= d['confidence'] <= 10):
+    print('Confidence must be 0-10', file=sys.stderr)
+    sys.exit(1)
+print(json.dumps(d, separators=(',', ':')))
+" "$INPUT")
+
+echo "$ENTRY" >> "$LEARNINGS_FILE"
+echo "Learning logged: $(echo "$ENTRY" | python3 -c "import json,sys; d=json.load(sys.stdin); print(f'[{d[\"type\"]}] {d[\"key\"]}: {d[\"insight\"][:60]}...' if len(d['insight'])>60 else f'[{d[\"type\"]}] {d[\"key\"]}: {d[\"insight\"]}')")"

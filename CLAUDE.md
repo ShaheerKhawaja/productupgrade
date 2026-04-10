@@ -1,4 +1,4 @@
-# ProductionOS 1.0.0-beta.1 — Production House
+# ProductionOS 1.1.0-beta.1 — Production House
 
 78-agent AI engineering OS with 41 commands, 17 lifecycle hooks, 6 CLI tools, 47 skills, continuous learning, self-evaluation, and dual Claude/Codex targets. 4-layer Production House: Smart Router (auto-dispatch agents by goal), Stack Detector (auto-provision tools), Adaptive Learning (dispatch history feeds routing), Dynamic Factory (create ephemeral agents). Built for solo founders who need a 10-person engineering + design team from 1 person + AI.
 
