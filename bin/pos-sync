@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+# pos-sync — Sync ProductionOS repo to the active plugin installation
+# Usage: pos-sync [--dry-run]
+set -euo pipefail
+
+REPO_DIR="${1:-$(cd "$(dirname "$0")/.." && pwd)}"
+PLUGIN_DIR="${HOME}/.claude/plugins/cache/productupgrade/productupgrade/1.0.0-beta.1"
+DRY_RUN=false
+
+if [ "${1:-}" = "--dry-run" ]; then
+  DRY_RUN=true
+  REPO_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+fi
+
+if [ ! -d "$PLUGIN_DIR" ]; then
+  echo "Plugin directory not found: $PLUGIN_DIR"
+  exit 1
+fi
+
+echo "ProductionOS Sync"
+echo "  From: $REPO_DIR"
+echo "  To:   $PLUGIN_DIR"
+echo ""
+
+SYNCED=0
+SKIPPED=0
+
+sync_file() {
+  local src="$1"
+  local dst="$2"
+  if [ -f "$src" ]; then
+    if $DRY_RUN; then
+      echo "  [DRY] $src → $dst"
+    else
+      mkdir -p "$(dirname "$dst")"
+      cp "$src" "$dst"
+    fi
+    SYNCED=$((SYNCED + 1))
+  else
+    SKIPPED=$((SKIPPED + 1))
+  fi
+}
+
+# Core files
+for f in CLAUDE.md ETHOS.md SKILL_REGISTRY.md ARCHITECTURE.md VERSION; do
+  sync_file "$REPO_DIR/$f" "$PLUGIN_DIR/$f"
+done
+
+# Templates
+for f in PREAMBLE.md SELF-EVAL-PROTOCOL.md ESCALATION-PROTOCOL.md ONBOARDING.md PROMPT-COMPOSITION.md INVOCATION-PROTOCOL.md; do
+  sync_file "$REPO_DIR/templates/$f" "$PLUGIN_DIR/templates/$f"
+done
+
+# Hooks (all .sh files)
+for f in "$REPO_DIR"/hooks/*.sh; do
+  [ -f "$f" ] && sync_file "$f" "$PLUGIN_DIR/hooks/$(basename "$f")"
+done
+
+# CLI tools (all in bin/)
+for f in "$REPO_DIR"/bin/pos-*; do
+  [ -f "$f" ] && sync_file "$f" "$PLUGIN_DIR/bin/$(basename "$f")"
+done
+
+# Scripts
+for f in "$REPO_DIR"/scripts/*.ts; do
+  [ -f "$f" ] && sync_file "$f" "$PLUGIN_DIR/scripts/$(basename "$f")"
+done
+
+# Skills (all SKILL.md files)
+for d in "$REPO_DIR"/skills/*/; do
+  skill=$(basename "$d")
+  sync_file "$d/SKILL.md" "$PLUGIN_DIR/skills/$skill/SKILL.md"
+  # Also sync to ~/.claude/skills/ for direct skill loading
+  if [ -f "$d/SKILL.md" ]; then
+    mkdir -p "$HOME/.claude/skills/$skill" 2>/dev/null || true
+    if ! $DRY_RUN; then
+      cp "$d/SKILL.md" "$HOME/.claude/skills/$skill/SKILL.md"
+    fi
+  fi
+done
+
+# Agents (all .md files)
+for f in "$REPO_DIR"/agents/*.md; do
+  [ -f "$f" ] && sync_file "$f" "$PLUGIN_DIR/agents/$(basename "$f")"
+done
+
+# Docs
+for f in "$REPO_DIR"/docs/*.md; do
+  [ -f "$f" ] && sync_file "$f" "$PLUGIN_DIR/docs/$(basename "$f")"
+done
+
+echo ""
+echo "Synced: $SYNCED files"
+echo "Skipped: $SKIPPED (not found in repo)"
+if $DRY_RUN; then
+  echo "(dry run — no files were copied)"
+fi
