@@ -19,7 +19,7 @@ rm -f "$STATE_DIR/sessions/project-meta" 2>/dev/null || true
 # 2. Log session end
 # C-1 fix: Use jq for safe JSON construction
 if command -v jq >/dev/null 2>&1; then
-  jq -n --arg event "session_end" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson pid $$ --arg project "$ACTIVE_PROJECT_NAME" \
+  jq -cn --arg event "session_end" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --argjson pid $$ --arg project "$ACTIVE_PROJECT_NAME" \
     '{event: $event, ts: $ts, pid: $pid, project: $project}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true
 else
   SAFE_PROJ=$(printf '%s' "$ACTIVE_PROJECT_NAME" | tr -cd '[:alnum:]._/-')
@@ -113,10 +113,14 @@ if os.path.exists(analytics_file):
     for line in open(analytics_file):
         try:
             e = json.loads(line)
-            if e.get('event') == 'session_start' and e.get('ts', '').startswith(today) and str(e.get('pid', '')) == pid:
-                session_start = e['ts']
+            # Match session_start by project+date, not PID (start and stop hooks have different PIDs)
+            if e.get('event') == 'session_start' and e.get('ts', '').startswith(today):
+                proj = e.get('project', '')
+                if not proj or proj == os.path.basename(active_project):
+                    session_start = e['ts']
             if e.get('event') == 'edit' and e.get('ts', '').startswith(today):
-                if e.get('file', '').startswith(active_project):
+                f = e.get('file', '')
+                if f.startswith(active_project) or f.startswith(os.path.basename(active_project)):
                     edit_count += 1
         except:
             pass
@@ -162,7 +166,44 @@ if [ ! -f "$STATE_DIR/.onboarded" ]; then
   touch "$STATE_DIR/.onboarded"
 fi
 
-# 4. Extract instincts
+# 4. Obsidian session logging — write structured note to SecondBrain vault
+OBSIDIAN_VAULT="${OBSIDIAN_VAULT:-$HOME/SecondBrain}"
+if [ -d "$OBSIDIAN_VAULT/Sessions" ]; then
+  SESSION_DATE=$(date +%Y-%m-%d)
+  SESSION_TIME=$(date +%H-%M)
+  SESSION_NOTE="$OBSIDIAN_VAULT/Sessions/$SESSION_DATE-$SESSION_TIME.md"
+
+  # Build session note with frontmatter
+  {
+    echo "---"
+    echo "date: $SESSION_DATE"
+    echo "time: $(date +%H:%M)"
+    echo "project: ${ACTIVE_PROJECT_NAME:-unknown}"
+    echo "type: session-log"
+    echo "tags: [session, productionos, ${ACTIVE_PROJECT_NAME:-unknown}]"
+    echo "---"
+    echo ""
+    echo "# Session: $SESSION_DATE $(date +%H:%M)"
+    echo ""
+    echo "**Project:** ${ACTIVE_PROJECT_NAME:-unknown}"
+    echo "**Branch:** $(git branch --show-current 2>/dev/null || echo 'unknown')"
+    echo ""
+    echo "## Recent Commits"
+    git log --oneline --since="4 hours ago" 2>/dev/null | head -10 | sed 's/^/- /' || echo "- (no commits)"
+    echo ""
+    echo "## Files Modified"
+    git diff --name-only HEAD~5 2>/dev/null | head -15 | sed 's/^/- /' || echo "- (no changes)"
+    echo ""
+    echo "## Handoff"
+    if [ -f "$STATE_DIR/sessions/handoff-$SESSION_DATE.md" ]; then
+      tail -20 "$STATE_DIR/sessions/handoff-$SESSION_DATE.md" 2>/dev/null || true
+    else
+      echo "No handoff generated."
+    fi
+  } > "$SESSION_NOTE" 2>/dev/null || true
+fi
+
+# 5. Extract instincts
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 if [ -f "$PLUGIN_ROOT/hooks/stop-extract-instincts.sh" ]; then
   bash "$PLUGIN_ROOT/hooks/stop-extract-instincts.sh" 2>/dev/null || true
