@@ -2,7 +2,7 @@
 
 This document is generated from the runtime-neutral registry in [scripts/lib/runtime-targets.ts](../scripts/lib/runtime-targets.ts).
 
-Current snapshot: 78 agents, 41 commands, 17 hooks, 13 templates, 25 tests.
+Current snapshot: 78 agents, 41 commands, 17 hooks, 13 templates, 28 tests.
 
 ## Runtime Targets
 

@@ -26,6 +26,21 @@ Use it when the user wants this exact ProductionOS workflow, not just the umbrel
 - Summary: ProductionOS smart router — single entry point that routes to the right pipeline based on intent. The ONLY command new users need to know.
 - Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.
 
+## First-Run Onboarding
+If session context contains `FIRST_RUN: true`, read `templates/ONBOARDING.md` and execute the onboarding flow before any other dispatch. This only runs once — the stop hook marks `.onboarded` after the first session.
+
+## Step 0: Smart Routing
+
+Before static intent classification, check if the user's goal matches a composite skill chain. Run the skill router:
+
+```bash
+ROUTE_RESULT=$(bun run "${CLAUDE_PLUGIN_ROOT}/scripts/skill-router.ts" "USER_GOAL" 2>/dev/null || echo '{}')
+```
+
+Parse the JSON result. If `confidence` > 0.6 and `chain` is non-empty, execute the skills in the chain sequentially. Each chain step's output feeds into the next step as context. If confidence <= 0.6 or the router fails, fall through to the existing static intent classification below.
+
+When multiple skills match the same intent, consult SKILL_REGISTRY.md for the canonical source.
+
 ## Inputs
 
 - `intent` — What you want to do. Natural language or keyword. Examples: 'audit this project', 'fix the frontend', 'research authentication', 'review my PR', 'ship it', 'debug the login bug' Required.

@@ -6,7 +6,7 @@ mkdir -p "$STATE_DIR"/{config,analytics,sessions,instincts/{project,global},revi
 if [ ! -f "$STATE_DIR/config/settings.json" ]; then
   cat > "$STATE_DIR/config/settings.json" << 'CONF'
 {
-  "version": "1.1.0-beta.1",
+  "version": "1.1.0-beta.2",
   "proactive": true,
   "telemetry": "off",
   "auto_review": true,

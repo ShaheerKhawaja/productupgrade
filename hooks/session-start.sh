@@ -108,7 +108,7 @@ fi
 cat << 'BANNER'
 
   ╔═══════════════════════════════════════════════════╗
-  ║  ProductionOS v1.1.0-beta.1 — Production House   ║
+  ║  ProductionOS v1.1.0-beta.2 — Production House   ║
   ║  78 agents | 41 commands | 17 hooks               ║
   ╠═══════════════════════════════════════════════════╣
 BANNER
@@ -191,6 +191,19 @@ fi
 # Emit context recovery block if any signals found
 if [ -n "$CONTEXT_FLAGS" ]; then
   echo "  CONTEXT_RECOVERY: {$CONTEXT_PATHS}"
+fi
+
+# Project profile loading
+if [ -n "${PROJECT_ROOT:-}" ]; then
+  _PROFILE_SLUG=$(basename "$PROJECT_ROOT")
+  _PROFILE_FILE="$STATE_DIR/project-profiles/$_PROFILE_SLUG.yml"
+  if [ -f "$_PROFILE_FILE" ]; then
+    echo "  PROJECT_PROFILE: $_PROFILE_SLUG"
+    _PROFILE_STACK=$(grep "^stack:" "$_PROFILE_FILE" 2>/dev/null | head -1 | sed 's/^stack: *//')
+    _PROFILE_COMPLIANCE=$(grep "^compliance:" "$_PROFILE_FILE" 2>/dev/null | head -1 | sed 's/^compliance: *//')
+    [ -n "$_PROFILE_STACK" ] && echo "  STACK: $_PROFILE_STACK"
+    [ -n "$_PROFILE_COMPLIANCE" ] && echo "  COMPLIANCE: $_PROFILE_COMPLIANCE"
+  fi
 fi
 
 echo ""
