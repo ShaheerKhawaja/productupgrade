@@ -22,6 +22,8 @@ The kernel is not a hidden shared chat between providers. Cross-provider collabo
 - [adapter-sdk.md](./adapter-sdk.md) - public adapter contract, capability model, lifecycle, and first-party adapter expectations
 - [protocols.md](./protocols.md) - handoff, event, ownership, review, approval, and session schemas
 - [compatibility-matrix.md](./compatibility-matrix.md) - per-mode feature support and degradation rules
+- [repo-reference-map.md](./repo-reference-map.md) - file-level evidence map back to the first-party MIT repo
+- [implementation-roadmap.md](./implementation-roadmap.md) - phased implementation sequence, file touch areas, and rollout tests
 - [traceability-matrix.md](./traceability-matrix.md) - goals, requirements, scenarios, and rollout gates crosswalk
 
 ## Evidence Baseline

@@ -74,6 +74,8 @@ Recommended Codex usage:
 - `docs/srs/cross-harness-collaboration/SRS.md` — source-of-truth collaboration kernel specification
 - `docs/srs/cross-harness-collaboration/adapter-sdk.md` — provider-neutral adapter contract
 - `docs/srs/cross-harness-collaboration/protocols.md` — handoff, event, ownership, review, approval, and session schemas
+- `docs/srs/cross-harness-collaboration/repo-reference-map.md` — exact first-party evidence map for the SRS
+- `docs/srs/cross-harness-collaboration/implementation-roadmap.md` — phased implementation plan for building the kernel
 
 ## What It Does
 

@@ -18,6 +18,8 @@ It is the implementation-ready specification set for adding explicit Claude Code
 - [protocols.md](./protocols.md) - handoff, event, ownership, review, approval, and session schemas
 - [compatibility-matrix.md](./compatibility-matrix.md) - mode and host capability coverage
 - [traceability-matrix.md](./traceability-matrix.md) - goals, requirements, scenarios, and rollout gates
+- [repo-reference-map.md](./repo-reference-map.md) - file-by-file evidence map back to the MIT first-party repo
+- [implementation-roadmap.md](./implementation-roadmap.md) - phased delivery plan, workstreams, tests, and rollout risks
 
 ## Repository Reference Inventory
 
@@ -53,4 +55,6 @@ All normative repository references used by this package are first-party referen
 2. Read [adapter-sdk.md](./adapter-sdk.md) to lock the implementation contract.
 3. Read [protocols.md](./protocols.md) to lock state, handoff, review, and approval behavior.
 4. Use [compatibility-matrix.md](./compatibility-matrix.md) to plan runtime-specific behavior.
-5. Use [traceability-matrix.md](./traceability-matrix.md) to verify completeness before implementation.
+5. Use [repo-reference-map.md](./repo-reference-map.md) to confirm the exact first-party evidence base.
+6. Use [implementation-roadmap.md](./implementation-roadmap.md) to sequence build work.
+7. Use [traceability-matrix.md](./traceability-matrix.md) to verify completeness before implementation.
