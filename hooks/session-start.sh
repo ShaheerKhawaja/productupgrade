@@ -105,22 +105,43 @@ if [ ! -f "$STATE_DIR/.onboarded" ]; then
   echo "FIRST_RUN: true"
 fi
 
-cat << 'BANNER'
+# Try Ink banner first (styled React terminal UI), fallback to ASCII
+INK_BANNER="$PLUGIN_ROOT/scripts/ui/session-banner.tsx"
+VERSION=$(cat "$PLUGIN_ROOT/VERSION" 2>/dev/null || echo "1.2.0-beta.1")
+AGENT_COUNT=$(ls "$PLUGIN_ROOT/agents/"*.md 2>/dev/null | wc -l | tr -d ' ')
+CMD_COUNT=$(ls "$PLUGIN_ROOT/.claude/commands/"*.md 2>/dev/null | wc -l | tr -d ' ')
+HOOK_COUNT=$(ls "$PLUGIN_ROOT/hooks/"*.sh 2>/dev/null | wc -l | tr -d ' ')
+_LEARN_COUNT=0
+_LEARN_FILE="${STATE_DIR}/learnings/$(basename "${PROJECT_ROOT:-unknown}")/learnings.jsonl"
+[ -f "$_LEARN_FILE" ] && _LEARN_COUNT=$(wc -l < "$_LEARN_FILE" 2>/dev/null | tr -d ' ')
+
+# Only use Ink when stdout is a real TTY (not piped/captured by tests)
+if command -v bun >/dev/null 2>&1 && [ -f "$INK_BANNER" ] && [ -t 1 ]; then
+  bun run "$INK_BANNER" "$VERSION" "$AGENT_COUNT" "$CMD_COUNT" "$HOOK_COUNT" \
+    "$SESSIONS" "$AUTO_REVIEW" "$PROACTIVE" "${PROJECT_NAME:-}" \
+    "${DEVTOOLS_STATUS:-off}" "${DASHBOARD_METRICS:-}" "" \
+    "$_LEARN_COUNT" "${_PROFILE_SLUG:-}" "${FIRST_RUN:-}" 2>/dev/null || {
+    # Fallback if Ink fails
+    echo ""
+    echo "  ProductionOS $VERSION — 10 Composites"
+    echo "  Sessions: $SESSIONS | Learn: $PROACTIVE"
+    [ -n "${PROJECT_NAME:-}" ] && echo "  Project: $PROJECT_NAME"
+    echo ""
+  }
+else
+  # ASCII fallback (no bun or Ink not installed)
+  cat << BANNER
 
   ╔═══════════════════════════════════════════════════╗
-  ║  ProductionOS v2.0 — 10 Composites               ║
-  ╠═══════════════════════════════════════════════════╣
-  ║  /plan-ceo-review  /unified-review  /qa          ║
-  ║  /ship  /unified-debug  /unified-security        ║
-  ║  /deep-research  /unified-content  /retro        ║
-  ║  /auto-swarm                                     ║
+  ║  ProductionOS $VERSION — 10 Composites              ║
   ╠═══════════════════════════════════════════════════╣
 BANNER
-printf "  ║  Sessions: %-3s | Learn: %-4s                    ║\n" "$SESSIONS" "$PROACTIVE"
-if [ -n "$PROJECT_NAME" ]; then
-  printf "  ║  Project: %-40s ║\n" "$PROJECT_NAME"
+  printf "  ║  Sessions: %-3s | Learn: %-4s                    ║\n" "$SESSIONS" "$PROACTIVE"
+  if [ -n "${PROJECT_NAME:-}" ]; then
+    printf "  ║  Project: %-40s ║\n" "$PROJECT_NAME"
+  fi
+  echo "  ╚═══════════════════════════════════════════════════╝"
 fi
-echo "  ╚═══════════════════════════════════════════════════╝"
 echo "  Router: ~/.claude/skills/SKILL-ROUTER.md"
 
 # Show last retro action item if available
