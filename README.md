@@ -68,6 +68,13 @@ Recommended Codex usage:
 - `$productionos` for the umbrella workflow router
 - `$productionos-review`, `$productionos-plan-eng-review`, `$productionos-production-upgrade`, etc. for direct workflow entrypoints
 
+## Specifications
+
+- `docs/srs/cross-harness-collaboration/README.md` — index for the cross-harness collaboration kernel SRS package
+- `docs/srs/cross-harness-collaboration/SRS.md` — source-of-truth collaboration kernel specification
+- `docs/srs/cross-harness-collaboration/adapter-sdk.md` — provider-neutral adapter contract
+- `docs/srs/cross-harness-collaboration/protocols.md` — handoff, event, ownership, review, approval, and session schemas
+
 ## What It Does
 
 ### The Core Loop
