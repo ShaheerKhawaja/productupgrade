@@ -4,6 +4,15 @@ set -euo pipefail
 STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
 ANALYTICS="$STATE_DIR/analytics"
 
+# Try Ink dashboard first, fallback to plain text
+PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
+INK_DASH="$PLUGIN_ROOT/scripts/ui/analytics-dashboard.tsx"
+# Only use Ink when stdout is a real TTY (not piped/captured by tests)
+if command -v bun >/dev/null 2>&1 && [ -f "$INK_DASH" ] && [ -t 1 ]; then
+  PRODUCTIONOS_HOME="$STATE_DIR" bun run "$INK_DASH" 2>/dev/null && exit 0
+fi
+
+# Fallback: plain text dashboard
 echo "ProductionOS Analytics"
 echo "━━━━━━━━━━━━━━━━━━━━━"
 

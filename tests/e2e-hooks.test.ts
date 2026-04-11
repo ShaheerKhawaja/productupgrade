@@ -99,7 +99,7 @@ describe("Hook Script E2E", () => {
       `PRODUCTIONOS_HOME=${TEST_STATE} bash ${join(HOOKS_DIR, "session-start.sh")}`
     );
     expect(result).toContain("ProductionOS");
-    expect(result).toContain("Production House");
+    expect(result).toContain("Composites");
   });
 
   test("pre-edit-security.sh allows non-sensitive files", () => {
