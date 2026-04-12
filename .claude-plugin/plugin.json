@@ -1,6 +1,6 @@
 {
   "name": "productionos",
-  "description": "AI engineering OS for Claude Code and Codex — 78 agents, 41 commands, 17 hooks.",
+  "description": "AI engineering OS for Claude Code and Codex — 80 agents, 41 commands, 17 hooks.",
   "version": "1.2.0-beta.1",
   "author": {
     "name": "Shaheer Khawaja",
@@ -95,6 +95,8 @@
     "./agents/verification-gate.md",
     "./agents/version-control.md",
     "./agents/vulnerability-explorer.md",
+    "./agents/wiki-context-retriever.md",
+    "./agents/wiki-graph-rag.md",
     "./agents/worktree-orchestrator.md"
   ],
   "commands": [

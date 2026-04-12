@@ -10,7 +10,7 @@ Display on first run:
 
 ```
 ProductionOS v1.0.0-beta.1 -- your AI engineering OS.
-78 agents, 356 skills, 17 hooks. Built for solo founders who need
+80 agents, 356 skills, 17 hooks. Built for solo founders who need
 a 10-person engineering team from 1 person + AI.
 ```
 

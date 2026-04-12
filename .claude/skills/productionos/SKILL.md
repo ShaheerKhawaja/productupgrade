@@ -23,7 +23,7 @@ metadata:
 
 # ProductionOS
 
-ProductionOS is a dual-target AI engineering operating system with 78 agents, 41 commands, and 17 hooks.
+ProductionOS is a dual-target AI engineering operating system with 80 agents, 41 commands, and 17 hooks.
 
 Use this skill to translate the Claude-oriented workflow specs in this repo into Codex-native execution.
 

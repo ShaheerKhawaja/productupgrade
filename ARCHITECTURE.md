@@ -18,7 +18,7 @@ This document explains **why** ProductionOS is built the way it is. For setup an
 | Session Context Management | IMPLEMENTED | L0/L1/L2 progressive loading, context rot detection |
 | Convergence engine | IMPLEMENTED | PIVOT/REFINE/PROCEED with tri-tiered judging |
 | Persistent state | IMPLEMENTED | ~/.productionos/ with config, analytics, sessions, instincts |
-| Stakes classification | IMPLEMENTED | LOW/MEDIUM/HIGH on all 78 agents (HumanLayer pattern) |
+| Stakes classification | IMPLEMENTED | LOW/MEDIUM/HIGH on all 80 agents (HumanLayer pattern) |
 
 ## Design Philosophy
 

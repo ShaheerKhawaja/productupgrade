@@ -19,7 +19,7 @@ except:
 
 # C-1 fix: Use jq to safely construct JSON (prevents injection via command content)
 # H-1 fix: Log only the command name, not arguments (prevents secret leakage)
-CMD_NAME=$(printf '%s' "$COMMAND" | awk '{print $1}')
+CMD_NAME=$(printf '%s' "$COMMAND" | head -1 | awk '{print $1}')
 if command -v jq >/dev/null 2>&1; then
   jq -cn --arg event "bash" --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg cmd "$CMD_NAME" \
     '{event: $event, ts: $ts, cmd: $cmd}' >> "$STATE_DIR/analytics/skill-usage.jsonl" 2>/dev/null || true

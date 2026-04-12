@@ -7,7 +7,7 @@ description: "Show how to use ProductionOS — explains commands, recommended wo
 
 ## Getting Started
 
-ProductionOS v1.0.0-beta.1 is your AI engineering team — 78 agents, 41 commands, 17 hooks, 6 CLI tools, and dual Claude/Codex targets. Here's how to use it effectively.
+ProductionOS v1.0.0-beta.1 is your AI engineering team — 80 agents, 41 commands, 17 hooks, 6 CLI tools, and dual Claude/Codex targets. Here's how to use it effectively.
 
 ## What's New in v1.0
 
