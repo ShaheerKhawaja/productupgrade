@@ -1,6 +1,6 @@
 # ProductionOS 1.2.0-beta.1 — 10 Composites
 
-78-agent AI engineering OS with 41 commands, 10 composite entry points routing to 367 sub-skills. Project-aware context switching. Self-learning telemetry. Built for solo founders shipping multiple products.
+80-agent AI engineering OS with 41 commands, 10 composite entry points routing to 367 sub-skills. Project-aware context switching. Self-learning telemetry. Built for solo founders shipping multiple products.
 
 **The rule:** Never browse the full skill list. Use the 10 composites. Each routes to the best sub-skill for your context. See `~/.claude/skills/SKILL-ROUTER.md`.
 
