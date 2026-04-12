@@ -5,18 +5,6 @@ import { join } from "path";
 const ROOT = join(import.meta.dir, "..");
 const HOOKS = join(ROOT, "hooks");
 
-function runHook(hook: string, input: string): string {
-  try {
-    return execSync(`echo '${input}' | bash "${join(HOOKS, hook)}"`, {
-      cwd: ROOT,
-      env: { ...process.env, PRODUCTIONOS_HOME: "/tmp/pos-hook-test" },
-      timeout: 5000,
-    }).toString();
-  } catch (e: any) {
-    return e.stdout?.toString() || e.stderr?.toString() || "";
-  }
-}
-
 describe("Hook Infrastructure", () => {
   test("protected-file-guard.sh exists and is executable", () => {
     const stat = execSync(`test -x "${join(HOOKS, "protected-file-guard.sh")}" && echo "OK"`).toString().trim();
