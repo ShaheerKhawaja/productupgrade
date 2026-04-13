@@ -6,70 +6,165 @@ argument-hint: "[repo path, target, or task context]"
 
 # build-productionos
 
-## Overview
-
-This is the Codex-native workflow wrapper for [.claude/commands/build-productionos.md](../../.claude/commands/build-productionos.md).
-
-Use it when the user wants this exact ProductionOS workflow, not just the umbrella `productionos` router.
-
-## Source of Truth
-
-1. Read the source command spec at [.claude/commands/build-productionos.md](../../.claude/commands/build-productionos.md).
-2. Use [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md) to confirm runtime support and parity expectations.
-3. Preserve the source workflow's guardrails, scope, artifacts, and verification intent.
-4. Translate Claude-only slash-command and hook semantics into Codex-native execution instead of copying them literally.
-
-## Codex Behavior
-
-- Summary: ProductionOS smart router — single entry point that routes to the right pipeline based on intent. The ONLY command new users need to know.
-- Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.
-
-## First-Run Onboarding
-If session context contains `FIRST_RUN: true`, read `templates/ONBOARDING.md` and execute the onboarding flow before any other dispatch. This only runs once — the stop hook marks `.onboarded` after the first session.
-
-## Step 0: Smart Routing
-
-Before static intent classification, check if the user's goal matches a composite skill chain. Run the skill router:
-
-```bash
-ROUTE_RESULT=$(bun run "${CLAUDE_PLUGIN_ROOT}/scripts/skill-router.ts" "USER_GOAL" 2>/dev/null || echo '{}')
-```
-
-Parse the JSON result. If `confidence` > 0.6 and `chain` is non-empty, execute the skills in the chain sequentially. Each chain step's output feeds into the next step as context. If confidence <= 0.6 or the router fails, fall through to the existing static intent classification below.
-
-When multiple skills match the same intent, consult SKILL_REGISTRY.md for the canonical source.
+ProductionOS smart router — single entry point that routes to the right pipeline based on intent. The ONLY command new users need to know.
 
 ## Inputs
 
-- `intent` — What you want to do. Natural language or keyword. Examples: 'audit this project', 'fix the frontend', 'research authentication', 'review my PR', 'ship it', 'debug the login bug' Required.
-- `target` — Target directory, file, or URL (default: current directory) Optional.
+| Parameter | Values | Default | Description |
+|-----------|--------|---------|-------------|
+| `intent` | string | required | What you want to do. Natural language or keyword. Examples: 'audit this project', 'fix the frontend', 'research authentication', 'review my PR', 'ship it', 'debug the login bug' |
+| `target` | string | -- | Target directory, file, or URL (default: current directory) |
 
-## Execution Outline
+# /build-productionos — ProductionOS Smart Router
 
-1. Preamble
-2. .5: Smart Agent Routing (Production House Layer 1)
-3. Intent Classification (Static Fallback)
-4. Confirm Route
-5. Execute
-6. Post-Route Self-Eval
+You are the ProductionOS entry point. You receive a natural language intent and route to the right command.
 
-## Agents And Assets
+**This is the ONLY command a new user needs to know.** Everything else is discoverable through this.
 
-- Agents: no explicit agent references in the source command.
-- Templates: `PREAMBLE.md`
-- Artifacts: no explicit `.productionos/` artifacts called out in the source command.
+## Step 0: Preamble
 
-## Workflow
+Run the shared ProductionOS preamble (`templates/PREAMBLE.md`).
 
-1. Load only the agents, templates, prompts, and docs referenced by the source command.
-2. Execute the workflow intent with Codex-native tools.
-3. If the source command implies parallel agent work, only delegate when the user explicitly wants that overhead.
-4. Verify with the smallest relevant checks before concluding.
-5. Summarize what changed, what was verified, and what still needs human approval.
+## Step 0.5: Smart Agent Routing (Production House Layer 1)
+
+Before static intent classification, run the agent index for intelligent agent selection:
+
+```bash
+bun run "${CLAUDE_PLUGIN_ROOT}/scripts/agent-index.ts" --goal "$ARGUMENTS.intent" 2>/dev/null
+```
+
+Parse the JSON output. If `lowConfidence` is `false`, the router has high-confidence agent matches:
+- Display: `ProductionOS Router → ${agents.length} agents matched (confidence: ${agents[0].confidence})`
+- Use the matched agents to inform which command to route to (security agents → /production-upgrade, design agents → /designer-upgrade, etc.)
+- Pass the agent roster to the routed command so it knows which agents to dispatch
+
+If `lowConfidence` is `true` or the script fails, fall through to static keyword matching below.
+
+### Stack Detection
+
+Also detect the project stack for tool provisioning:
+```bash
+bun run "${CLAUDE_PLUGIN_ROOT}/scripts/stack-detector.ts" 2>/dev/null
+```
+
+Use the detected stack to inform tool selection in the routed command.
+
+## Step 1: Intent Classification (Static Fallback)
+
+Classify `$ARGUMENTS.intent` into one of these categories:
+
+### Category: AUDIT (code quality)
+**Triggers:** "audit", "review", "check", "scan", "grade", "score", "how good is"
+**Route to:** `/production-upgrade $ARGUMENTS.target`
+
+### Category: DESIGN (UI/UX)
+**Triggers:** "design", "redesign", "mockup", "UI", "UX", "frontend", "look", "feel", "ugly", "beautiful"
+**Route to:** `/designer-upgrade $ARGUMENTS.target`
+
+### Category: UX (user experience)
+**Triggers:** "user story", "journey", "friction", "experience", "onboarding", "flow", "persona"
+**Route to:** `/ux-genie $ARGUMENTS.target`
+
+### Category: FIX (targeted improvement)
+**Triggers:** "fix", "improve", "upgrade", "make better", "optimize", "refactor"
+**Route to:** `/auto-swarm-nth "$ARGUMENTS.intent" --target $ARGUMENTS.target`
+
+### Category: PLAN (strategic)
+**Triggers:** "plan", "architect", "design system", "strategy", "roadmap", "vision"
+**Route to:** `/omni-plan-nth $ARGUMENTS.target`
+
+### Category: BUILD (feature development)
+**Triggers:** "build", "create", "add", "implement", "feature", "new"
+**Route to:** `/brainstorming $ARGUMENTS.intent` → then `/writing-plans` → then `/auto-swarm-nth`
+
+### Category: DEBUG (fix bug)
+**Triggers:** "debug", "bug", "broken", "error", "crash", "failing", "not working"
+**Route to:** `/debug $ARGUMENTS.intent`
+
+### Category: TEST (quality assurance)
+**Triggers:** "test", "QA", "verify", "check", "regression", "e2e"
+**Route to:** `/qa $ARGUMENTS.target`
+
+### Category: REVIEW (code review)
+**Triggers:** "review PR", "review code", "review changes", "review diff"
+**Route to:** `/review`
+
+### Category: SHIP (deploy)
+**Triggers:** "ship", "deploy", "release", "merge", "push", "PR"
+**Route to:** `/ship`
+
+### Category: RESEARCH (deep investigation)
+**Triggers:** "research", "investigate", "explore", "find out", "compare", "what is"
+**Route to:** `/deep-research $ARGUMENTS.intent`
+
+### Category: EVAL (self-assessment)
+**Triggers:** "evaluate", "self-eval", "how did I do", "score my work", "rate"
+**Route to:** `/self-eval session`
+
+### Category: HELP (guidance)
+**Triggers:** "help", "how do I", "what can you do", "list commands", "getting started"
+**Route to:** `/productionos-help`
+
+## Step 2: Confirm Route
+
+Before executing, confirm:
+```
+ProductionOS → Detected intent: {CATEGORY}
+Routing to: /{command} {arguments}
+Target: {target or "current directory"}
+```
+
+If the classification is ambiguous, ask the user to clarify:
+```
+I'm not sure if you want:
+A) /production-upgrade (audit and fix code quality)
+B) /designer-upgrade (audit and fix design/UI)
+C) /auto-swarm-nth (parallel targeted fixes)
+
+Which fits better?
+```
+
+## Step 3: Execute
+
+Invoke the selected command via the Skill tool or by executing its protocol directly.
+
+## Step 4: Post-Route Self-Eval
+
+After the routed command completes, run self-eval:
+```
+/self-eval last
+```
+
+## Quick Reference (shown on /pos help)
+
+```
+/build-productionos "audit this project"        → Full codebase audit (/production-upgrade)
+/build-productionos "fix the frontend"          → UI/UX redesign (/designer-upgrade)
+/build-productionos "research auth patterns"    → Deep research (/deep-research)
+/build-productionos "review my PR"              → Code review (/review)
+/build-productionos "ship it"                   → Ship workflow (/ship)
+/build-productionos "debug login bug"           → Systematic debugging (/debug)
+/build-productionos "plan the new feature"      → Strategic planning (/omni-plan-nth)
+/build-productionos "test everything"           → QA testing (/qa)
+/build-productionos "build user profiles"       → Feature development (brainstorm → plan → build)
+/build-productionos "how did I do"              → Self-evaluation (/self-eval session)
+/build-productionos "help"                      → Usage guide (/productionos-help)
+```
+
+## Error Handling
+
+| Scenario | Action |
+|----------|--------|
+| No target provided | Ask for clarification with examples |
+| Target not found | Search for alternatives, suggest closest match |
+| Agent dispatch fails | Fall back to manual execution, report the error |
+| Ambiguous input | Present options, ask user to pick |
+| Execution timeout | Save partial results, report what completed |
 
 ## Guardrails
 
-- Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
-- Keep the scope faithful to the source command rather than broadening into a generic repo audit.
-- Prefer concrete outputs and validation over describing the workflow abstractly.
-- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.
+1. Do not silently change scope or expand beyond the user request.
+2. Prefer concrete outputs and verification over abstract descriptions.
+3. Keep scope faithful to the user intent.
+4. Preserve existing workflow guardrails and stop conditions.
+5. Verify results before concluding. Run self-eval on output quality.

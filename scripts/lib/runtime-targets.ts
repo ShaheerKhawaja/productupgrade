@@ -672,6 +672,16 @@ const HAND_CRAFTED_SKILLS = new Set([
   "frontend-upgrade",
   "context-engineer",
   "max-research",
+  "auto-optimize",
+  "learn-mode",
+  "build-productionos",
+  "plan-ceo-review",
+  "qa",
+  "browse",
+  "plan-eng-review",
+  "debug",
+  "brainstorming",
+  "document-release",
 ]);
 
 export function getGeneratedTargetFiles(): GeneratedTargetFile[] {

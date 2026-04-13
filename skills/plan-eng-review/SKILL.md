@@ -6,54 +6,59 @@ argument-hint: "[plan, architecture, or repo path]"
 
 # plan-eng-review
 
-## Overview
-
-Use this as the Codex-first engineering plan review. Its job is to make an execution plan safe to build: architecture, trust boundaries, failure modes, test coverage, dependency risks, and rollout posture.
-
-Source references:
-- `.claude/commands/plan-eng-review.md`
-- `agents/architecture-designer.md`
-- `agents/database-auditor.md`
-- `agents/vulnerability-explorer.md`
+Engineering architecture review — lock in execution plan with data flow diagrams, error paths, test matrix, performance budget, and dependency analysis.
 
 ## Inputs
 
-- target plan, design doc, or feature description
-- optional current branch or diff context
-- optional architecture notes or prior review artifacts
+| Parameter | Values | Default | Description |
+|-----------|--------|---------|-------------|
+| `target` | string | -- | Plan or architecture to review (default: current work) |
 
-## Codex Workflow
+# /plan-eng-review — Engineering Architecture Review
 
-1. Restate the execution target.
-   - What is being built?
-   - What are the important boundaries and dependencies?
-2. Review the architecture.
-   - Draw or describe the component graph.
-   - Check data flow, state changes, error paths, and migration risk.
-3. Review for engineering completeness.
-   - test matrix
-   - performance budget
-   - dependency and licensing risk
-   - deployment and rollback posture
-4. Surface issues as concrete recommendations.
-   - prefer minimal-diff, explicit designs
-   - call out over-engineering and under-engineering
-5. End with what must change before implementation and what is safe to proceed with.
+You are a principal engineer locking in the execution plan. Architecture, data flow, edge cases, test coverage.
 
-## Expected Output
+## Step 0: Preamble
+Run `templates/PREAMBLE.md`. Read target codebase. Identify tech stack.
 
-- Architecture notes with concrete risks
-- Error-path and test-coverage gaps
-- Performance or migration concerns
-- A short implementation-readiness verdict
+## Step 1: Restate the Execution Target
+Summarize the system or plan under review, the intended behavior, and the integration boundaries before diving into architecture.
 
-## Verification
+## Review Dimensions
 
-- Ground every recommendation in the actual plan or repo context.
-- If a risk depends on an assumption, state the assumption plainly.
+### 1. Architecture Diagram
+Produce an ASCII diagram of the system. Components, data flow, external dependencies.
+```
+[Client] → [API] → [Service] → [DB]
+                  → [Queue] → [Worker]
+```
+
+### 2. Data Flow Analysis
+For every new data path, trace:
+- Happy path: input → transform → output
+- Nil/empty input: what happens?
+- Upstream error: what happens?
+- Concurrent access: race conditions?
+
+### 3. Error Path Mapping
+For every error that can occur:
+| Error | Trigger | Detection | Recovery | User Sees | Tested? |
+|
+
+## Error Handling
+
+| Scenario | Action |
+|----------|--------|
+| No target provided | Ask for clarification with examples |
+| Target not found | Search for alternatives, suggest closest match |
+| Agent dispatch fails | Fall back to manual execution, report the error |
+| Ambiguous input | Present options, ask user to pick |
+| Execution timeout | Save partial results, report what completed |
 
 ## Guardrails
 
-- Do not silently expand product scope.
-- Do not optimize for novelty over maintainability.
-- Prefer boring, reversible engineering choices unless the repo clearly needs otherwise.
+1. Do not silently change scope or expand beyond the user request.
+2. Prefer concrete outputs and verification over abstract descriptions.
+3. Keep scope faithful to the user intent.
+4. Preserve existing workflow guardrails and stop conditions.
+5. Verify results before concluding. Run self-eval on output quality.
