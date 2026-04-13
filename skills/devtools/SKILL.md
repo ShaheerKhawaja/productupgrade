@@ -6,49 +6,112 @@ argument-hint: "[repo path, target, or task context]"
 
 # devtools
 
-## Overview
-
-This is the Codex-native workflow wrapper for [.claude/commands/devtools.md](../../.claude/commands/devtools.md).
-
-Use it when the user wants this exact ProductionOS workflow, not just the umbrella `productionos` router.
-
-## Source of Truth
-
-1. Read the source command spec at [.claude/commands/devtools.md](../../.claude/commands/devtools.md).
-2. Use [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md) to confirm runtime support and parity expectations.
-3. Preserve the source workflow's guardrails, scope, artifacts, and verification intent.
-4. Translate Claude-only slash-command and hook semantics into Codex-native execution instead of copying them literally.
-
-## Codex Behavior
-
-- Summary: ProductionOS Mission Control — launch Claude DevTools, show session dashboard with eval convergence, agent dispatches, cost tracking, and hot file intelligence.
-- Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.
+ProductionOS Mission Control — launch Claude DevTools, show session dashboard with eval convergence, agent dispatches, cost tracking, and hot file intelligence.
 
 ## Inputs
 
-- `action` — Action: 'launch' (default), 'status', 'focus', 'quit' Default: `launch` Optional.
+| Parameter | Values | Default | Description |
+|-----------|--------|---------|-------------|
+| `action` | string | launch | Action: 'launch' (default), 'status', 'focus', 'quit' |
 
-## Execution Outline
+# ProductionOS DevTools — Mission Control
 
-1. Preamble
+## Step 0: Preamble
 
-## Agents And Assets
+Before executing, run the shared ProductionOS preamble (`templates/PREAMBLE.md`) to confirm the active install root and session context.
 
-- Agents: no explicit agent references in the source command.
-- Templates: `PREAMBLE.md`
-- Artifacts: no explicit `.productionos/` artifacts called out in the source command.
+Execute the requested action for Claude DevTools within the ProductionOS ecosystem.
 
-## Workflow
+## Action: $ARGUMENTS.action
 
-1. Load only the agents, templates, prompts, and docs referenced by the source command.
-2. Execute the workflow intent with Codex-native tools.
-3. If the source command implies parallel agent work, only delegate when the user explicitly wants that overhead.
-4. Verify with the smallest relevant checks before concluding.
-5. Summarize what changed, what was verified, and what still needs human approval.
+### Step 1: Check DevTools installation and status
+
+```bash
+DEVTOOLS_APP="/Applications/claude-devtools.app"
+if [ ! -d "$DEVTOOLS_APP" ]; then
+  echo "DEVTOOLS_NOT_INSTALLED"
+  echo "Install with: brew install --cask claude-devtools"
+else
+  DEVTOOLS_PID=$(pgrep -f "claude-devtools" 2>/dev/null | head -1)
+  if [ -n "$DEVTOOLS_PID" ]; then
+    echo "DEVTOOLS_RUNNING (PID: $DEVTOOLS_PID)"
+  else
+    echo "DEVTOOLS_STOPPED"
+  fi
+fi
+```
+
+If not installed, tell the user to run `brew install --cask claude-devtools` and stop.
+
+### Step 2: Execute action
+
+**launch** (default):
+1. If DevTools is NOT running, launch it:
+   ```bash
+   open /Applications/claude-devtools.app
+   ```
+2. If already running, bring to foreground:
+   ```bash
+   osascript -e 'tell application "claude-devtools" to activate'
+   ```
+3. Then show the full dashboard (Step 3)
+
+**status**:
+1. Run the dashboard script for the full report:
+   ```bash
+   python3 "${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/productionos}/hooks/devtools-dashboard.py" --full
+   ```
+2. Display the output to the user as-is (it's already formatted)
+
+**focus**:
+1. Bring DevTools window to foreground:
+   ```bash
+   osascript -e 'tell application "claude-devtools" to activate'
+   ```
+
+**quit**:
+1. Gracefully quit DevTools:
+   ```bash
+   osascript -e 'tell application "claude-devtools" to quit'
+   ```
+
+### Step 3: Full Dashboard (runs on launch and status)
+
+Run the dashboard script:
+```bash
+python3 "${CLAUDE_PLUGIN_ROOT:-$HOME/.claude/plugins/marketplaces/productionos}/hooks/devtools-dashboard.py" --full
+```
+
+This shows:
+- Session metrics (edits, agents, security events)
+- Cost tracking (session delta, all-time total)
+- Eval convergence (latest score, sparkline trend, data points)
+- Agent dispatch breakdown by type
+- Hot files (cross-session churn with bar charts)
+- Event breakdown
+
+### Step 4: Report to user
+
+After executing the action, provide a concise summary:
+- For **launch**: Show the full dashboard output, then "DevTools launched"
+- For **status**: Show the full dashboard output only
+- For **focus**: "DevTools brought to foreground"
+- For **quit**: "DevTools closed"
+
+## Error Handling
+
+| Scenario | Action |
+|----------|--------|
+| No target provided | Ask for clarification with examples |
+| Target not found | Search for alternatives, suggest closest match |
+| Missing dependencies | Report what is needed and how to install |
+| Permission denied | Check file permissions, suggest fix |
+| State file corrupted | Reset to defaults, report what was lost |
 
 ## Guardrails
 
-- Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
-- Keep the scope faithful to the source command rather than broadening into a generic repo audit.
-- Prefer concrete outputs and validation over describing the workflow abstractly.
-- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.
+1. Do not silently change scope or expand beyond the user request.
+2. Prefer concrete outputs and verification over abstract descriptions.
+3. Keep scope faithful to the user intent.
+4. Preserve existing workflow guardrails and stop conditions.
+5. Verify results before concluding.

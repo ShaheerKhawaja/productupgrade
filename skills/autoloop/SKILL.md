@@ -6,49 +6,141 @@ argument-hint: "[repo path, target, or task context]"
 
 # autoloop
 
-## Overview
-
-This is the Codex-native workflow wrapper for [.claude/commands/autoloop.md](../../.claude/commands/autoloop.md).
-
-Use it when the user wants this exact ProductionOS workflow, not just the umbrella `productionos` router.
-
-## Source of Truth
-
-1. Read the source command spec at [.claude/commands/autoloop.md](../../.claude/commands/autoloop.md).
-2. Use [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md) to confirm runtime support and parity expectations.
-3. Preserve the source workflow's guardrails, scope, artifacts, and verification intent.
-4. Translate Claude-only slash-command and hook semantics into Codex-native execution instead of copying them literally.
-
-## Codex Behavior
-
-- Summary: Autonomous recursive improvement loop for a single target. Runs gap analysis, recursive refinement, evaluation, and convergence checks until the target reaches quality threshold or converges.
-- Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.
+Autonomous recursive improvement loop for a single target. Runs gap analysis, recursive refinement, evaluation, and convergence checks until the target reaches quality threshold or converges.
 
 ## Inputs
 
-- No explicit arguments. Use repo path, target, or task context as needed.
+| Parameter | Values | Default | Description |
+|-----------|--------|---------|-------------|
+| `target` | path or context | cwd | What to operate on |
 
-## Execution Outline
+# /autoloop — Autonomous Recursive Improvement
 
-1. Preamble
+## Step 0: Preamble
+Before executing, run the shared ProductionOS preamble (`templates/PREAMBLE.md`).
 
-## Agents And Assets
+You are running the `/autoloop` command. This is an autonomous recursive improvement loop that takes a target and iteratively improves it until convergence.
 
-- Agents: no explicit agent references in the source command.
-- Templates: `PREAMBLE.md`
-- Artifacts: `.productionos/recursive/metrics/`, `.productionos/recursive/recursion-state.json`, `.productionos/recursive/reference-corpus/`
+## Input
 
-## Workflow
+The user provides:
+- **Target**: A file path, directory, or description of what to improve
+- **Goal**: What "good" looks like (optional -- defaults to "maximize quality score")
 
-1. Load only the agents, templates, prompts, and docs referenced by the source command.
-2. Execute the workflow intent with Codex-native tools.
-3. If the source command implies parallel agent work, only delegate when the user explicitly wants that overhead.
-4. Verify with the smallest relevant checks before concluding.
-5. Summarize what changed, what was verified, and what still needs human approval.
+## Execution Protocol
+
+### Step 1: Understand the Target
+1. If target is a file path: Read it and assess current state
+2. If target is a directory: Scan for key files and assess overall quality
+3. If target is a description: Identify what needs to be created or improved
+
+### Step 2: Gap Analysis
+1. Score current state using the ProductionOS rubric and convergence heuristics already present in this repo
+2. Scan `~/repos/` for reference implementations (per CLAUDE.md Auto-Enrichment Protocol)
+3. Check `~/.productionos/recursive/reference-corpus/` for similar high-quality outputs
+4. Identify specific gaps between current state and goal
+
+### Step 3: Initialize Recursion
+1. Create session state at `~/.productionos/recursive/recursion-state.json`:
+   ```json
+   {
+     "session_id": "<generated>",
+     "target": "<target>",
+     "goal": "<goal>",
+     "layer": "L17",
+     "current_iteration": 0,
+     "max_iterations": 10,
+     "best_iteration": 0,
+     "best_score": 0.0,
+     "scores": [],
+     "convergence_verdict": "CONTINUE",
+     "status": "running"
+   }
+   ```
+2. Select the appropriate layer:
+   - Complex decomposable task -> L16 RecDecomp
+   - Quality improvement (default) -> L17 SelfRefine
+   - Context too large -> L18 RecSumm
+   - Security/factual claims -> L19 RecVerify
+   - Plan execution -> L20 PEER
+
+### Step 4: Iteration Loop (max 10)
+
+For each iteration:
+
+1. **Score**: Run confidence scorer on current output
+2. **Record**: Add score to convergence monitor
+3. **Check Convergence**: Run all 5 algorithms from `convergence.py`:
+   - Score delta tracking (stalled if < 0.1 for 2+ iterations)
+   - Spectral contraction (converged if cosine > 0.95)
+   - Diminishing returns (stalled if DR ratio < 0.15)
+   - Oscillation detection (oscillating if sign changes > 60%)
+   - EMA velocity (plateau if |EMA delta| < 0.05)
+4. **If STOP**: Return best iteration output
+5. **If CONTINUE**: Apply refinement via the selected layer
+6. **Quality Gate**: Check for monotonic improvement and stop if the loop regresses materially
+7. **Log**: Write metrics to `~/.productionos/recursive/metrics/`
+
+### Step 5: Completion
+1. Return the output from the best-scoring iteration
+2. Show convergence trajectory (ASCII visualization)
+3. Report: iterations completed, final score, convergence reason
+4. Save final state to recursion-state.json
+
+## Output Format
+
+```
+AUTOLOOP COMPLETE
+Target: <target>
+Goal: <goal>
+Iterations: <n> / <max>
+Best Score: <score> (iteration <i>)
+Convergence: <verdict> — <reason>
+
+Trajectory:
+  i=0  |***           | 4.20
+  i=1  |*********     | 6.50 (+2.30)
+  i=2  |***********   | 7.20 (+0.70)
+  i=3  |************  | 7.30 (+0.10) <- converged
+
+Applied: <output from best iteration>
+```
+
+## Constraints
+
+- Max 10 iterations per autoloop invocation
+- Configurable depth per iteration (default: 1)
+- Always check token budget before each iteration
+- Never modify Phase 1 or Phase 2 RLM scripts
+- Log everything to metrics for PromptEvo batch analysis
+- Use `rlm-recursive-orchestrator` agent for depth management when needed
+
+## Integration
+
+This command integrates all Phase 1-3 RLM components:
+- `confidence_scorer.py` — scoring each iteration
+- `quality_gate.py` — monotonic improvement enforcement
+- `convergence.py` — 5-algorithm convergence detection
+- `instinct_scorer.py` — weight adjustment from learned patterns
+- `embedding_corpus.py` — reference comparison
+- `prompt_evolution.py` — active prompt selection per layer
+- `tier2_live_eval.py` — evaluation framework
+- `rlm_classifier.py` — budget circuit breaker
+
+## Error Handling
+
+| Scenario | Action |
+|----------|--------|
+| No target provided | Ask for clarification with examples |
+| Target not found | Search for alternatives, suggest closest match |
+| Missing dependencies | Report what is needed and how to install |
+| Permission denied | Check file permissions, suggest fix |
+| State file corrupted | Reset to defaults, report what was lost |
 
 ## Guardrails
 
-- Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
-- Keep the scope faithful to the source command rather than broadening into a generic repo audit.
-- Prefer concrete outputs and validation over describing the workflow abstractly.
-- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.
+1. Do not silently change scope or expand beyond the user request.
+2. Prefer concrete outputs and verification over abstract descriptions.
+3. Keep scope faithful to the user intent.
+4. Preserve existing workflow guardrails and stop conditions.
+5. Verify results before concluding.
