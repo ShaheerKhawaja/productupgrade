@@ -6,59 +6,184 @@ argument-hint: "[repo path, target, or task context]"
 
 # auto-optimize
 
-## Overview
-
-This is the Codex-native workflow wrapper for [.claude/commands/auto-optimize.md](../../.claude/commands/auto-optimize.md).
-
-Use it when the user wants this exact ProductionOS workflow, not just the umbrella `productionos` router.
-
-## Source of Truth
-
-1. Read the source command spec at [.claude/commands/auto-optimize.md](../../.claude/commands/auto-optimize.md).
-2. Use [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md) to confirm runtime support and parity expectations.
-3. Preserve the source workflow's guardrails, scope, artifacts, and verification intent.
-4. Translate Claude-only slash-command and hook semantics into Codex-native execution instead of copying them literally.
-
-## Codex Behavior
-
-- Summary: Self-improving agent optimization — generates challenger variants of any agent/command, benchmarks against baseline, promotes winners, logs learnings to instincts. Inspired by Karpathy's autoresearch pattern.
-- Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.
+Self-improving agent optimization — generates challenger variants of any agent/command, benchmarks against baseline, promotes winners, logs learnings to instincts. Inspired by Karpathy's autoresearch pattern.
 
 ## Inputs
 
-- `target` — Agent or command to optimize (e.g., 'code-reviewer', 'security-hardener', '/production-upgrade') Required.
-- `challengers` — Number of challenger variants to generate (default: 3) Default: `3` Optional.
-- `benchmark` — Benchmark to evaluate against: 'self-eval' (default) | 'test-suite' | 'llm-judge' | path to custom benchmark Default: `self-eval` Optional.
-- `hypothesis` — Specific hypothesis to test (e.g., 'add chain-of-thought to security-hardener'). If omitted, auto-generates hypotheses. Optional.
-- `max_cost` — Maximum cost in USD for the optimization run (default: 5) Default: `5` Optional.
-- `mode` — Optimization mode: prompt (modify agent instructions) | model (test different models) | layers (test prompt composition layers) | params (test convergence parameters) Default: `prompt` Optional.
+| Parameter | Values | Default | Description |
+|-----------|--------|---------|-------------|
+| `target` | string | required | Agent or command to optimize (e.g., 'code-reviewer', 'security-hardener', '/production-upgrade') |
+| `challengers` | string | 3 | Number of challenger variants to generate (default: 3) |
+| `benchmark` | string | self-eval | Benchmark to evaluate against: 'self-eval' (default) | 'test-suite' | 'llm-judge' | path to custom benchmark |
+| `hypothesis` | string | -- | Specific hypothesis to test (e.g., 'add chain-of-thought to security-hardener'). If omitted, auto-generates hypotheses. |
+| `max_cost` | string | 5 | Maximum cost in USD for the optimization run (default: 5) |
+| `mode` | string | prompt | Optimization mode: prompt (modify agent instructions) | model (test different models) | layers (test prompt composition layers) | params (test convergence parameters) |
 
-## Execution Outline
+# Auto-Optimize — Self-Improving Agent Loop
 
-1. Preamble
+You are the Auto-Optimize orchestrator. You implement Karpathy's autoresearch pattern for ProductionOS: generate challenger variants, benchmark against baseline, promote winners, harvest learnings.
 
-## Agents And Assets
+**The compound moat:** Every optimization run makes ProductionOS measurably better. Run #10 benefits from all learnings of runs #1-9.
 
-- Agents: `metaclaw-learner`, `prompt-optimizer`, `rubric-evolver`
-- Templates: `PREAMBLE.md`, `PROMPT-COMPOSITION.md`
-- Artifacts: `.productionos/AUTO-OPTIMIZE-BASELINE.md`, `.productionos/AUTO-OPTIMIZE-HARVEST.md`, `.productionos/AUTO-OPTIMIZE-HYPOTHESES.md`, `.productionos/AUTO-OPTIMIZE-REPORT.md`, `.productionos/AUTO-OPTIMIZE-RESULTS.md`, `.productionos/analytics/skill-usage.jsonl`, `.productionos/calibration/`, `.productionos/challengers/challenger-{N}.md`, `.productionos/instincts/`, `.productionos/instincts/project/`
+## Step 0: Preamble
 
-## Workflow
+Before executing, run the shared ProductionOS preamble (`templates/PREAMBLE.md`).
 
-1. Load only the agents, templates, prompts, and docs referenced by the source command.
-2. Execute the workflow intent with Codex-native tools.
-3. If the source command implies parallel agent work, only delegate when the user explicitly wants that overhead.
-4. Verify with the smallest relevant checks before concluding.
-5. Summarize what changed, what was verified, and what still needs human approval.
+## Phase 1: Baseline Capture
+
+### 1.1: Read Target Definition
+```bash
+# For agents:
+cat agents/$ARGUMENTS.target.md
+
+# For commands:
+cat .claude/commands/$ARGUMENTS.target.md
+```
+
+### 1.2: Extract Current Metrics
+Read existing performance data if available:
+```bash
+cat ~/.productionos/analytics/skill-usage.jsonl | grep "$ARGUMENTS.target" | tail -20
+cat ~/.productionos/instincts/project/*/lessons.json 2>/dev/null | grep "$ARGUMENTS.target"
+```
+
+### 1.3: Record Baseline
+Run the target against the benchmark to establish baseline:
+
+```
+BASELINE:
+  target: $ARGUMENTS.target
+  benchmark: $ARGUMENTS.benchmark
+  timestamp: {ISO8601}
+  metrics:
+    score: {0-10 from self-eval or test pass rate or LLM-judge}
+    tokens: {token count for the run}
+    duration: {seconds}
+    issues_found: {count, for auditors}
+    false_positives: {count}
+  prompt_length: {word count of instructions}
+  model: {current model assignment}
+  layers: {which prompt composition layers are active}
+```
+
+Write baseline to `.productionos/AUTO-OPTIMIZE-BASELINE.md`.
+
+## Phase 2: Hypothesis Generation
+
+### If $ARGUMENTS.hypothesis is provided:
+Use the user's hypothesis directly. Create $ARGUMENTS.challengers variants that test this hypothesis.
+
+### If no hypothesis:
+Read the `prompt-optimizer` agent definition from `agents/prompt-optimizer.md` and dispatch it to generate hypotheses.
+If the target is prompt-heavy or rubric-heavy, also dispatch `textgrad-optimizer` to propose gradient-style wording improvements before challengers are generated.
+
+The prompt-optimizer should analyze:
+1. The target's current instructions (strengths, weaknesses)
+2. Recent metaclaw-learner lessons about this target
+3. The benchmark it will be evaluated against
+4. Prompt engineering research patterns (from `templates/PROMPT-COMPOSITION.md`)
+
+Generate $ARGUMENTS.challengers distinct hypotheses, each with:
+```json
+{
+  "id": "challenger-{N}",
+  "hypothesis": "{what change we're testing}",
+  "change_type": "prompt|model|layers|params",
+  "expected_improvement": "{what metric should improve and by how much}",
+  "risk": "{what could get worse}",
+  "modification": "{specific text changes to apply}"
+}
+```
+
+Write hypotheses to `.productionos/AUTO-OPTIMIZE-HYPOTHESES.md`.
+
+## Phase 3: Challenger Generation
+
+For each hypothesis, create a modified version of the target:
+
+### Mode: prompt (default)
+- Copy the target agent/command definition
+- Apply the hypothesis modification to the instructions
+- Keep all other fields (model, tools, stakes) identical
+- Write to `.productionos/challengers/challenger-{N}.md`
+
+### Mode: model
+- Same instructions, different model assignment
+- Test combinations: opus (planning), sonnet (execution), haiku (validation)
+
+### Mode: layers
+- Same agent, different prompt composition layers
+- Test with/without: Emotion, Meta, ToT, GoT, CoD, Distractor, Generated Knowledge
+
+### Mode: params
+- Same agent, different convergence parameters
+- Test: EMA alpha (0.1-0.5), convergence threshold (0.01-0.1), max iterations (3-10)
+
+### Mode: rubric
+- Same evaluation dimensions, different scoring rubric
+- Dispatch `rubric-evolver` agent (OPRO pattern)
+- Generate 5 rubric variants with different anchor points, weights, and criteria
+- Score each variant against calibration set in `.productionos/calibration/`
+- Promote the variant with highest ground-truth correlation
+- See `templates/calibration-set.md` for calibration sample format
+
+## Phase 4: Benchmark Execution
+
+Run baseline and all challengers against the same benchmark. The benchmark MUST be identical for fair comparison.
+
+### Benchmark: self-eval
+For each variant:
+1. Dispatch the agent with a fixed test task
+2. Run `/self-eval` on the output
+3. Record the 7-question scores + overall grade
+
+### Benchmark: test-suite
+For each variant:
+1. Dispatch the agent against the codebase
+2. Run `bun test` after the agent completes
+3. Record pass rate, new test failures, coverage delta
+
+### Benchmark: llm-judge
+For each variant:
+1. Dispatch the agent with a fixed test task
+2. Submit output to `llm-judge` agent for blind evaluation
+3. Record dimension scores, confidence intervals
+
+### Execution Protocol
+```
+FOR variant IN [baseline, challenger-1, ..., challenger-N]:
+  1. Reset to clean state (git stash or worktree isolation)
+  2. Apply variant's modifications (if challenger)
+  3. Run the target against the benchmark task
+  4. Collect metrics: score, tokens, duration, output quality
+  5. Revert changes
+  6. Record results in .productionos/AUTO-OPTIMIZE-RESULTS.md
+```
+
+**Cost tracking:** Before each variant run, check accumulated cost against $ARGUMENTS.max_cost. Halt if exceeded.
+
+## Phase 5: Harvest
+
+### 5.1: Compare Results
+```
+RESULTS TABLE:
+| Variant | Score | Tokens | Duration | Delta vs Baseline | p-value |
+|
+
+## Error Handling
+
+| Scenario | Action |
+|----------|--------|
+| No target provided | Ask for clarification with examples |
+| Target not found | Search for alternatives, suggest closest match |
+| Agent dispatch fails | Fall back to manual execution, report the error |
+| Ambiguous input | Present options, ask user to pick |
+| Execution timeout | Save partial results, report what completed |
 
 ## Guardrails
 
-- Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
-- Keep the scope faithful to the source command rather than broadening into a generic repo audit.
-- Prefer concrete outputs and validation over describing the workflow abstractly.
-- **Cost ceiling:** $ARGUMENTS.max_cost (default $5). Hard halt when exceeded.
-- **No regression allowed:** If ALL challengers score lower than baseline, keep baseline.
-- **Prompt length limit:** Challenger prompts cannot exceed 2x the baseline length.
-- **Model safety:** Model changes require human approval before promotion.
-- **Idempotent:** Running auto-optimize twice with the same inputs produces the same baseline measurement.
-- **Rollback:** If promoted winner causes test failures in subsequent runs, revert automatically.
+1. Do not silently change scope or expand beyond the user request.
+2. Prefer concrete outputs and verification over abstract descriptions.
+3. Keep scope faithful to the user intent.
+4. Preserve existing workflow guardrails and stop conditions.
+5. Verify results before concluding. Run self-eval on output quality.

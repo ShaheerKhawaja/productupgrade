@@ -6,49 +6,75 @@ argument-hint: "[repo path, target, or task context]"
 
 # brainstorming
 
-## Overview
-
-This is the Codex-native workflow wrapper for [.claude/commands/brainstorming.md](../../.claude/commands/brainstorming.md).
-
-Use it when the user wants this exact ProductionOS workflow, not just the umbrella `productionos` router.
-
-## Source of Truth
-
-1. Read the source command spec at [.claude/commands/brainstorming.md](../../.claude/commands/brainstorming.md).
-2. Use [CODEX-PARITY-HANDOFF.md](../../docs/CODEX-PARITY-HANDOFF.md) to confirm runtime support and parity expectations.
-3. Preserve the source workflow's guardrails, scope, artifacts, and verification intent.
-4. Translate Claude-only slash-command and hook semantics into Codex-native execution instead of copying them literally.
-
-## Codex Behavior
-
-- Summary: Idea exploration before building — understand the problem, propose approaches, present design, get approval. HARD-GATE: no implementation until design is approved.
-- Use the source command as the behavioral spec, then execute the same intent with Codex-native tools and constraints.
+Idea exploration before building — understand the problem, propose approaches, present design, get approval. HARD-GATE: no implementation until design is approved.
 
 ## Inputs
 
-- `idea` — The idea or feature to brainstorm Required.
+| Parameter | Values | Default | Description |
+|-----------|--------|---------|-------------|
+| `idea` | string | required | The idea or feature to brainstorm |
 
-## Execution Outline
+# /brainstorming — Idea Exploration
 
-1. Preamble
+Turn ideas into fully formed designs through collaborative dialogue.
 
-## Agents And Assets
+## Step 0: Preamble
+Run `templates/PREAMBLE.md`.
 
-- Agents: no explicit agent references in the source command.
-- Templates: `PREAMBLE.md`, `SELF-EVAL-PROTOCOL.md`
-- Artifacts: no explicit `.productionos/` artifacts called out in the source command.
+<HARD-GATE>
+Do NOT write any code, scaffold any project, or take any implementation action until you have presented a design and the user has approved it. Every project goes through this process, even "simple" ones.
+</HARD-GATE>
 
-## Workflow
+## Process
 
-1. Load only the agents, templates, prompts, and docs referenced by the source command.
-2. Execute the workflow intent with Codex-native tools.
-3. If the source command implies parallel agent work, only delegate when the user explicitly wants that overhead.
-4. Verify with the smallest relevant checks before concluding.
-5. Summarize what changed, what was verified, and what still needs human approval.
+### Phase 1: Understand
+1. Check current project context (files, docs, git log)
+2. Ask clarifying questions **one at a time**
+3. Prefer multiple choice when possible
+4. Focus on: purpose, constraints, success criteria, users
+
+### Phase 2: Explore Approaches
+1. Propose **2-3 different approaches** with trade-offs
+2. Lead with your recommendation and reasoning
+3. Present options conversationally
+4. Include effort estimates (human time vs AI time)
+
+### Phase 3: Present Design
+1. Present the design section by section
+2. Scale each section to its complexity (few sentences if simple, detailed if nuanced)
+3. Ask after each section: "Does this look right so far?"
+4. Cover: architecture, components, data flow, error handling, testing
+
+### Phase 4: Self-Eval on Design
+Run `templates/SELF-EVAL-PROTOCOL.md` on the design:
+- Is it specific enough to implement?
+- Does it address all requirements?
+- Are edge cases covered?
+- Is it the simplest solution that works?
+
+### Phase 5: Transition
+Once approved, invoke `/writing-plans` to create the implementation plan. The design becomes the spec.
+
+## Key Principles
+- **One question at a time** — Don't overwhelm
+- **YAGNI ruthlessly** — Remove unnecessary features
+- **Incremental validation** — Get approval before moving on
+- **Design for isolation** — Each unit has one clear purpose
+
+## Error Handling
+
+| Scenario | Action |
+|----------|--------|
+| No target provided | Ask for clarification with examples |
+| Target not found | Search for alternatives, suggest closest match |
+| Agent dispatch fails | Fall back to manual execution, report the error |
+| Ambiguous input | Present options, ask user to pick |
+| Execution timeout | Save partial results, report what completed |
 
 ## Guardrails
 
-- Do not claim that Claude-only marketplace, hook, or slash-command behavior runs directly in Codex.
-- Keep the scope faithful to the source command rather than broadening into a generic repo audit.
-- Prefer concrete outputs and validation over describing the workflow abstractly.
-- Preserve the scope and stop conditions from the source command rather than broadening into a generic repo audit.
+1. Do not silently change scope or expand beyond the user request.
+2. Prefer concrete outputs and verification over abstract descriptions.
+3. Keep scope faithful to the user intent.
+4. Preserve existing workflow guardrails and stop conditions.
+5. Verify results before concluding. Run self-eval on output quality.
