@@ -29,6 +29,14 @@ const HAND_CRAFTED_SKILLS = new Set([
   "debug",
   "brainstorming",
   "document-release",
+  "devtools",
+  "productionos-help",
+  "productionos-pause",
+  "productionos-resume",
+  "productionos-stats",
+  "productionos-update",
+  "autoloop",
+  "qa-only",
 ]);
 
 describe("runtime target generation", () => {
@@ -163,7 +171,7 @@ describe("runtime target generation", () => {
     }
 
     // Hand-crafted dense runbooks exist on disk, not in auto-generated targets
-    const handCraftedCoreSkills = ["omni-plan", "designer-upgrade", "plan-ceo-review", "auto-optimize", "learn-mode", "build-productionos", "qa", "browse", "plan-eng-review", "debug", "brainstorming", "document-release"];
+    const handCraftedCoreSkills = ["omni-plan", "designer-upgrade", "plan-ceo-review", "auto-optimize", "learn-mode", "build-productionos", "qa", "browse", "plan-eng-review", "debug", "brainstorming", "document-release", "devtools", "productionos-help", "productionos-pause", "productionos-resume", "productionos-stats", "productionos-update", "autoloop", "qa-only"];
     for (const skillName of handCraftedCoreSkills) {
       expect(HAND_CRAFTED_SKILLS.has(skillName)).toBe(true);
       const content = readFileOrNull(join(ROOT, "skills", skillName, "SKILL.md"));
