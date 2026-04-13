@@ -167,7 +167,12 @@ if [ ! -f "$STATE_DIR/.onboarded" ]; then
 fi
 
 # 4. Obsidian session logging — write structured note to SecondBrain vault
-OBSIDIAN_VAULT="${OBSIDIAN_VAULT:-$HOME/SecondBrain}"
+# Read vault path from config, fall back to env var, then default
+OBSIDIAN_VAULT=""
+if [ -f "$STATE_DIR/config/settings.json" ] && command -v python3 >/dev/null 2>&1; then
+  OBSIDIAN_VAULT=$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('secondbrain_path',''))" "$STATE_DIR/config/settings.json" 2>/dev/null || echo "")
+fi
+OBSIDIAN_VAULT="${OBSIDIAN_VAULT:-${SECONDBRAIN_PATH:-$HOME/SecondBrain}}"
 if [ -d "$OBSIDIAN_VAULT/Sessions" ]; then
   SESSION_DATE=$(date +%Y-%m-%d)
   SESSION_TIME=$(date +%H-%M)
@@ -215,29 +220,49 @@ if [ -d "$OBSIDIAN_VAULT/Sessions" ]; then
     fi
   fi
 
-  # Update wiki/hot.md with latest session context
+  # Update wiki/hot.md ONLY if session produced meaningful work
+  # and ONLY if new content is richer than existing (prevents clobbering wiki content)
   if [ -d "$OBSIDIAN_VAULT/wiki" ]; then
-    {
-      echo "---"
-      echo "type: meta"
-      echo "title: \"Hot Cache\""
-      echo "updated: $(date -u +%Y-%m-%dT%H:%M:%S)"
-      echo "tags: [meta, hot-cache]"
-      echo "---"
-      echo ""
-      echo "# Recent Context"
-      echo ""
-      echo "**Last session:** $(date +%Y-%m-%d\ %H:%M) on ${ACTIVE_PROJECT_NAME:-unknown}"
-      echo "**Branch:** $(git branch --show-current 2>/dev/null || echo 'unknown')"
-      echo ""
-      echo "## Recent Commits"
-      git log --oneline --since="4 hours ago" 2>/dev/null | head -5 | sed 's/^/- /' || echo "- (none)"
-      echo ""
-      echo "## Hot Files"
-      if [ -f "$STATE_DIR/instincts/learned/CROSS-SESSION-PATTERNS.md" ]; then
-        grep "^\- \*\*" "$STATE_DIR/instincts/learned/CROSS-SESSION-PATTERNS.md" 2>/dev/null | head -5 || true
+    _COMMIT_COUNT=$(git log --oneline --since="4 hours ago" 2>/dev/null | wc -l | tr -d ' ')
+    _EDIT_COUNT_FILE="$STATE_DIR/sessions/edit-count-$$"
+    _EDIT_COUNT=0
+    [ -f "$_EDIT_COUNT_FILE" ] && _EDIT_COUNT=$(cat "$_EDIT_COUNT_FILE" 2>/dev/null | tr -d ' ')
+
+    if [ "${_COMMIT_COUNT:-0}" -gt 0 ] 2>/dev/null || [ "${_EDIT_COUNT:-0}" -gt 3 ] 2>/dev/null; then
+      _EXISTING_SIZE=0
+      [ -f "$OBSIDIAN_VAULT/wiki/hot.md" ] && _EXISTING_SIZE=$(wc -c < "$OBSIDIAN_VAULT/wiki/hot.md" 2>/dev/null | tr -d ' ')
+
+      _HOT_CANDIDATE=$(mktemp)
+      {
+        echo "---"
+        echo "type: meta"
+        echo "title: \"Hot Cache\""
+        echo "updated: $(date -u +%Y-%m-%dT%H:%M:%S)"
+        echo "tags: [meta, hot-cache]"
+        echo "---"
+        echo ""
+        echo "# Recent Context"
+        echo ""
+        echo "**Last session:** $(date +%Y-%m-%d\ %H:%M) on ${ACTIVE_PROJECT_NAME:-unknown}"
+        echo "**Branch:** $(git branch --show-current 2>/dev/null || echo 'unknown')"
+        echo "**Commits:** ${_COMMIT_COUNT:-0} | **Edits:** ${_EDIT_COUNT:-0}"
+        echo ""
+        echo "## Recent Commits"
+        git log --oneline --since="4 hours ago" 2>/dev/null | head -5 | sed 's/^/- /' || echo "- (none)"
+        echo ""
+        echo "## Hot Files"
+        git diff --name-only HEAD~5 2>/dev/null | head -10 | sed 's/^/- /' || true
+      } > "$_HOT_CANDIDATE" 2>/dev/null || true
+
+      _CANDIDATE_SIZE=$(wc -c < "$_HOT_CANDIDATE" 2>/dev/null | tr -d ' ')
+
+      # Only overwrite if candidate is at least as rich as existing
+      if [ "${_CANDIDATE_SIZE:-0}" -ge "${_EXISTING_SIZE:-0}" ] 2>/dev/null; then
+        mv "$_HOT_CANDIDATE" "$OBSIDIAN_VAULT/wiki/hot.md" 2>/dev/null || true
+      else
+        rm -f "$_HOT_CANDIDATE" 2>/dev/null || true
       fi
-    } > "$OBSIDIAN_VAULT/wiki/hot.md" 2>/dev/null || true
+    fi
   fi
 fi
 
