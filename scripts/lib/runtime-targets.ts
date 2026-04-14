@@ -682,6 +682,14 @@ const HAND_CRAFTED_SKILLS = new Set([
   "debug",
   "brainstorming",
   "document-release",
+  "devtools",
+  "productionos-help",
+  "productionos-pause",
+  "productionos-resume",
+  "productionos-stats",
+  "productionos-update",
+  "autoloop",
+  "qa-only",
 ]);
 
 export function getGeneratedTargetFiles(): GeneratedTargetFile[] {

@@ -12,6 +12,12 @@ A toolkit for building polished, animated interfaces. Write animations you can r
 
 ---
 
+## Inputs
+
+| Parameter | Values | Default | Description |
+|-----------|--------|---------|-------------|
+| `target` | path or context | cwd | What to operate on |
+
 ## Skills
 
 | Skill | When to Use | Invoke |
@@ -77,3 +83,10 @@ When the user invokes `/interface-craft`:
 3. **Data-driven** — Repeated elements use arrays and `.map()`, not copy-pasted blocks
 4. **Stage-driven** — A single integer state drives the entire sequence; no scattered boolean flags
 5. **Spring-first** — Prefer spring physics over duration-based easing for natural motion
+
+## Guardrails
+
+1. Do not silently change scope.
+2. Prefer concrete outputs over abstract descriptions.
+3. Keep scope faithful to user intent.
+4. Verify results before concluding.
