@@ -4,7 +4,7 @@
 
 **One command. Your entire codebase reviewed, scored, and improved.**
 
-ProductionOS is a dual-target AI engineering OS for Claude Code and Codex with 80 agents, 41 commands, and 17 hooks. It deploys specialized agents that review your code, find issues, fix them, and keep improving until every quality dimension hits the target. Smart routing dispatches the right workflow for your goal automatically.
+ProductionOS is a dual-target AI engineering OS for Claude Code and Codex with 80 agents, 41 commands, 51 skills, and 15 hooks. It deploys specialized agents that review your code, find issues, fix them, and keep improving until every quality dimension hits the target. Smart routing dispatches the right workflow for your goal automatically.
 
 ## Quick Start
 
@@ -208,10 +208,10 @@ You're building AI-powered products and need agent orchestration patterns:
 ```
 80 agents (declarative YAML frontmatter, 3-tier model routing)
 41 commands (orchestrate agents, loop until convergence)
-17 hook files (SessionStart, PreToolUse security, PostToolUse telemetry, Stop handoff)
+51 skills (34 hand-crafted dense runbooks + 17 auto-generated wrappers)
+15 hooks (SessionStart, PreToolUse security, PostToolUse telemetry, Stop handoff)
 11 templates (PREAMBLE, SELF-EVAL, INVOCATION, PROMPT-COMPOSITION, MODEL-ROUTING, etc.)
- 7 CLI tools (pos-init, pos-config, pos-analytics, pos-review-log, etc.)
-47 skills (Claude auto-activation + Codex-native workflow wrappers)
+10 CLI tools (pos-init, pos-config, pos-analytics, pos-sync, pos-timeline-log, etc.)
 ```
 
 ### Agent Model
@@ -302,9 +302,10 @@ claude plugin uninstall productionos
 
 ```bash
 cd ~/.claude/plugins/marketplaces/productionos
-bun install && bun test   # 932 pass, 1 skip, 0 unexpected failures
-bun run validate          # 78/80 agents valid
-bun run skill:check       # Health dashboard (100%)
+bun install && bun test   # 967+ pass, 1 skip, 0 fail
+bun run validate          # 80 agents valid
+bun run skill:check       # Health dashboard
+npx tsc --noEmit          # 0 TypeScript errors
 ```
 
 ## What Makes This Different
@@ -323,7 +324,7 @@ bun run skill:check       # Health dashboard (100%)
 
 These aren't chat personas. They're specialized workflows with defined inputs, outputs, tool restrictions, and quality criteria. All agents have YAML frontmatter with `model`, `tools`, `subagent_type`, `stakes`, and behavioral `Red Flags`.
 
-ProductionOS currently ships 78 agent definitions spanning:
+ProductionOS currently ships 80 agent definitions spanning:
 
 - Review and judging
 - Planning and orchestration
@@ -387,20 +388,21 @@ pos-telemetry       # Log skill usage events
 
 ## Tech
 
-- 78 agent definitions with YAML frontmatter (model routing, tool constraints, stakes classification)
+- 80 agent definitions with YAML frontmatter (model routing, tool constraints, stakes classification)
 - 41 commands (including recursive orchestrators and imported workflow surfaces)
-- 10-layer prompt architecture (Emotion → Meta → Scratchpad → Context → CoT → ToT → GoT → CoD → Generated Knowledge → Distractor-Augmented)
+- 51 skills (34 hand-crafted dense runbooks + 17 auto-generated wrappers)
+- 10-layer prompt architecture (Emotion, Meta, Scratchpad, Context, CoT, ToT, GoT, CoD, Generated Knowledge, Distractor-Augmented)
 - Default-on self-evaluation protocol (7-question quality gate on all outputs)
-- 17 hook files (SessionStart, PreToolUse security + boundary + gitleaks, PostToolUse telemetry/review, Stop handoff)
-- 6 CLI tools for config, analytics, telemetry, version management
+- 15 hooks (SessionStart, PreToolUse security + boundary + gitleaks, PostToolUse telemetry/review, Stop handoff)
+- 10 CLI tools (pos-init, pos-config, pos-analytics, pos-sync, pos-timeline-log, etc.)
 - 4 auto-activating skills with file pattern matching
-- Executable convergence engine (TypeScript, Algorithm 1 + Algorithm 6)
+- Executable convergence engine (TypeScript, EMA tracking, TARGET_GRADE 8.0)
 - Configurable quality gates (quality-gates.yml with per-project overrides)
-- Worktree isolation for parallel agent execution (m13v production patterns)
+- Worktree isolation for parallel agent execution
 - Persistent state at ~/.productionos/ (config, analytics, instincts, sessions, retro)
 - HumanLayer-inspired approval gate for HIGH-stakes operations
-- CI/CD pipeline (GitHub Actions: validate + lint + convergence check)
-- Secret detection via gitleaks + regex fallback
+- CI/CD pipeline (GitHub Actions: validate + lint + eval-gate + convergence-check)
+- Secret detection via gitleaks + regex fallback + pre-commit tsc type check
 - Zero runtime dependencies beyond Claude Code or Codex + Bun
 
 ## Built On
@@ -420,7 +422,7 @@ Research foundations: Self-Refine, Reflexion, Graph of Thought, EmotionPrompt, C
 
 ## Version
 
-1.0.0-beta.1
+1.2.0-beta.1
 
 ## License
 
