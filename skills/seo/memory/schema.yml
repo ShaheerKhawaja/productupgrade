@@ -1,0 +1,111 @@
+domain: seo
+version: 1
+storage_path: "~/.productionos/domains/seo/"
+
+profile:
+  file: profile.yml
+  description: "Domain configuration — persists across all sessions"
+  fields:
+    - name: site_url
+      type: string
+      description: "Primary site URL"
+      required: true
+    - name: niche
+      type: string
+      description: "Industry or topic focus (e.g., 'AI video production')"
+      required: true
+    - name: competitors
+      type: list
+      description: "Top 3-5 competitor URLs"
+      required: true
+    - name: target_keywords
+      type: list
+      description: "Seed keywords (expanded via research)"
+    - name: tone
+      type: string
+      description: "Content voice (e.g., 'technical but accessible')"
+    - name: tech_stack
+      type: string
+      description: "CMS, hosting, analytics (e.g., 'Next.js, Vercel, PostHog')"
+    - name: content_frequency
+      type: string
+      description: "Publishing cadence (e.g., '2 articles/week')"
+
+history:
+  file: audit-history.jsonl
+  description: "Append-only log of audit executions with scores"
+  fields:
+    - name: timestamp
+      type: iso8601
+    - name: action
+      type: enum
+      values: [audit, create, research, monitor]
+    - name: target
+      type: string
+    - name: score
+      type: float
+    - name: duration_seconds
+      type: integer
+    - name: findings_count
+      type: integer
+    - name: top_issues
+      type: list
+
+keywords:
+  file: keyword-bank.jsonl
+  description: "Researched keywords with metrics — grows over time"
+  fields:
+    - name: keyword
+      type: string
+    - name: volume
+      type: integer
+    - name: difficulty
+      type: integer
+    - name: intent
+      type: enum
+      values: [informational, navigational, transactional, commercial]
+    - name: current_position
+      type: integer
+    - name: target_position
+      type: integer
+    - name: discovered_date
+      type: iso8601
+    - name: source
+      type: string
+
+content:
+  file: content-log.jsonl
+  description: "Published content tracking"
+  fields:
+    - name: timestamp
+      type: iso8601
+    - name: title
+      type: string
+    - name: url
+      type: string
+    - name: target_keyword
+      type: string
+    - name: word_count
+      type: integer
+    - name: content_type
+      type: enum
+      values: [article, landing, product, meta, schema]
+
+learnings:
+  file: learnings.jsonl
+  description: "Patterns extracted from audit-over-audit improvement deltas"
+  fields:
+    - name: timestamp
+      type: iso8601
+    - name: pattern
+      type: string
+      description: "What was learned (e.g., 'adding FAQ schema to product pages improved CTR')"
+    - name: confidence
+      type: float
+      description: "0.0-1.0 confidence in this pattern"
+    - name: evidence
+      type: string
+      description: "What data supports this (e.g., 'audit score +1.2 after FAQ schema on 5 pages')"
+    - name: applicable_actions
+      type: list
+      description: "Which actions benefit from this learning"
