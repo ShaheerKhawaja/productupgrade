@@ -1,0 +1,55 @@
+domain: content
+version: 1
+
+actions:
+  strategy:
+    passing_score: 8.0
+    dimensions:
+      - name: audience_clarity
+        weight: 0.3
+        passing: 85
+      - name: channel_fit
+        weight: 0.3
+        passing: 80
+      - name: calendar_specificity
+        weight: 0.4
+        passing: 85
+  write:
+    passing_score: 8.0
+    dimensions:
+      - name: quality
+        weight: 0.3
+        passing: 85
+      - name: seo_alignment
+        weight: 0.25
+        passing: 80
+      - name: brand_voice
+        weight: 0.25
+        passing: 85
+      - name: readability
+        weight: 0.2
+        passing: 90
+  audit:
+    passing_score: 8.0
+    dimensions:
+      - name: coverage
+        weight: 0.3
+        passing: 80
+      - name: actionability
+        weight: 0.35
+        passing: 90
+      - name: freshness_check
+        weight: 0.35
+        passing: 85
+  refresh:
+    passing_score: 8.0
+    dimensions:
+      - name: improvement_delta
+        weight: 0.4
+        passing: 80
+      - name: accuracy
+        weight: 0.3
+        passing: 90
+      - name: seo_preserved
+        weight: 0.3
+        passing: 85

@@ -1,0 +1,49 @@
+domain: build
+version: 1
+
+actions:
+  plan:
+    passing_score: 8.0
+    dimensions:
+      - name: completeness
+        weight: 0.3
+        passing: 85
+      - name: sequencing
+        weight: 0.25
+        passing: 80
+      - name: risk_identification
+        weight: 0.25
+        passing: 85
+      - name: test_strategy
+        weight: 0.2
+        passing: 90
+  implement:
+    passing_score: 8.0
+    dimensions:
+      - name: correctness
+        weight: 0.35
+        passing: 90
+      - name: test_coverage
+        weight: 0.25
+        passing: 80
+      - name: minimal_change
+        weight: 0.2
+        passing: 85
+      - name: style_consistency
+        weight: 0.2
+        passing: 80
+  test:
+    passing_score: 8.0
+    dimensions:
+      - name: coverage
+        weight: 0.3
+        passing: 85
+      - name: behavioral_not_structural
+        weight: 0.3
+        passing: 85
+      - name: edge_cases
+        weight: 0.2
+        passing: 80
+      - name: readability
+        weight: 0.2
+        passing: 85
