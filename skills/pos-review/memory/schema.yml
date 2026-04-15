@@ -1,0 +1,70 @@
+domain: review
+version: 1
+storage_path: "~/.productionos/domains/review/"
+
+profile:
+  file: profile.yml
+  fields:
+    - name: language
+      type: string
+      description: "Primary language (auto-detected)"
+    - name: framework
+      type: string
+      description: "Framework (auto-detected)"
+    - name: test_framework
+      type: string
+      description: "Test runner (auto-detected)"
+    - name: style_conventions
+      type: object
+      description: "Naming, formatting, import order patterns"
+    - name: common_pitfalls
+      type: list
+      description: "Recurring issues specific to this codebase"
+
+history:
+  file: review-history.jsonl
+  fields:
+    - name: timestamp
+      type: iso8601
+    - name: action
+      type: enum
+      values: [pr, code, architecture]
+    - name: target
+      type: string
+    - name: findings_count
+      type: integer
+    - name: critical_count
+      type: integer
+    - name: score
+      type: float
+    - name: duration_seconds
+      type: integer
+
+patterns:
+  file: patterns.jsonl
+  description: "Recurring issues in this codebase — loaded for faster detection"
+  fields:
+    - name: pattern
+      type: string
+      description: "What keeps appearing (e.g., 'missing null check on API responses in app/api/')"
+    - name: frequency
+      type: integer
+      description: "Times seen across reviews"
+    - name: severity
+      type: enum
+      values: [critical, high, medium, low]
+    - name: example_file
+      type: string
+
+suppressions:
+  file: suppressions.jsonl
+  description: "Known acceptable patterns — don't re-flag"
+  fields:
+    - name: pattern
+      type: string
+    - name: reason
+      type: string
+    - name: added_by
+      type: string
+    - name: timestamp
+      type: iso8601

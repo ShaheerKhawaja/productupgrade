@@ -1,0 +1,59 @@
+domain: review
+version: 1
+
+actions:
+  pr:
+    passing_score: 8.0
+    dimensions:
+      - name: critical_coverage
+        description: "Security, data loss, logic errors checked. No CRITICAL missed."
+        weight: 0.35
+        passing: 95
+      - name: specificity
+        description: "Every finding has file:line, evidence, and fix suggestion"
+        weight: 0.25
+        passing: 90
+      - name: false_positive_rate
+        description: "Findings are real issues, not style nitpicks flagged as bugs"
+        weight: 0.20
+        passing: 85
+      - name: completeness
+        description: "All changed files reviewed. Dependencies of changed files checked."
+        weight: 0.20
+        passing: 90
+
+  code:
+    passing_score: 7.5
+    dimensions:
+      - name: pattern_awareness
+        description: "Codebase conventions detected and applied (naming, error handling, testing)"
+        weight: 0.30
+        passing: 80
+      - name: actionability
+        description: "Findings have specific fix instructions, not vague suggestions"
+        weight: 0.35
+        passing: 85
+      - name: consistency_check
+        description: "Compared to similar files in codebase for style/pattern consistency"
+        weight: 0.35
+        passing: 80
+
+  architecture:
+    passing_score: 8.0
+    dimensions:
+      - name: coupling_analysis
+        description: "Module dependencies mapped. Tight coupling flagged with evidence."
+        weight: 0.30
+        passing: 85
+      - name: scalability_check
+        description: "N+1, missing indexes, blocking ops, resource leaks identified"
+        weight: 0.30
+        passing: 80
+      - name: diagram_quality
+        description: "Architecture diagram is accurate, readable, and covers key components"
+        weight: 0.20
+        passing: 75
+      - name: recommendation_quality
+        description: "Suggestions are specific, prioritized, and feasible"
+        weight: 0.20
+        passing: 85

@@ -1,0 +1,81 @@
+domain: security
+version: 1
+storage_path: "~/.productionos/domains/security/"
+
+profile:
+  file: profile.yml
+  fields:
+    - name: tech_stack
+      type: string
+      description: "Languages, frameworks, runtimes (auto-detected)"
+    - name: auth_framework
+      type: string
+      description: "Auth system (Clerk, Auth0, JWT, Django auth, etc.)"
+    - name: deployment_target
+      type: string
+      description: "Where deployed (Vercel, AWS, Railway, etc.)"
+    - name: compliance
+      type: list
+      description: "Required compliance frameworks (owasp, soc2, hipaa, pci)"
+    - name: known_suppressions
+      type: list
+      description: "False positives to skip in future scans"
+
+history:
+  file: vuln-history.jsonl
+  fields:
+    - name: timestamp
+      type: iso8601
+    - name: finding_id
+      type: string
+    - name: severity
+      type: enum
+      values: [critical, high, medium, low, info]
+    - name: domain
+      type: enum
+      values: [auth, authz, input, data, config, deps, logging]
+    - name: file_path
+      type: string
+    - name: line
+      type: integer
+    - name: cwe
+      type: string
+    - name: status
+      type: enum
+      values: [open, fixed, accepted-risk, false-positive]
+    - name: fix_commit
+      type: string
+
+dependencies:
+  file: dependency-audit.jsonl
+  fields:
+    - name: timestamp
+      type: iso8601
+    - name: package
+      type: string
+    - name: version
+      type: string
+    - name: cve_id
+      type: string
+    - name: severity
+      type: enum
+      values: [critical, high, medium, low]
+    - name: fixed_in
+      type: string
+    - name: status
+      type: enum
+      values: [open, upgraded, accepted-risk]
+
+learnings:
+  file: learnings.jsonl
+  fields:
+    - name: timestamp
+      type: iso8601
+    - name: pattern
+      type: string
+    - name: confidence
+      type: float
+    - name: evidence
+      type: string
+    - name: applicable_actions
+      type: list
