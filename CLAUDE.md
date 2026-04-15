@@ -1,26 +1,25 @@
 # ProductionOS 1.2.0-beta.1 — 10 Composites
 
-80-agent AI engineering OS with 41 commands, 51 skills (34 dense), 10 composite entry points routing to 367 sub-skills. Project-aware context switching. Self-learning telemetry. Built for solo founders shipping multiple products.
+80-agent AI engineering OS with 41 commands, 51 skills, 15 lifecycle hooks, and 10 composite entry points. Project-aware context switching. Self-learning telemetry. Built for solo founders shipping multiple products.
 
 **The rule:** Never browse the full skill list. Use the 10 composites. Each routes to the best sub-skill for your context. See `~/.claude/skills/SKILL-ROUTER.md`.
 
 ## Capabilities
 
-- **356 total skills** (was 110) across orchestration, quality, design, security, research, learning
-- **98 marketing skills** — CRO, SEO, ads (Google/Meta/TikTok/LinkedIn/Apple), growth, content ops
-- **ruflo v3.5.78** — 100+ agents, swarm orchestration, MCP server, AgentDB, neural learning
-- **~/SecondBrain/** Obsidian vault — PARA + Wiki for session persistence
-- **Knowledge graphs** — graphify (codebase topology), code-review-graph (change impact)
-- **Research aggregation** — last30days (recent changes), deep-research (8-phase pipeline)
-- **Enterprise knowledge** — SOC2, ISO27001, LangChain, ML patterns, security protocols
-- **n8n-architect** — Full n8n ontology with 537 nodes, workflow generation, validation
+- **51 skills** (34 hand-crafted dense runbooks + 17 auto-generated wrappers)
+- **80 agents** with YAML frontmatter (model routing, tool constraints, stakes classification)
+- **15 hooks** across 4 lifecycle events (SessionStart, PreToolUse, PostToolUse, Stop)
+- **10 CLI tools** (pos-init, pos-config, pos-analytics, pos-sync, pos-timeline-log, etc.)
+- **Obsidian vault integration** — ~/SecondBrain/ for session persistence (configurable path)
+- **Research pipeline** — deep-research (8-phase) with citation verification
+- **Marketing/SEO/Ads skills** available via installed external plugins (gstack, everything-claude-code)
 
-## What's New in v7.0
+## Core Systems
 
-### Self-Evaluation (default-on)
-- **Self-Eval Protocol** — 7 questions after every agent action: quality, necessity, correctness, dependencies, completeness, learning, honesty
-- **Quality Loop Controller** — Self-check → Self-eval → Self-heal → Learn cycle on all outputs
-- **Score Gating** — >= 8.0 is PASS (production-ready). 6.0-7.9 triggers self-heal (max 3 loops). < 6.0 blocks and escalates to human.
+### Self-Evaluation
+- **Self-Eval Protocol** — 7 questions after every agent action (templates/SELF-EVAL-PROTOCOL.md)
+- **Score Gating** — >= 8.0 is PASS. 6.0-7.9 triggers self-heal (max 3 loops). < 6.0 blocks and escalates.
+- **Eval Gate Hook** — Runs periodically via hooks/eval-gate.sh (frequency configurable)
 - **`/self-eval` command** — Standalone evaluation of last output, session, or git diff
 
 ### Design & UX
@@ -42,16 +41,15 @@ On session start or after compaction, reconstruct context before acting:
 3. **Synthesize briefing** — 2-3 sentence welcome-back: what was done, what's in progress, what's next
 4. **Predict next action** — Based on recent handoff patterns, suggest the most likely next step. "Last session shipped the auth fix. The handoff flagged 3 remaining frontend issues. Start there?"
 
-### v6.0 Foundation (retained)
-- **Native Hooks** — 9 hook scripts across SessionStart/PreToolUse/PostToolUse/Stop
-- **CLI Tools** — `pos-init`, `pos-config`, `pos-analytics`, `pos-update-check`, `pos-review-log`, `pos-telemetry`
+### Infrastructure
+- **15 Hooks** — SessionStart (1), PreToolUse (5), PostToolUse (4), Stop (3) — registered in hooks/hooks.json
+- **10 CLI Tools** — `pos-init`, `pos-config`, `pos-analytics`, `pos-sync`, `pos-timeline-log`, `pos-learnings-log`, `pos-learnings-search`, `pos-update-check`, `pos-review-log`, `pos-telemetry`
 - **Persistent State** — `~/.productionos/` with config, analytics, sessions, instincts, review-log
-- **Auto-Activation** — Skills with filePattern/bashPattern metadata trigger on context
-- **Security Scanning** — PreToolUse hook detects edits to auth/payment/credential files
+- **Auto-Activation** — 4 skills with filePattern/bashPattern metadata trigger on context
+- **Security Scanning** — PreToolUse hooks detect edits to auth/payment/credential files
 - **Continuous Learning** — PostToolUse observation + Stop instinct extraction
-- **Stakes Classification** — Each agent tagged LOW/MEDIUM/HIGH (HumanLayer pattern)
-- **Red Flags** — Behavioral guardrails on all 78 agents
-- **Declarative Agents** — YAML frontmatter with model, tools, subagent_type on all agents
+- **Stakes Classification** — Each agent tagged low/medium/high (HumanLayer pattern)
+- **Declarative Agents** — YAML frontmatter with model, tools, subagent_type, stakes on all 80 agents
 
 ## Commands
 
@@ -231,7 +229,7 @@ SELF-EVAL PROTOCOL (cross-cutting — embedded in ALL commands above)
 
 ## Agent Loading
 
-Agent definitions live in `agents/` (76 files). All agents have YAML frontmatter with `name`, `description`, `model`, `tools`, `subagent_type`, and `stakes`. Commands load agents on-demand — do NOT preload all agent files.
+Agent definitions live in `agents/` (80 files). All agents have YAML frontmatter with `name`, `description`, `model`, `tools`, `subagent_type`, and `stakes`. Commands load agents on-demand — do NOT preload all agent files.
 
 ## Prompting Architecture
 
@@ -316,6 +314,14 @@ ProductionOS is one layer in a multi-system stack. Each system owns a clear scop
 | **n8n** | Workflow automation | `n8n-mcp` + `n8n-architect` -- 537 nodes, workflow gen |
 
 ProductionOS invokes gstack skills (e.g., `/omni-plan` calls `/ship` at Step 13). ruflo provides the swarm runtime that `/auto-swarm-nth` dispatches to. Obsidian stores session artifacts that context recovery reads on startup. n8n handles workflow automation that agents can trigger.
+
+## Known Limitations
+
+- **Self-eval runs periodically, not on every action.** eval-gate.sh fires every N edits (configurable), not literally after every tool use. The protocol is available for manual invocation via `/self-eval`.
+- **~50% of agents have partial instructions.** Agent consolidation is in progress. Check `<instructions>` section before dispatching.
+- **Marketing/SEO/ads skills are external plugins.** Not part of ProductionOS core. Available via gstack and everything-claude-code plugins.
+- **Cross-harness collaboration is PLANNED.** The SRS exists at docs/srs/cross-harness-collaboration/ but implementation is not yet started.
+- **Obsidian integration requires ~/SecondBrain/ vault.** Path is not yet configurable (hardcoded).
 
 ## Attribution
 
