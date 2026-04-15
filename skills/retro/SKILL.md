@@ -17,6 +17,9 @@ Use this as the Codex-first retrospective workflow. It should look back across r
 
 ## Codex Workflow
 
+Source references:
+- `.claude/commands/retro.md`
+
 1. inspect recent commits and artifacts
 2. summarize wins, misses, and repeated pain points
 3. connect those patterns to concrete improvements

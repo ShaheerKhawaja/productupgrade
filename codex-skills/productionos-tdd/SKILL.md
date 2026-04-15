@@ -19,6 +19,9 @@ Use this as the Codex-first TDD workflow. It should enforce red-green-refactor a
 
 ## Codex Workflow
 
+Source references:
+- `.claude/commands/tdd.md`
+
 1. write the failing test first
 2. confirm the failure
 3. implement the minimum change to pass
