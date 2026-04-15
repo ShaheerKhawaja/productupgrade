@@ -1,0 +1,37 @@
+domain: debug
+version: 1
+
+actions:
+  diagnose:
+    passing_score: 8.0
+    dimensions:
+      - name: reproduction
+        weight: 0.3
+        passing: 95
+      - name: hypothesis_quality
+        weight: 0.35
+        passing: 85
+      - name: evidence_chain
+        weight: 0.35
+        passing: 90
+  fix:
+    passing_score: 8.0
+    dimensions:
+      - name: root_cause_addressed
+        weight: 0.4
+        passing: 95
+      - name: minimal_change
+        weight: 0.3
+        passing: 90
+      - name: regression_test
+        weight: 0.3
+        passing: 85
+  verify:
+    passing_score: 8.0
+    dimensions:
+      - name: repro_passes
+        weight: 0.5
+        passing: 100
+      - name: test_suite_passes
+        weight: 0.5
+        passing: 100

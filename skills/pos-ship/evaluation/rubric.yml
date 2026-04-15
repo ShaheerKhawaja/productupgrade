@@ -1,0 +1,40 @@
+domain: ship
+version: 1
+
+actions:
+  pr:
+    passing_score: 8.0
+    dimensions:
+      - name: self_eval_pass
+        weight: 0.3
+        passing: 80
+      - name: review_clear
+        weight: 0.35
+        passing: 85
+      - name: test_plan_present
+        weight: 0.35
+        passing: 90
+  deploy:
+    passing_score: 8.0
+    dimensions:
+      - name: preflight_pass
+        weight: 0.4
+        passing: 100
+      - name: monitoring_active
+        weight: 0.3
+        passing: 90
+      - name: rollback_plan
+        weight: 0.3
+        passing: 85
+  canary:
+    passing_score: 8.0
+    dimensions:
+      - name: metric_coverage
+        weight: 0.4
+        passing: 85
+      - name: regression_detection
+        weight: 0.35
+        passing: 90
+      - name: alert_accuracy
+        weight: 0.25
+        passing: 80

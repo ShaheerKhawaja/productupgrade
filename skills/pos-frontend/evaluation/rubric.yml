@@ -1,0 +1,43 @@
+domain: frontend
+version: 1
+
+actions:
+  audit:
+    passing_score: 8.0
+    dimensions:
+      - name: accessibility
+        weight: 0.3
+        passing: 85
+      - name: responsive
+        weight: 0.25
+        passing: 80
+      - name: interaction_coverage
+        weight: 0.25
+        passing: 80
+      - name: performance
+        weight: 0.2
+        passing: 85
+  upgrade:
+    passing_score: 8.0
+    dimensions:
+      - name: token_consistency
+        weight: 0.35
+        passing: 90
+      - name: component_coverage
+        weight: 0.35
+        passing: 85
+      - name: migration_safety
+        weight: 0.3
+        passing: 90
+  design:
+    passing_score: 8.0
+    dimensions:
+      - name: user_story_completeness
+        weight: 0.3
+        passing: 85
+      - name: journey_coverage
+        weight: 0.35
+        passing: 80
+      - name: mockup_fidelity
+        weight: 0.35
+        passing: 85
