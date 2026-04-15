@@ -19,6 +19,9 @@ Use this as the Codex-first refinement workflow. It should inspect flagged outpu
 
 ## Codex Workflow
 
+Source references:
+- `.claude/commands/refine.md`
+
 1. load the flagged outputs or pending signals
 2. critique the weaknesses directly
 3. refine in focused passes

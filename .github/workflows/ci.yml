@@ -37,15 +37,13 @@ jobs:
 
       - name: Run tests (0 failures required)
         run: |
-          OUTPUT=$(bun test 2>&1) || true
-          echo "$OUTPUT"
-          FAIL_COUNT=$(echo "$OUTPUT" | grep -oE '[0-9]+ fail' | head -1 | grep -oE '[0-9]+' || echo "0")
-          PASS_COUNT=$(echo "$OUTPUT" | grep -oE '[0-9]+ pass' | head -1 | grep -oE '[0-9]+' || echo "0")
-          echo "Tests: $PASS_COUNT pass, $FAIL_COUNT fail"
-          if [ "${FAIL_COUNT:-0}" -gt 0 ]; then
+          # Use bun test's exit code directly — more reliable than parsing grep output.
+          # Previous grep-based approach matched "0 fail" in per-file summaries and missed overall failures.
+          if ! bun test; then
             echo "::error::Test failures detected. 0 failures required."
             exit 1
           fi
+          echo "All tests passed."
 
   lint:
     runs-on: ubuntu-latest

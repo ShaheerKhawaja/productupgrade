@@ -19,6 +19,9 @@ Use this as the Codex-first execution-planning workflow. It should convert an ap
 
 ## Codex Workflow
 
+Source references:
+- `.claude/commands/writing-plans.md`
+
 1. restate the approved scope
 2. break the work into tasks
 3. map dependencies and risk
