@@ -7,6 +7,18 @@
 # GAP-22 (git apply/am)
 set -euo pipefail
 
+# === Binary availability (degrade gracefully if missing) ===
+_HAS_BUN=$(command -v bun >/dev/null 2>&1 && echo "1" || echo "0")
+_HAS_PYTHON=$(command -v python3 >/dev/null 2>&1 && echo "1" || echo "0")
+_HAS_JQ=$(command -v jq >/dev/null 2>&1 && echo "1" || echo "0")
+_LOG_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}/logs"
+mkdir -p "$_LOG_DIR" 2>/dev/null || true
+
+_log_error() {
+  local msg="$1"
+  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] ERROR $(basename "$0"): $msg" >> "$_LOG_DIR/hook-errors.log" 2>/dev/null || true
+}
+
 # ─── Fast Exit: No scope enforcement active ─────────────────
 SCOPE_FILE="${PRODUCTIONOS_AGENT_SCOPE:-}"
 if [ -z "$SCOPE_FILE" ] || [ ! -f "$SCOPE_FILE" ]; then

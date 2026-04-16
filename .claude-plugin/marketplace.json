@@ -5,7 +5,7 @@
     "url": "https://github.com/ShaheerKhawaja"
   },
   "metadata": {
-    "description": "ProductionOS — AI engineering OS for Claude Code and Codex. 80 agents, 41 commands, 17 hooks.",
+    "description": "ProductionOS — AI engineering OS for Claude Code and Codex. 80 agents, 41 commands, 18 hooks.",
     "version": "1.2.0-beta.1",
     "homepage": "https://github.com/ShaheerKhawaja/ProductionOS",
     "repository": "https://github.com/ShaheerKhawaja/ProductionOS",
@@ -15,7 +15,7 @@
     {
       "name": "productionos",
       "source": "./",
-      "description": "Dual-target AI engineering OS — 80 agents, 41 commands, 17 hooks, one shared workflow registry.",
+      "description": "Dual-target AI engineering OS — 80 agents, 41 commands, 18 hooks, one shared workflow registry.",
       "version": "1.2.0-beta.1",
       "author": {
         "name": "Shaheer Khawaja",

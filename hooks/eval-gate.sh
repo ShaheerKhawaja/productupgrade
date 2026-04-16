@@ -4,6 +4,18 @@
 # Enforces 8/10 quality standard — blocks session completion if below threshold.
 set -euo pipefail
 
+# === Binary availability (degrade gracefully if missing) ===
+_HAS_BUN=$(command -v bun >/dev/null 2>&1 && echo "1" || echo "0")
+_HAS_PYTHON=$(command -v python3 >/dev/null 2>&1 && echo "1" || echo "0")
+_HAS_JQ=$(command -v jq >/dev/null 2>&1 && echo "1" || echo "0")
+_LOG_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}/logs"
+mkdir -p "$_LOG_DIR" 2>/dev/null || true
+
+_log_error() {
+  local msg="$1"
+  echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] ERROR $(basename "$0"): $msg" >> "$_LOG_DIR/hook-errors.log" 2>/dev/null || true
+}
+
 PLUGIN_ROOT="${CLAUDE_PLUGIN_ROOT:-$(cd "$(dirname "$0")/.." && pwd)}"
 STATE_DIR="${PRODUCTIONOS_HOME:-$HOME/.productionos}"
 EDIT_COUNT_FILE="$STATE_DIR/sessions/edit-count-$$"
@@ -38,7 +50,12 @@ if [ "$CURRENT_COUNT" -gt 0 ] && [ $((CURRENT_COUNT % EVAL_INTERVAL)) -eq 0 ]; t
   fi
 
   # Run full eval (slower, only at 20+ edits)
-  if [ "$CURRENT_COUNT" -ge 20 ]; then
+  if [ "$CURRENT_COUNT" -ge 20 ] && [ "$_HAS_BUN" = "1" ]; then
+    # Verify eval script exists before running
+    if [ ! -f "$PLUGIN_ROOT/scripts/eval-runner.ts" ] && [ ! -f "$PLUGIN_ROOT/package.json" ]; then
+      _log_error "eval-runner.ts not found, skipping full eval"
+      exit 0
+    fi
     EVAL_SCORE=$(bun run eval 2>&1 | grep "OVERALL" | grep -oE '[0-9]+\.[0-9]+' || echo "0")
     # Validate EVAL_SCORE is a plain decimal number before use
     if [[ "$EVAL_SCORE" =~ ^[0-9]+\.[0-9]+$ ]]; then
