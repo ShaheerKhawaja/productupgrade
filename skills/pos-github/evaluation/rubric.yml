@@ -1,0 +1,40 @@
+domain: github
+version: 1
+
+actions:
+  pr:
+    passing_score: 8.0
+    dimensions:
+      - name: review_quality
+        weight: 0.35
+        passing: 85
+      - name: merge_safety
+        weight: 0.35
+        passing: 90
+      - name: description_quality
+        weight: 0.3
+        passing: 80
+  issue:
+    passing_score: 8.0
+    dimensions:
+      - name: triage_accuracy
+        weight: 0.35
+        passing: 85
+      - name: label_correctness
+        weight: 0.35
+        passing: 90
+      - name: priority_assignment
+        weight: 0.3
+        passing: 80
+  release:
+    passing_score: 8.0
+    dimensions:
+      - name: changelog_completeness
+        weight: 0.35
+        passing: 90
+      - name: version_correctness
+        weight: 0.35
+        passing: 95
+      - name: tag_safety
+        weight: 0.3
+        passing: 90

@@ -1,0 +1,43 @@
+domain: qa
+version: 1
+
+actions:
+  test:
+    passing_score: 8.0
+    dimensions:
+      - name: page_coverage
+        weight: 0.25
+        passing: 85
+      - name: health_score_accuracy
+        weight: 0.3
+        passing: 85
+      - name: bug_specificity
+        weight: 0.25
+        passing: 90
+      - name: regression_check
+        weight: 0.2
+        passing: 80
+  audit:
+    passing_score: 8.0
+    dimensions:
+      - name: coverage
+        weight: 0.35
+        passing: 80
+      - name: finding_quality
+        weight: 0.35
+        passing: 90
+      - name: false_positive_rate
+        weight: 0.3
+        passing: 85
+  browse:
+    passing_score: 8.0
+    dimensions:
+      - name: evidence_quality
+        weight: 0.4
+        passing: 85
+      - name: accessibility_check
+        weight: 0.3
+        passing: 80
+      - name: responsive_check
+        weight: 0.3
+        passing: 80

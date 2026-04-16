@@ -1,0 +1,43 @@
+domain: research
+version: 1
+
+actions:
+  quick:
+    passing_score: 8.0
+    dimensions:
+      - name: answer_found
+        weight: 0.5
+        passing: 90
+      - name: source_quality
+        weight: 0.5
+        passing: 80
+  deep:
+    passing_score: 8.0
+    dimensions:
+      - name: source_diversity
+        weight: 0.25
+        passing: 80
+      - name: citation_verification
+        weight: 0.3
+        passing: 90
+      - name: synthesis_quality
+        weight: 0.25
+        passing: 85
+      - name: confidence_calibration
+        weight: 0.2
+        passing: 85
+  exhaustive:
+    passing_score: 8.0
+    dimensions:
+      - name: coverage
+        weight: 0.3
+        passing: 90
+      - name: cross_validation
+        weight: 0.3
+        passing: 85
+      - name: novel_insights
+        weight: 0.2
+        passing: 75
+      - name: confidence_calibration
+        weight: 0.2
+        passing: 90

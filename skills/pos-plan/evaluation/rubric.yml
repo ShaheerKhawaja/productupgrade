@@ -1,0 +1,64 @@
+domain: plan
+version: 1
+
+actions:
+  ceo:
+    passing_score: 8.0
+    dimensions:
+      - name: problem_clarity
+        weight: 0.25
+        passing: 85
+      - name: ambition_level
+        weight: 0.25
+        passing: 80
+      - name: risk_coverage
+        weight: 0.25
+        passing: 85
+      - name: scope_specificity
+        weight: 0.25
+        passing: 90
+  eng:
+    passing_score: 8.0
+    dimensions:
+      - name: flow_tracing
+        weight: 0.3
+        passing: 85
+      - name: error_path_coverage
+        weight: 0.3
+        passing: 90
+      - name: test_matrix
+        weight: 0.2
+        passing: 80
+      - name: dependency_audit
+        weight: 0.2
+        passing: 85
+  design:
+    passing_score: 8.0
+    dimensions:
+      - name: consistency
+        weight: 0.3
+        passing: 85
+      - name: accessibility
+        weight: 0.3
+        passing: 80
+      - name: responsive
+        weight: 0.2
+        passing: 85
+      - name: interaction_coverage
+        weight: 0.2
+        passing: 80
+  brainstorm:
+    passing_score: 8.0
+    dimensions:
+      - name: understanding_depth
+        weight: 0.3
+        passing: 85
+      - name: approach_diversity
+        weight: 0.25
+        passing: 80
+      - name: trade_off_honesty
+        weight: 0.25
+        passing: 85
+      - name: design_specificity
+        weight: 0.2
+        passing: 90

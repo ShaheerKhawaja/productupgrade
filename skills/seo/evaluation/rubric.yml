@@ -1,0 +1,79 @@
+domain: seo
+version: 1
+
+actions:
+  audit:
+    passing_score: 8.0
+    dimensions:
+      - name: coverage
+        description: "Percentage of technical, content, and competitive areas examined"
+        weight: 0.25
+        passing: 80
+      - name: actionability
+        description: "Percentage of findings with specific fix instructions (file, page, exact change)"
+        weight: 0.30
+        passing: 90
+      - name: accuracy
+        description: "Percentage of real issues vs false positives (verified by evidence)"
+        weight: 0.25
+        passing: 85
+      - name: prioritization
+        description: "Fixes ordered by impact, not category. Top 3 are genuinely highest-impact"
+        weight: 0.20
+        passing: 80
+
+  create:
+    passing_score: 8.0
+    dimensions:
+      - name: keyword_optimization
+        description: "Primary keyword in title, H1, first paragraph, URL. Natural density (1-2%)"
+        weight: 0.25
+        passing: 85
+      - name: content_depth
+        description: "Word count competitive with SERP top 5. Covers subtopics comprehensively"
+        weight: 0.25
+        passing: 80
+      - name: eeat_signals
+        description: "Author expertise, citations, data references, freshness indicators"
+        weight: 0.25
+        passing: 75
+      - name: readability
+        description: "Clear structure (H2/H3), short paragraphs, scannable. Grade level appropriate"
+        weight: 0.25
+        passing: 85
+
+  research:
+    passing_score: 8.0
+    dimensions:
+      - name: keyword_diversity
+        description: "Mix of head, long-tail, and question keywords. Multiple intent types"
+        weight: 0.30
+        passing: 80
+      - name: data_freshness
+        description: "Volume and difficulty data from recent sources (< 30 days)"
+        weight: 0.25
+        passing: 75
+      - name: competitive_coverage
+        description: "At least 3 competitors analyzed. Gap analysis present"
+        weight: 0.25
+        passing: 80
+      - name: intent_classification
+        description: "Every keyword tagged: informational, navigational, transactional, commercial"
+        weight: 0.20
+        passing: 90
+
+  monitor:
+    passing_score: 7.0
+    dimensions:
+      - name: tracking_coverage
+        description: "Primary keywords tracked. New rankings detected"
+        weight: 0.40
+        passing: 80
+      - name: regression_detection
+        description: "Position drops flagged with possible cause analysis"
+        weight: 0.35
+        passing: 75
+      - name: trend_analysis
+        description: "Comparison to previous monitoring period. Direction clear"
+        weight: 0.25
+        passing: 70

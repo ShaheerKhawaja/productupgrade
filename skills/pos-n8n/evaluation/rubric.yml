@@ -1,0 +1,40 @@
+domain: n8n
+version: 1
+
+actions:
+  create:
+    passing_score: 8.0
+    dimensions:
+      - name: node_correctness
+        weight: 0.35
+        passing: 90
+      - name: flow_logic
+        weight: 0.3
+        passing: 85
+      - name: error_handling
+        weight: 0.35
+        passing: 80
+  debug:
+    passing_score: 8.0
+    dimensions:
+      - name: root_cause_found
+        weight: 0.4
+        passing: 90
+      - name: fix_correctness
+        weight: 0.35
+        passing: 90
+      - name: regression_check
+        weight: 0.25
+        passing: 85
+  monitor:
+    passing_score: 8.0
+    dimensions:
+      - name: metric_coverage
+        weight: 0.35
+        passing: 80
+      - name: alert_accuracy
+        weight: 0.35
+        passing: 85
+      - name: trend_analysis
+        weight: 0.3
+        passing: 80

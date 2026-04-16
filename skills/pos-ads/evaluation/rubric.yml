@@ -1,0 +1,55 @@
+domain: ads
+version: 1
+
+actions:
+  audit:
+    passing_score: 8.0
+    dimensions:
+      - name: platform_coverage
+        weight: 0.3
+        passing: 85
+      - name: metric_accuracy
+        weight: 0.35
+        passing: 90
+      - name: recommendation_quality
+        weight: 0.35
+        passing: 85
+  create:
+    passing_score: 8.0
+    dimensions:
+      - name: hook_quality
+        weight: 0.3
+        passing: 80
+      - name: cta_clarity
+        weight: 0.25
+        passing: 85
+      - name: audience_targeting
+        weight: 0.25
+        passing: 80
+      - name: platform_fit
+        weight: 0.2
+        passing: 85
+  optimize:
+    passing_score: 8.0
+    dimensions:
+      - name: data_grounding
+        weight: 0.4
+        passing: 90
+      - name: budget_justification
+        weight: 0.3
+        passing: 85
+      - name: expected_impact
+        weight: 0.3
+        passing: 80
+  report:
+    passing_score: 8.0
+    dimensions:
+      - name: metric_completeness
+        weight: 0.3
+        passing: 85
+      - name: trend_analysis
+        weight: 0.35
+        passing: 80
+      - name: roi_calculation
+        weight: 0.35
+        passing: 90

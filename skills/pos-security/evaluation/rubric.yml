@@ -1,0 +1,55 @@
+domain: security
+version: 1
+
+actions:
+  audit:
+    passing_score: 8.0
+    dimensions:
+      - name: domain_coverage
+        description: "All 7 security domains examined (auth, authz, input, data, config, deps, logging)"
+        weight: 0.25
+        passing: 100
+      - name: finding_specificity
+        description: "Each finding has: file:line, severity, CWE/CVE reference, fix instruction"
+        weight: 0.30
+        passing: 90
+      - name: false_positive_rate
+        description: "Findings verified against code — not pattern-matching noise"
+        weight: 0.25
+        passing: 85
+      - name: compliance_mapping
+        description: "Findings mapped to compliance framework (OWASP ID, NIST control)"
+        weight: 0.20
+        passing: 80
+
+  scan:
+    passing_score: 7.0
+    dimensions:
+      - name: dependency_coverage
+        description: "All dependency managers scanned (npm, pip, bundler, etc.)"
+        weight: 0.35
+        passing: 90
+      - name: secret_detection
+        description: "Gitleaks or equivalent ran. Known secret patterns checked"
+        weight: 0.35
+        passing: 95
+      - name: recency
+        description: "CVE database is current (< 7 days old)"
+        weight: 0.30
+        passing: 80
+
+  harden:
+    passing_score: 9.0
+    dimensions:
+      - name: fix_correctness
+        description: "Fix addresses root cause, not symptom. Verified by re-running check"
+        weight: 0.40
+        passing: 95
+      - name: minimal_change
+        description: "Only security-relevant code changed. No refactoring"
+        weight: 0.30
+        passing: 90
+      - name: regression_check
+        description: "Existing tests still pass after fix"
+        weight: 0.30
+        passing: 100
