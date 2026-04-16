@@ -67,7 +67,7 @@ describe("stats-dashboard script", () => {
 
   test("reports correct version", () => {
     const out = runScript("stats-dashboard.ts");
-    expect(out).toContain("1.2.0-beta.1");
+    expect(out).toContain("2.0.0-beta.1");
   });
 
   test("reports agent count", () => {
