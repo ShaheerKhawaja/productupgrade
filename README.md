@@ -422,7 +422,7 @@ Research foundations: Self-Refine, Reflexion, Graph of Thought, EmotionPrompt, C
 
 ## Version
 
-1.2.0-beta.1
+2.0.0-beta.1
 
 ## License
 
